@@ -1,0 +1,776 @@
+@font-face
+{
+	font-family: "TradeGothicLTStd";
+	src: url(../fonts/TradeGothicLTStd.otf);
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "TradeGothicLTStd";
+	src: url(../fonts/TradeGothicLTStd-Obl.otf);
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "TradeGothicLTStd";
+	src: url(../fonts/TradeGothicLTStd-Bold.otf);
+	font-style: normal;
+	font-weight: bold;
+}
+@font-face
+{
+	font-family: "TradeGothicLTStd";
+	src: url(../fonts/TradeGothicLTStd-BoldObl.otf);
+	font-style: italic;
+	font-weight: bold;
+}
+@font-face
+{
+	font-family: "JansonTextLTStd";
+	src: url(../fonts/JansonTextLTStd-Bold.otf);
+	font-style: normal;
+	font-weight: bold;
+}
+@font-face
+{
+	font-family: "JansonTextLTStd";
+	src: url(../fonts/JansonTextLTStd-BoldItalic.otf);
+	font-style: italic;
+	font-weight: bold;
+}
+@font-face
+{
+	font-family: "JansonTextLTStd";
+	src: url(../fonts/JansonTextLTStd-Italic.otf);
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "JansonTextLTStd";
+	src: url(../fonts/JansonTextLTStd-Roman.otf);
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "ArialUnicodeMS";
+	src: url(../fonts/ARIALUNI.ttf);
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "UbuntuMono";
+	src: url(../fonts/UbuntuMono-Regular.ttf);
+	font-style: normal;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "UbuntuMono";
+	src: url(../fonts/UbuntuMono-Bold.ttf);
+	font-style: normal;
+	font-weight: bold;
+}
+@font-face
+{
+	font-family: "UbuntuMono";
+	src: url(../fonts/UbuntuMono-Italic.ttf);
+	font-style: italic;
+	font-weight: normal;
+}
+@font-face
+{
+	font-family: "UbuntuMono";
+	src: url(../fonts/UbuntuMono-BoldItalic.ttf);
+	font-style: italic;
+	font-weight: bold;
+}
+@page
+{
+        margin: 1.2em;
+}
+body
+{
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+}
+.cover
+{
+	text-align: center;
+}
+.h1
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 250%;
+	margin-top: 1em;
+	margin-bottom: 0.1em;
+	text-align: center;
+}
+.subtitle
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 150%;
+	font-weight: bold;
+	margin-top: 0.1em;
+	margin-bottom: 5em;
+	text-align: center;
+}
+.author
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 125%;
+	margin-top: 5em;
+	margin-bottom: 0.5em;
+	text-align: center;
+}
+.pub1
+{
+	font-family: "TradeGothicLTStd";
+	margin-top: 0.8em;
+	margin-bottom: 0.5em;
+	text-align: center;
+}
+.h2
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 160%;
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	text-align: center;
+}
+.h2a
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 160%;
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	text-align: left;
+}
+.h2b
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 160%;
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+	text-align: center;
+}
+.h2c
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 160%;
+	margin-top: 0.5em;
+	margin-bottom: 3em;
+	text-align: center;
+}
+.h3
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 140%;
+	margin-top: 1.5em;
+	margin-bottom: 0.3em;
+	margin-left: 0em;
+	text-align: left;
+}
+.h3c
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 140%;
+	margin-top: 1em;
+	margin-bottom: 0.7em;
+	margin-left: 0em;
+	text-align: center;
+}
+.h4
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 130%;
+	margin-top: 1em;
+	margin-bottom: 0.3em;
+	margin-left: 0em;
+	text-align: left;
+}
+.h5
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 110%;
+	margin-top: 1.3em;
+	margin-bottom: 0.3em;
+	margin-left: 0em;
+	text-align: left;
+}
+div.pub
+{
+	 margin-top: 3em;
+	 text-align: center;
+}
+div.image
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 0.5em;
+	 padding: 0;
+	 text-align: left;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.image9
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 1em;
+	 padding: 0;
+	 text-align: left;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.image91
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 1em;
+	 padding: 0;
+	 text-align: center;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.image1
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 1em;
+	 padding: 0;
+	 text-align: center;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.image21
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 1em;
+	 padding: 0;
+	 text-align: left;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.imager
+{
+	 margin: 0 auto;
+	 margin-top: 1em;
+	 margin-bottom: 0.5em;
+	 padding: 0;
+	 text-align: right;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+div.image2
+{
+	 margin: 0 auto;
+	 margin-top: 1.8em;
+	 margin-bottom: 0.5em;
+	 padding: 0;
+	 text-align: left;
+	 max-width: 99%;
+	 max-height: 99%;
+	 clear: both;
+}
+.noindent1
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.3em;
+	margin-bottom: 0.0em;
+	margin-left: 1.8em;
+	text-align: left;
+}
+.noindent
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindenttop
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 3em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindent2
+{
+	font-family: "JansonTextLTStd";
+	font-size: 100%;
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindentz
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.3em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindenta
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.list
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindentt
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.8em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindentta
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.6em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.noindentb
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.indent
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-indent: 1.3em;
+	text-align: justify;
+}
+.indentv
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 2em;
+	text-indent: 1.3em;
+	text-align: justify;
+}
+.indentt
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.8em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-indent: 1.3em;
+	text-align: justify;
+}
+.indentb
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+	text-indent: 1.3em;
+	text-align: justify;
+}
+.programs
+{
+	font-family: "UbuntuMono";
+	font-size: 0.8em;
+	margin-top: 0.8em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+	text-align: left;
+	border-top: solid black 0.1em;
+	border-bottom: solid black 0.1em;
+	padding: 0.5em 0.1em 0.5em 0.1em;
+}
+.codestrong
+{
+	font-family: "UbuntuMono";
+	font-weight: bold;
+	font-size: 0.8em;
+}
+.codeitalic
+{
+	font-family: "UbuntuMono";
+	font-style: italic;
+	font-size: 0.8em;
+}
+.literal
+{
+	font-family: "UbuntuMono";
+	font-size: 0.8em;
+}
+.sidebar
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	background-color: #E6E7E8;
+	border-radius: 1em;
+	border: solid 0.15em;
+	padding: 1em;
+}
+.sidebart
+{
+	font-family: "TradeGothicLTStd";
+	font-weight: bold;
+	font-size: 100%;
+	margin-top: 0.8em;
+	margin-bottom: 0.2em;
+	text-align: center;
+}
+.copya
+{
+	font-family: "JansonTextLTStd";
+	font-size: 90%;
+	margin-top: 0.8em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+}
+.programsc
+{
+	font-family: "UbuntuMono";
+	font-size: 0.8em;
+	margin-top: 0.1em;
+	margin-bottom: 0.8em;
+	margin-left: 0.1em;
+}
+.copy1
+{
+	font-family: "JansonTextLTStd";
+	font-size: 90%;
+	margin-top: 0.8em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+}
+.copy1a
+{
+	font-family: "JansonTextLTStd";
+	font-size: 90%;
+	margin-top: 1.5em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+}
+.copy
+{
+	font-family: "JansonTextLTStd";
+	font-size: 90%;
+	margin-top: 3em;
+	margin-bottom: 0.8em;
+	margin-left: 0em;
+}
+.toc
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.7em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: left;
+}
+.tocchap
+{
+	font-family: "JansonTextLTStd";
+	font-weight: bold;
+	margin-top: 1em;
+	margin-bottom: 0.3em;
+	margin-left: 0em;
+	text-align: left;
+}
+.tocsec
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: left;
+}
+.tocsec1
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 3.9em;
+	text-align: left;
+}
+.bull
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.5em;
+	margin-bottom: 0.1em;
+	margin-left: 0.8em;
+	text-indent: -0.8em;
+}
+.big
+{
+	font-size: 230%;
+}
+.figcap
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 90%;
+        margin-top: 0.2em;
+	margin-bottom: 1em;
+	margin-left: 0em;
+	text-align: left;
+	page-break-before: avoid;
+}
+.tabcap
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 90%;
+        margin-top: 1em;
+	margin-bottom: 0.6em;
+	margin-left: 0em;
+	text-align: left;
+	page-break-before: avoid;
+}
+.listing
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 90%;
+        margin-top: 0.8em;
+	margin-bottom: 1em;
+	margin-left: 0em;
+	text-align: left;
+	page-break-before: avoid;
+}
+.indexmain
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 4.3em;
+	text-indent: -4.3em;
+	text-align: left;
+}
+.indexsub
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 4.5em;
+	text-indent: -2.8em;
+	text-align: left;
+}
+.indexsubsub
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 4.5em;
+	text-indent: -1.5em;
+	text-align: left;
+}
+.topbot-d
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+	margin-left: 0em;
+	background-color: #FFFFFF;
+	border-collapse: collapse;
+}
+.table-h
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #FFFFFF;
+	border-top: solid #000000 0.1em; 
+	border-bottom: solid #000000 0.1em; 
+}
+.table-a
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #D1D3D4;
+	border-bottom: solid #000000 0.0em; 
+}
+.tableba
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #D1D3D4;
+	border-bottom: solid #000000 0.1em; 
+}
+.table-ca
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #FFFFFF;
+	border-bottom: solid #000000 0.1em; 
+}
+.table-b
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #FFFFFF;
+	border-bottom: solid #000000 0.0em; 
+}
+.table-c
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	background-color: #FFFFFF;
+	border-bottom: solid #000000 0.0em; 
+}
+.tab_th
+{
+	margin-top: 0.1em;
+	margin-bottom: 0.1em;
+	text-indent: 0em;
+	text-align: left;
+}
+.taba
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0em;
+	text-align: left;
+}
+a
+{
+    text-decoration: none !important;
+	color: #000000;
+    word-wrap: break-word;
+}
+.note
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border: solid black 0.1em;
+	margin-left: 0em;
+	text-align: left;
+	padding: 0em 0.5em 0.5em 0em;
+}
+.notet
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 110%;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	margin-left: 0.1em;
+}
+.notep
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.2em;
+	margin-bottom: 0.1em;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	text-align: justify;
+}
+.boxtitle
+{
+	font-family: "TradeGothicLTStd";
+	font-size: 140%;
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	text-align: left;
+}
+.box1
+{
+	margin-top: 1em;
+	margin-bottom: 1em;
+	border-radius: 0.5em;
+	border: solid black 0.1em;
+	padding: 0.5em;
+}
+.ent
+{
+	font-family: "ArialUnicodeMS";
+	src: url(../fonts/ARIALUNI.ttf);
+}
+img
+{
+	 max-width: 99%;
+	 max-height: 99%;
+}
+.hang
+{
+	font-family: "JansonTextLTStd";
+	margin-top: 0.5em;
+	margin-bottom: 0.1em;
+	margin-left: 1.5em;
+	text-align: justify;
+}
+.notes
+{
+	background-color: #000000;
+	color: #FFFFFF;
+	padding: 0.3em;
+}
+.warnings
+{
+	background-color: #ED1D24;
+	color: #FFFFFF;
+	padding: 0.3em;
+}
+.spara
+{
+	font-family: "JansonTextLTStd";
+	font-size: 110%;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	margin-left: 0em;
+	text-align: justify;
+}
+.spara1
+{
+	font-family: "JansonTextLTStd";
+	font-size: 110%;
+	margin-top: 0.2em;
+	margin-bottom: 0.2em;
+	margin-left: 0em;
+	text-indent: 1.3em;
+	text-align: justify;
+}
+.middle
+{
+	vertical-align: middle;
+}
+.center
+{
+	text-align: center;
+}

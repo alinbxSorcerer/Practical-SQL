@@ -1,0 +1,648 @@
+* *CONTENTS IN DETAIL*
+
+[[file:foreward.xhtml#foreword][*FOREWORD by Sarah Frostenson*]]
+
+[[file:ack.xhtml#ack][*ACKNOWLEDGMENTS*]]
+
+[[file:intro.xhtml#intro][*INTRODUCTION*]]
+
+[[file:intro.xhtml#lev1][What Is SQL?]]
+
+[[file:intro.xhtml#lev2][Why Use SQL?]]
+
+[[file:intro.xhtml#lev3][About This Book]]
+
+[[file:intro.xhtml#lev4][Using the Book's Code Examples]]
+
+[[file:intro.xhtml#lev5][Using PostgreSQL]]
+
+[[file:intro.xhtml#lev6][Installing PostgreSQL]]
+
+[[file:intro.xhtml#lev7][Working with pgAdmin]]
+
+[[file:intro.xhtml#lev8][Alternatives to pgAdmin]]
+
+[[file:intro.xhtml#lev9][Wrapping Up]]
+
+[[file:ch01.xhtml#ch01][*1\\
+CREATING YOUR FIRST DATABASE AND TABLE*]]
+
+[[file:ch01.xhtml#lev10][Creating a Database]]
+
+[[file:ch01.xhtml#lev11][Executing SQL in pgAdmin]]
+
+[[file:ch01.xhtml#lev12][Connecting to the Analysis Database]]
+
+[[file:ch01.xhtml#lev13][Creating a Table]]
+
+[[file:ch01.xhtml#lev14][The CREATE TABLE Statement]]
+
+[[file:ch01.xhtml#lev15][Making the teachers Table]]
+
+[[file:ch01.xhtml#lev16][Inserting Rows into a Table]]
+
+[[file:ch01.xhtml#lev17][The INSERT Statement]]
+
+[[file:ch01.xhtml#lev18][Viewing the Data]]
+
+[[file:ch01.xhtml#lev19][When Code Goes Bad]]
+
+[[file:ch01.xhtml#lev20][Formatting SQL for Readability]]
+
+[[file:ch01.xhtml#lev21][Wrapping Up]]
+
+[[file:ch01.xhtml#ch01sb1][Try It Yourself]]
+
+[[file:ch02.xhtml#ch02][*2\\
+BEGINNING DATA EXPLORATION WITH SELECT*]]
+
+[[file:ch02.xhtml#lev22][Basic SELECT Syntax]]
+
+[[file:ch02.xhtml#lev23][Querying a Subset of Columns]]
+
+[[file:ch02.xhtml#lev24][Using DISTINCT to Find Unique Values]]
+
+[[file:ch02.xhtml#lev25][Sorting Data with ORDER BY]]
+
+[[file:ch02.xhtml#lev26][Filtering Rows with WHERE]]
+
+[[file:ch02.xhtml#lev27][Using LIKE and ILIKE with WHERE]]
+
+[[file:ch02.xhtml#lev28][Combining Operators with AND and OR]]
+
+[[file:ch02.xhtml#lev29][Putting It All Together]]
+
+[[file:ch02.xhtml#lev30][Wrapping Up]]
+
+[[file:ch02.xhtml#ch02sb1][Try It Yourself]]
+
+[[file:ch03.xhtml#ch03][*3\\
+UNDERSTANDING DATA TYPES*]]
+
+[[file:ch03.xhtml#lev31][Characters]]
+
+[[file:ch03.xhtml#lev32][Numbers]]
+
+[[file:ch03.xhtml#lev33][Integers]]
+
+[[file:ch03.xhtml#lev34][Auto-Incrementing Integers]]
+
+[[file:ch03.xhtml#lev35][Decimal Numbers]]
+
+[[file:ch03.xhtml#lev40][Choosing Your Number Data Type]]
+
+[[file:ch03.xhtml#lev41][Dates and Times]]
+
+[[file:ch03.xhtml#lev42][Using the interval Data Type in Calculations]]
+
+[[file:ch03.xhtml#lev43][Miscellaneous Types]]
+
+[[file:ch03.xhtml#lev44][Transforming Values from One Type to Another with CAST]]
+
+[[file:ch03.xhtml#lev45][CAST Shortcut Notation]]
+
+[[file:ch03.xhtml#lev46][Wrapping Up]]
+
+[[file:ch03.xhtml#ch03sb1][Try It Yourself]]
+
+[[file:ch04.xhtml#ch04][*4\\
+IMPORTING AND EXPORTING DATA*]]
+
+[[file:ch04.xhtml#lev47][Working with Delimited Text Files]]
+
+[[file:ch04.xhtml#lev48][Quoting Columns that Contain Delimiters]]
+
+[[file:ch04.xhtml#lev49][Handling Header Rows]]
+
+[[file:ch04.xhtml#lev50][Using COPY to Import Data]]
+
+[[file:ch04.xhtml#lev51][Importing Census Data Describing Counties]]
+
+[[file:ch04.xhtml#lev52][Creating the us\_counties\_2010 Table]]
+
+[[file:ch04.xhtml#lev53][Census Columns and Data Types]]
+
+[[file:ch04.xhtml#lev54][Performing the Census Import with COPY]]
+
+[[file:ch04.xhtml#lev55][Importing a Subset of Columns with COPY]]
+
+[[file:ch04.xhtml#lev56][Adding a Default Value to a Column During Import]]
+
+[[file:ch04.xhtml#lev57][Using COPY to Export Data]]
+
+[[file:ch04.xhtml#lev58][Exporting All Data]]
+
+[[file:ch04.xhtml#lev59][Exporting Particular Columns]]
+
+[[file:ch04.xhtml#lev60][Exporting Query Results]]
+
+[[file:ch04.xhtml#lev61][Importing and Exporting Through pgAdmin]]
+
+[[file:ch04.xhtml#lev62][Wrapping Up]]
+
+[[file:ch04.xhtml#ch04sb1][Try It Yourself]]
+
+[[file:ch05.xhtml#ch05][*5\\
+BASIC MATH AND STATS WITH SQL*]]
+
+[[file:ch05.xhtml#lev63][Math Operators]]
+
+[[file:ch05.xhtml#lev64][Math and Data Types]]
+
+[[file:ch05.xhtml#lev65][Adding, Subtracting, and Multiplying]]
+
+[[file:ch05.xhtml#lev66][Division and Modulo]]
+
+[[file:ch05.xhtml#lev67][Exponents, Roots, and Factorials]]
+
+[[file:ch05.xhtml#lev68][Minding the Order of Operations]]
+
+[[file:ch05.xhtml#lev69][Doing Math Across Census Table Columns]]
+
+[[file:ch05.xhtml#lev70][Adding and Subtracting Columns]]
+
+[[file:ch05.xhtml#lev71][Finding Percentages of the Whole]]
+
+[[file:ch05.xhtml#lev72][Tracking Percent Change]]
+
+[[file:ch05.xhtml#lev73][Aggregate Functions for Averages and Sums]]
+
+[[file:ch05.xhtml#lev74][Finding the Median]]
+
+[[file:ch05.xhtml#lev75][Finding the Median with Percentile Functions]]
+
+[[file:ch05.xhtml#lev76][Median and Percentiles with Census Data]]
+
+[[file:ch05.xhtml#lev77][Finding Other Quantiles with Percentile Functions]]
+
+[[file:ch05.xhtml#lev78][Creating a median() Function]]
+
+[[file:ch05.xhtml#lev79][Finding the Mode]]
+
+[[file:ch05.xhtml#lev80][Wrapping Up]]
+
+[[file:ch05.xhtml#ch05sb1][Try It Yourself]]
+
+[[file:ch06.xhtml#ch06][*6\\
+JOINING TABLES IN A RELATIONAL DATABASE*]]
+
+[[file:ch06.xhtml#lev81][Linking Tables Using JOIN]]
+
+[[file:ch06.xhtml#lev82][Relating Tables with Key Columns]]
+
+[[file:ch06.xhtml#lev83][Querying Multiple Tables Using JOIN]]
+
+[[file:ch06.xhtml#lev84][JOIN Types]]
+
+[[file:ch06.xhtml#lev85][JOIN]]
+
+[[file:ch06.xhtml#lev86][LEFT JOIN and RIGHT JOIN]]
+
+[[file:ch06.xhtml#lev87][FULL OUTER JOIN]]
+
+[[file:ch06.xhtml#lev88][CROSS JOIN]]
+
+[[file:ch06.xhtml#lev89][Using NULL to Find Rows with Missing Values]]
+
+[[file:ch06.xhtml#lev90][Three Types of Table Relationships]]
+
+[[file:ch06.xhtml#lev91][One-to-One Relationship]]
+
+[[file:ch06.xhtml#lev92][One-to-Many Relationship]]
+
+[[file:ch06.xhtml#lev93][Many-to-Many Relationship]]
+
+[[file:ch06.xhtml#lev94][Selecting Specific Columns in a Join]]
+
+[[file:ch06.xhtml#lev95][Simplifying JOIN Syntax with Table Aliases]]
+
+[[file:ch06.xhtml#lev96][Joining Multiple Tables]]
+
+[[file:ch06.xhtml#lev97][Performing Math on Joined Table Columns]]
+
+[[file:ch06.xhtml#lev98][Wrapping Up]]
+
+[[file:ch06.xhtml#ch06sb1][Try It Yourself]]
+
+[[file:ch07.xhtml#ch07][*7\\
+TABLE DESIGN THAT WORKS FOR YOU*]]
+
+[[file:ch07.xhtml#lev99][Naming Tables, Columns, and Other Identifiers]]
+
+[[file:ch07.xhtml#lev100][Using Quotes Around Identifiers to Enable Mixed Case]]
+
+[[file:ch07.xhtml#lev101][Pitfalls with Quoting Identifiers]]
+
+[[file:ch07.xhtml#lev102][Guidelines for Naming Identifiers]]
+
+[[file:ch07.xhtml#lev103][Controlling Column Values with Constraints]]
+
+[[file:ch07.xhtml#lev104][Primary Keys: Natural vs. Surrogate]]
+
+[[file:ch07.xhtml#lev107][Foreign Keys]]
+
+[[file:ch07.xhtml#lev108][Automatically Deleting Related Records with CASCADE]]
+
+[[file:ch07.xhtml#lev109][The CHECK Constraint]]
+
+[[file:ch07.xhtml#lev110][The UNIQUE Constraint]]
+
+[[file:ch07.xhtml#lev111][The NOT NULL Constraint]]
+
+[[file:ch07.xhtml#lev112][Removing Constraints or Adding Them Later]]
+
+[[file:ch07.xhtml#lev113][Speeding Up Queries with Indexes]]
+
+[[file:ch07.xhtml#lev114][B-Tree: PostgreSQL's Default Index]]
+
+[[file:ch07.xhtml#lev118][Considerations When Using Indexes]]
+
+[[file:ch07.xhtml#lev119][Wrapping Up]]
+
+[[file:ch07.xhtml#ch07sb1][Try It Yourself]]
+
+[[file:ch08.xhtml#ch08][*8\\
+EXTRACTING INFORMATION BY GROUPING AND SUMMARIZING*]]
+
+[[file:ch08.xhtml#lev120][Creating the Library Survey Tables]]
+
+[[file:ch08.xhtml#lev121][Creating the 2014 Library Data Table]]
+
+[[file:ch08.xhtml#lev122][Creating the 2009 Library Data Table]]
+
+[[file:ch08.xhtml#lev123][Exploring the Library Data Using Aggregate Functions]]
+
+[[file:ch08.xhtml#lev124][Counting Rows and Values Using count()]]
+
+[[file:ch08.xhtml#lev127][Finding Maximum and Minimum Values Using max() and min()]]
+
+[[file:ch08.xhtml#lev128][Aggregating Data Using GROUP BY]]
+
+[[file:ch08.xhtml#lev134][Wrapping Up]]
+
+[[file:ch08.xhtml#ch08sb1][Try It Yourself]]
+
+[[file:ch09.xhtml#ch09][*9\\
+INSPECTING AND MODIFYING DATA*]]
+
+[[file:ch09.xhtml#lev135][Importing Data on Meat, Poultry, and Egg Producers]]
+
+[[file:ch09.xhtml#lev136][Interviewing the Data Set]]
+
+[[file:ch09.xhtml#lev137][Checking for Missing Values]]
+
+[[file:ch09.xhtml#lev138][Checking for Inconsistent Data Values]]
+
+[[file:ch09.xhtml#lev139][Checking for Malformed Values Using length()]]
+
+[[file:ch09.xhtml#lev140][Modifying Tables, Columns, and Data]]
+
+[[file:ch09.xhtml#lev141][Modifying Tables with ALTER TABLE]]
+
+[[file:ch09.xhtml#lev142][Modifying Values with UPDATE]]
+
+[[file:ch09.xhtml#lev143][Creating Backup Tables]]
+
+[[file:ch09.xhtml#lev144][Restoring Missing Column Values]]
+
+[[file:ch09.xhtml#lev148][Updating Values for Consistency]]
+
+[[file:ch09.xhtml#lev149][Repairing ZIP Codes Using Concatenation]]
+
+[[file:ch09.xhtml#lev150][Updating Values Across Tables]]
+
+[[file:ch09.xhtml#lev151][Deleting Unnecessary Data]]
+
+[[file:ch09.xhtml#lev152][Deleting Rows from a Table]]
+
+[[file:ch09.xhtml#lev153][Deleting a Column from a Table]]
+
+[[file:ch09.xhtml#lev154][Deleting a Table from a Database]]
+
+[[file:ch09.xhtml#lev155][Using Transaction Blocks to Save or Revert Changes]]
+
+[[file:ch09.xhtml#lev156][Improving Performance When Updating Large Tables]]
+
+[[file:ch09.xhtml#lev157][Wrapping Up]]
+
+[[file:ch09.xhtml#ch09sb1][Try It Yourself]]
+
+[[file:ch10.xhtml#ch10][*10\\
+STATISTICAL FUNCTIONS IN SQL*]]
+
+[[file:ch10.xhtml#lev158][Creating a Census Stats Table]]
+
+[[file:ch10.xhtml#lev159][Measuring Correlation with corr(Y, X)]]
+
+[[file:ch10.xhtml#lev160][Checking Additional Correlations]]
+
+[[file:ch10.xhtml#lev161][Predicting Values with Regression Analysis]]
+
+[[file:ch10.xhtml#lev162][Finding the Effect of an Independent Variable with r-squared]]
+
+[[file:ch10.xhtml#lev163][Creating Rankings with SQL]]
+
+[[file:ch10.xhtml#lev164][Ranking with rank() and dense\_rank()]]
+
+[[file:ch10.xhtml#lev165][Ranking Within Subgroups with PARTITION BY]]
+
+[[file:ch10.xhtml#lev166][Calculating Rates for Meaningful Comparisons]]
+
+[[file:ch10.xhtml#lev167][Wrapping Up]]
+
+[[file:ch10.xhtml#ch10sb1][Try It Yourself]]
+
+[[file:ch11.xhtml#ch11][*11\\
+WORKING WITH DATES AND TIMES*]]
+
+[[file:ch11.xhtml#lev168][Data Types and Functions for Dates and Times]]
+
+[[file:ch11.xhtml#lev169][Manipulating Dates and Times]]
+
+[[file:ch11.xhtml#lev170][Extracting the Components of a timestamp Value]]
+
+[[file:ch11.xhtml#lev171][Creating Datetime Values from timestamp Components]]
+
+[[file:ch11.xhtml#lev172][Retrieving the Current Date and Time]]
+
+[[file:ch11.xhtml#lev173][Working with Time Zones]]
+
+[[file:ch11.xhtml#lev174][Finding Your Time Zone Setting]]
+
+[[file:ch11.xhtml#lev175][Setting the Time Zone]]
+
+[[file:ch11.xhtml#lev176][Calculations with Dates and Times]]
+
+[[file:ch11.xhtml#lev177][Finding Patterns in New York City Taxi Data]]
+
+[[file:ch11.xhtml#lev181][Finding Patterns in Amtrak Data]]
+
+[[file:ch11.xhtml#lev184][Wrapping Up]]
+
+[[file:ch11.xhtml#ch11sb1][Try It Yourself]]
+
+[[file:ch12.xhtml#ch12][*12\\
+ADVANCED QUERY TECHNIQUES*]]
+
+[[file:ch12.xhtml#lev202][Using Subqueries]]
+
+[[file:ch12.xhtml#lev203][Filtering with Subqueries in a WHERE Clause]]
+
+[[file:ch12.xhtml#lev205][Creating Derived Tables with Subqueries]]
+
+[[file:ch12.xhtml#lev206][Joining Derived Tables]]
+
+[[file:ch12.xhtml#lev207][Generating Columns with Subqueries]]
+
+[[file:ch12.xhtml#lev208][Subquery Expressions]]
+
+[[file:ch12.xhtml#lev211][Common Table Expressions]]
+
+[[file:ch12.xhtml#lev212][Cross Tabulations]]
+
+[[file:ch12.xhtml#lev213][Installing the crosstab() Function]]
+
+[[file:ch12.xhtml#lev214][Tabulating Survey Results]]
+
+[[file:ch12.xhtml#lev215][Tabulating City Temperature Readings]]
+
+[[file:ch12.xhtml#lev216][Reclassifying Values with CASE]]
+
+[[file:ch12.xhtml#lev217][Using CASE in a Common Table Expression]]
+
+[[file:ch12.xhtml#lev218][Wrapping Up]]
+
+[[file:ch12.xhtml#ch12sb1][Try It Yourself]]
+
+[[file:ch13.xhtml#ch13][*13\\
+MINING TEXT TO FIND MEANINGFUL DATA*]]
+
+[[file:ch13.xhtml#lev219][Formatting Text Using String Functions]]
+
+[[file:ch13.xhtml#lev220][Case Formatting]]
+
+[[file:ch13.xhtml#lev221][Character Information]]
+
+[[file:ch13.xhtml#lev222][Removing Characters]]
+
+[[file:ch13.xhtml#lev223][Extracting and Replacing Characters]]
+
+[[file:ch13.xhtml#lev224][Matching Text Patterns with Regular Expressions]]
+
+[[file:ch13.xhtml#lev225][Regular Expression Notation]]
+
+[[file:ch13.xhtml#lev226][Turning Text to Data with Regular Expression Functions]]
+
+[[file:ch13.xhtml#lev227][Using Regular Expressions with WHERE]]
+
+[[file:ch13.xhtml#lev228][Additional Regular Expression Functions]]
+
+[[file:ch13.xhtml#lev229][Full Text Search in PostgreSQL]]
+
+[[file:ch13.xhtml#lev230][Text Search Data Types]]
+
+[[file:ch13.xhtml#lev231][Creating a Table for Full Text Search]]
+
+[[file:ch13.xhtml#lev232][Searching Speech Text]]
+
+[[file:ch13.xhtml#lev233][Ranking Query Matches by Relevance]]
+
+[[file:ch13.xhtml#lev234][Wrapping Up]]
+
+[[file:ch13.xhtml#ch13sb1][Try It Yourself]]
+
+[[file:ch14.xhtml#ch14][*14\\
+ANALYZING SPATIAL DATA WITH POSTGIS*]]
+
+[[file:ch14.xhtml#lev235][Installing PostGIS and Creating a Spatial Database]]
+
+[[file:ch14.xhtml#lev236][The Building Blocks of Spatial Data]]
+
+[[file:ch14.xhtml#lev237][Two-Dimensional Geometries]]
+
+[[file:ch14.xhtml#lev238][Well-Known Text Formats]]
+
+[[file:ch14.xhtml#lev239][A Note on Coordinate Systems]]
+
+[[file:ch14.xhtml#lev240][Spatial Reference System Identifier]]
+
+[[file:ch14.xhtml#lev241][PostGIS Data Types]]
+
+[[file:ch14.xhtml#lev242][Creating Spatial Objects with PostGIS Functions]]
+
+[[file:ch14.xhtml#lev243][Creating a Geometry Type from Well-Known Text]]
+
+[[file:ch14.xhtml#lev244][Creating a Geography Type from Well-Known Text]]
+
+[[file:ch14.xhtml#lev245][Point Functions]]
+
+[[file:ch14.xhtml#lev246][LineString Functions]]
+
+[[file:ch14.xhtml#lev247][Polygon Functions]]
+
+[[file:ch14.xhtml#lev248][Analyzing Farmers' Markets Data]]
+
+[[file:ch14.xhtml#lev249][Creating and Filling a Geography Column]]
+
+[[file:ch14.xhtml#lev250][Adding a GiST Index]]
+
+[[file:ch14.xhtml#lev251][Finding Geographies Within a Given Distance]]
+
+[[file:ch14.xhtml#lev252][Finding the Distance Between Geographies]]
+
+[[file:ch14.xhtml#lev253][Working with Census Shapefiles]]
+
+[[file:ch14.xhtml#lev254][Contents of a Shapefile]]
+
+[[file:ch14.xhtml#lev255][Loading Shapefiles via the GUI Tool]]
+
+[[file:ch14.xhtml#lev259][Exploring the Census 2010 Counties Shapefile]]
+
+[[file:ch14.xhtml#lev262][Performing Spatial Joins]]
+
+[[file:ch14.xhtml#lev263][Exploring Roads and Waterways Data]]
+
+[[file:ch14.xhtml#lev264][Joining the Census Roads and Water Tables]]
+
+[[file:ch14.xhtml#lev265][Finding the Location Where Objects Intersect]]
+
+[[file:ch14.xhtml#lev266][Wrapping Up]]
+
+[[file:ch14.xhtml#ch14sb1][Try It Yourself]]
+
+[[file:ch15.xhtml#ch15][*15\\
+SAVING TIME WITH VIEWS, FUNCTIONS, AND TRIGGERS*]]
+
+[[file:ch15.xhtml#lev267][Using Views to Simplify Queries]]
+
+[[file:ch15.xhtml#lev268][Creating and Querying Views]]
+
+[[file:ch15.xhtml#lev269][Inserting, Updating, and Deleting Data Using a View]]
+
+[[file:ch15.xhtml#lev274][Programming Your Own Functions]]
+
+[[file:ch15.xhtml#lev275][Creating the percent\_change() Function]]
+
+[[file:ch15.xhtml#lev276][Using the percent\_change() Function]]
+
+[[file:ch15.xhtml#lev277][Updating Data with a Function]]
+
+[[file:ch15.xhtml#lev278][Using the Python Language in a Function]]
+
+[[file:ch15.xhtml#lev279][Automating Database Actions with Triggers]]
+
+[[file:ch15.xhtml#lev280][Logging Grade Updates to a Table]]
+
+[[file:ch15.xhtml#lev284][Automatically Classifying Temperatures]]
+
+[[file:ch15.xhtml#lev285][Wrapping Up]]
+
+[[file:ch15.xhtml#ch15sb1][Try It Yourself]]
+
+[[file:ch16.xhtml#ch16][*16\\
+USING POSTGRESQL FROM THE COMMAND LINE*]]
+
+[[file:ch16.xhtml#lev286][Setting Up the Command Line for psql]]
+
+[[file:ch16.xhtml#lev287][Windows psql Setup]]
+
+[[file:ch16.xhtml#lev288][macOS psql Setup]]
+
+[[file:ch16.xhtml#lev289][Linux psql Setup]]
+
+[[file:ch16.xhtml#lev290][Working with psql]]
+
+[[file:ch16.xhtml#lev291][Launching psql and Connecting to a Database]]
+
+[[file:ch16.xhtml#lev292][Getting Help]]
+
+[[file:ch16.xhtml#lev293][Changing the User and Database Connection]]
+
+[[file:ch16.xhtml#lev294][Running SQL Queries on psql]]
+
+[[file:ch16.xhtml#lev295][Navigating and Formatting Results]]
+
+[[file:ch16.xhtml#lev296][Meta-Commands for Database Information]]
+
+[[file:ch16.xhtml#lev297][Importing, Exporting, and Using Files]]
+
+[[file:ch16.xhtml#lev299][Additional Command Line Utilities to Expedite Tasks]]
+
+[[file:ch16.xhtml#lev300][Adding a Database with createdb]]
+
+[[file:ch16.xhtml#lev301][Loading Shapefiles with shp2pgsql]]
+
+[[file:ch16.xhtml#lev302][Wrapping Up]]
+
+[[file:ch16.xhtml#ch16sb1][Try It Yourself]]
+
+[[file:ch17.xhtml#ch17][*17\\
+MAINTAINING YOUR DATABASE*]]
+
+[[file:ch17.xhtml#lev303][Recovering Unused Space with VACUUM]]
+
+[[file:ch17.xhtml#lev304][Tracking Table Size]]
+
+[[file:ch17.xhtml#lev307][Monitoring the autovacuum Process]]
+
+[[file:ch17.xhtml#lev308][Running VACUUM Manually]]
+
+[[file:ch17.xhtml#lev309][Reducing Table Size with VACUUM FULL]]
+
+[[file:ch17.xhtml#lev310][Changing Server Settings]]
+
+[[file:ch17.xhtml#lev311][Locating and Editing postgresql.conf]]
+
+[[file:ch17.xhtml#lev312][Reloading Settings with pg\_ctl]]
+
+[[file:ch17.xhtml#lev313][Backing Up and Restoring Your Database]]
+
+[[file:ch17.xhtml#lev314][Using pg\_dump to Back Up a Database or Table]]
+
+[[file:ch17.xhtml#lev315][Restoring a Database Backup with pg\_restore]]
+
+[[file:ch17.xhtml#lev316][Additional Backup and Restore Options]]
+
+[[file:ch17.xhtml#lev317][Wrapping Up]]
+
+[[file:ch17.xhtml#ch17sb1][Try It Yourself]]
+
+[[file:ch18.xhtml#ch18][*18\\
+IDENTIFYING AND TELLING THE STORY BEHIND YOUR DATA*]]
+
+[[file:ch18.xhtml#lev318][Start with a Question]]
+
+[[file:ch18.xhtml#lev319][Document Your Process]]
+
+[[file:ch18.xhtml#lev320][Gather Your Data]]
+
+[[file:ch18.xhtml#lev321][No Data? Build Your Own Database]]
+
+[[file:ch18.xhtml#lev322][Assess the Data's Origins]]
+
+[[file:ch18.xhtml#lev323][Interview the Data with Queries]]
+
+[[file:ch18.xhtml#lev324][Consult the Data's Owner]]
+
+[[file:ch18.xhtml#lev325][Identify Key Indicators and Trends over Time]]
+
+[[file:ch18.xhtml#lev326][Ask Why]]
+
+[[file:ch18.xhtml#lev327][Communicate Your Findings]]
+
+[[file:ch18.xhtml#lev328][Wrapping Up]]
+
+[[file:ch18.xhtml#ch18sb1][Try It Yourself]]
+
+[[file:appendix.xhtml#appendix][*APPENDIX\\
+ADDITIONAL POSTGRESQL RESOURCES*]]
+
+[[file:appendix.xhtml#lev329][PostgreSQL Development Environments]]
+
+[[file:appendix.xhtml#lev330][PostgreSQL Utilities, Tools, and Extensions]]
+
+[[file:appendix.xhtml#lev331][PostgreSQL News]]
+
+[[file:appendix.xhtml#lev332][Documentation]]
+
+[[file:index.xhtml#index][*INDEX*]]

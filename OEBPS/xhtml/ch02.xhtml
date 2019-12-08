@@ -1,0 +1,211 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:ns="http://www.w3.org/2001/10/synthesis" lang="en-us" xml:lang="en-us">
+<head>
+<title>Practical SQL: A Beginner’s Guide to Storytelling with Data</title>
+<link href="../styles/9781593278458.css" rel="stylesheet" type="text/css"/>
+<meta content="urn:uuid:c3d53d4c-356a-4b39-bef0-591c04016b72" name="Adept.expected.resource"/>
+</head>
+<body>
+<h2 class="h2" id="ch02"><span epub:type="pagebreak" id="page_11"/><strong><span class="big">2</span></strong><br/><strong>BEGINNING DATA EXPLORATION WITH SELECT</strong></h2>
+<div class="image1"><img alt="image" src="../images/common01.jpg"/></div>
+<p class="noindent">For me, the best part of digging into data isn’t the prerequisites of gathering, loading, or cleaning the data, but when I actually get to <em>interview</em> the data. Those are the moments when I discover whether the data is clean or dirty, whether it’s complete, and most of all, what story the data can tell. Think of interviewing data as a process akin to interviewing a person applying for a job. You want to ask questions that reveal whether the reality of their expertise matches their resume.</p>
+<p class="indent">Interviewing is exciting because you discover truths. For example, you might find that half the respondents forgot to fill out the email field in the questionnaire, or the mayor hasn’t paid property taxes for the past five years. Or you might learn that your data is dirty: names are spelled inconsistently, dates are incorrect, or numbers don’t jibe with your expectations. Your findings become part of the data’s story.</p>
+<p class="indent">In SQL, interviewing data starts with the <span class="literal">SELECT</span> keyword, which retrieves rows and columns from one or more of the tables in a database. <span epub:type="pagebreak" id="page_12"/>A <span class="literal">SELECT</span> statement can be simple, retrieving everything in a single table, or it can be complex enough to link dozens of tables while handling multiple calculations and filtering by exact criteria.</p>
+<p class="indent">We’ll start with simple <span class="literal">SELECT</span> statements.</p>
+<h3 class="h3" id="lev22">Basic SELECT Syntax</h3>
+<p class="noindent">Here’s a <span class="literal">SELECT</span> statement that fetches every row and column in a table called <span class="literal">my_table</span>:</p>
+<p class="programs">SELECT * FROM my_table;</p>
+<p class="indent">This single line of code shows the most basic form of a SQL query. The asterisk following the <span class="literal">SELECT</span> keyword is a <em>wildcard</em>. A wildcard is like a stand-in for a value: it doesn’t represent anything in particular and instead represents everything that value could possibly be. Here, it’s shorthand for “select all columns.” If you had given a column name instead of the wildcard, this command would select the values in that column. The <span class="literal">FROM</span> keyword indicates you want the query to return data from a particular table. The semicolon after the table name tells PostgreSQL it’s the end of the query statement.</p>
+<p class="indent">Let’s use this <span class="literal">SELECT</span> statement with the asterisk wildcard on the <span class="literal">teachers</span> table you created in <a href="ch01.xhtml#ch01">Chapter 1</a>. Once again, open pgAdmin, select the <span class="literal">analysis</span> database, and open the Query Tool. Then execute the statement shown in <a href="ch02.xhtml#ch02list1">Listing 2-1</a>:</p>
+<p class="programs">SELECT * FROM teachers;</p>
+<p class="listing" id="ch02list1"><em>Listing 2-1: Querying all rows and columns from the <span class="literal">teachers</span> table</em></p>
+<p class="indent">The result set in the Query Tool’s output pane contains all the rows and columns you inserted into the <span class="literal">teachers</span> table in <a href="ch01.xhtml#ch01">Chapter 1</a>. The rows may not always appear in this order, but that’s okay.</p>
+<div class="image"><img alt="image" src="../images/prog_page_12.jpg"/></div>
+<p class="indent">Note that the <span class="literal">id</span> column (of type <span class="literal">bigserial</span>) automatically fills with sequential integers, even though you didn’t explicitly insert them. Very handy. This auto-incrementing integer acts as a unique identifier, or key, that not only ensures each row in the table is unique, but also will later give us a way to connect this table to other tables in the database.</p>
+<p class="indent">Let’s move on to refining this query.</p>
+<h4 class="h4" id="lev23"><span epub:type="pagebreak" id="page_13"/><em>Querying a Subset of Columns</em></h4>
+<p class="noindent">Using the asterisk wildcard is helpful for discovering the entire contents of a table. But often it’s more practical to limit the columns the query retrieves, especially with large databases. You can do this by naming columns, separated by commas, right after the <span class="literal">SELECT</span> keyword. For example:</p>
+<p class="programs">SELECT some_column, another_column, amazing_column FROM table_name;</p>
+<p class="indent">With that syntax, the query will retrieve all rows from just those three columns.</p>
+<p class="indent">Let’s apply this to the <span class="literal">teachers</span> table. Perhaps in your analysis you want to focus on teachers’ names and salaries, not the school where they work or when they were hired. In that case, you might select only a few columns from the table instead of using the asterisk wildcard. Enter the statement shown in <a href="ch02.xhtml#ch02list2">Listing 2-2</a>. Notice that the order of the columns in the query is different than the order in the table: you’re able to retrieve columns in any order you’d like.</p>
+<p class="programs">SELECT last_name, first_name, salary FROM teachers;</p>
+<p class="listing" id="ch02list2"><em>Listing 2-2: Querying a subset of columns</em></p>
+<p class="indent">Now, in the result set, you’ve limited the columns to three:</p>
+<p class="programs">last_name    first_name    salary<br/>---------    ----------    ------<br/>Smith        Janet         36200 <br/>Reynolds     Lee           65000 <br/>Cole         Samuel        43500 <br/>Bush         Samantha      36200<br/>Diaz         Betty         43500<br/>Roush        Kathleen      38500</p>
+<p class="indent">Although these examples are basic, they illustrate a good strategy for beginning your interview of a data set. Generally, it’s wise to start your analysis by checking whether your data is present and in the format you expect. Are dates in a complete month-date-year format, or are they entered (as I once ruefully observed) as text with the month and year only? Does every row have a value? Are there mysteriously no last names starting with letters beyond “M”? All these issues indicate potential hazards ranging from missing data to shoddy recordkeeping somewhere in the workflow.</p>
+<p class="indent">We’re only working with a table of six rows, but when you’re facing a table of thousands or even millions of rows, it’s essential to get a quick read on your data quality and the range of values it contains. To do this, let’s dig deeper and add several SQL keywords.</p>
+<h4 class="h4" id="lev24"><span epub:type="pagebreak" id="page_14"/><em>Using DISTINCT to Find Unique Values</em></h4>
+<p class="noindent">In a table, it’s not unusual for a column to contain rows with duplicate values. In the <span class="literal">teachers</span> table, for example, the <span class="literal">school</span> column lists the same school names multiple times because each school employs many teachers.</p>
+<p class="indent">To understand the range of values in a column, we can use the <span class="literal">DISTINCT</span> keyword as part of a query that eliminates duplicates and shows only unique values. Use the <span class="literal">DISTINCT</span> keyword immediately after <span class="literal">SELECT</span>, as shown in <a href="ch02.xhtml#ch02list3">Listing 2-3</a>:</p>
+<p class="programs">SELECT DISTINCT school<br/>FROM teachers;</p>
+<p class="listing" id="ch02list3"><em>Listing 2-3: Querying distinct values in the <span class="literal">school</span> column</em></p>
+<p class="indent">The result is as follows:</p>
+<p class="programs">school<br/>-------------------<br/>F.D. Roosevelt HS<br/>Myers Middle School</p>
+<p class="indent">Even though six rows are in the table, the output shows just the two unique school names in the <span class="literal">school</span> column. This is a helpful first step toward assessing data quality. For example, if a school name is spelled more than one way, those spelling variations will be easy to spot and correct. When you’re working with dates or numbers, <span class="literal">DISTINCT</span> will help highlight inconsistent or broken formatting. For example, you might inherit a data set in which dates were entered in a column formatted with a <span class="literal">text</span> data type. That practice (which you should avoid) allows malformed dates to exist:</p>
+<p class="programs">date<br/>---------<br/>5/30/2019<br/>6//2019<br/>6/1/2019<br/>6/2/2019</p>
+<p class="indent">The <span class="literal">DISTINCT</span> keyword also works on more than one column at a time. If we add a column, the query returns each unique pair of values. Run the code in <a href="ch02.xhtml#ch02list4">Listing 2-4</a>:</p>
+<p class="programs">SELECT DISTINCT school, salary<br/>FROM teachers;</p>
+<p class="listing" id="ch02list4"><em>Listing 2-4: Querying distinct pairs of values in the <span class="literal">school</span> and <span class="literal">salary</span> columns</em></p>
+<p class="indent"><span epub:type="pagebreak" id="page_15"/>Now the query returns each unique (or distinct) salary earned at each school. Because two teachers at Myers Middle School earn $43,500, that pair is listed in just one row, and the query returns five rows rather than all six in the table:</p>
+<p class="programs">school                 salary<br/>-------------------    ------<br/>Myers Middle School    43500 <br/>Myers Middle School    36200 <br/>F.D. Roosevelt HS      65000 <br/>F.D. Roosevelt HS      38500<br/>F.D. Roosevelt HS      36200</p>
+<p class="indent">This technique gives us the ability to ask, “For each <em>x</em> in the table, what are all the <em>y</em> values?” For each factory, what are all the chemicals it produces? For each election district, who are all the candidates running for office? For each concert hall, who are the artists playing this month?</p>
+<p class="indent">SQL offers more sophisticated techniques with aggregate functions that let us count, sum, and find minimum and maximum values. I’ll cover those in detail in <a href="ch05.xhtml#ch05">Chapter 5</a> and <a href="ch08.xhtml#ch08">Chapter 8</a>.</p>
+<h3 class="h3" id="lev25">Sorting Data with ORDER BY</h3>
+<p class="noindent">Data can make more sense, and may reveal patterns more readily, when it’s arranged in order rather than jumbled randomly.</p>
+<p class="indent">In SQL, we order the results of a query using a clause containing the keywords <span class="literal">ORDER BY</span> followed by the name of the column or columns to sort. Applying this clause doesn’t change the original table, only the result of the query. <a href="ch02.xhtml#ch02list5">Listing 2-5</a> shows an example using the <span class="literal">teachers</span> table:</p>
+<p class="programs">SELECT first_name, last_name, salary<br/>FROM teachers<br/>ORDER BY salary DESC;</p>
+<p class="listing" id="ch02list5"><em>Listing 2-5: Sorting a column with <span class="literal">ORDER BY</span></em></p>
+<p class="indent">By default, <span class="literal">ORDER BY</span> sorts values in ascending order, but here I sort in descending order by adding the <span class="literal">DESC</span> keyword. (The optional <span class="literal">ASC</span> keyword specifies sorting in ascending order.) Now, by ordering the <span class="literal">salary</span> column from highest to lowest, I can determine which teachers earn the most:</p>
+<p class="programs">first_name    last_name    salary<br/>----------    ---------    ------<br/>Lee           Reynolds     65000 <br/>Samuel        Cole         43500 <br/>Betty         Diaz         43500 <br/>Kathleen      Roush        38500 <br/>Janet         Smith        36200<br/>Samantha      Bush         36200</p>
+<div class="sidebar">
+<p class="sidebart"><span epub:type="pagebreak" id="page_16"/><strong>SORTING TEXT MAY SURPRISE YOU</strong></p>
+<p class="spara">Sorting a column of numbers in PostgreSQL yields what you might expect: the data ranked from largest value to smallest or vice versa depending on whether or not you use the <span class="literal">DESC</span> keyword. But sorting a column with letters or other characters may return surprising results, especially if it has a mix of uppercase and lowercase characters, punctuation, or numbers that are treated as text.</p>
+<p class="spara1">During PostgreSQL installation, the server is assigned a particular <em>locale</em> for <em>collation</em>, or ordering of text, as well as a <em>character set</em>. Both are based either on settings in the computer’s operating system or custom options supplied during installation. (You can read more about collation in the official PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/collation.html">https://www.postgresql.org/docs/current/static/collation.html</a></em>.) For example, on my Mac, my PostgreSQL install is set to the locale en_US, or U.S. English, and the character set UTF-8. You can view your server’s collation setting by executing the statement <span class="literal">SHOW ALL;</span> and viewing the value of the parameter <span class="literal">lc_collate</span>.</p>
+<p class="spara1">In a character set, each character gets a numerical value, and the sorting order depends on the order of those values. Based on UTF-8, PostgreSQL sorts characters in this order:</p>
+<ol>
+<li class="noindent"><p class="list">Punctuation marks, including quotes, parentheses, and math operators</p></li>
+<li class="noindent"><p class="list">Numbers 0 to 9</p></li>
+<li class="noindent"><p class="list">Additional punctuation, including the question mark</p></li>
+<li class="noindent"><p class="list">Capital letters from A to Z</p></li>
+<li class="noindent"><p class="list">More punctuation, including brackets and underscore</p></li>
+<li class="noindent"><p class="list">Lowercase letters a to z</p></li>
+<li class="noindent"><p class="list">Additional punctuation, special characters, and the extended alphabet</p></li>
+</ol>
+<p class="spara1">Normally, the sorting order won’t be an issue because character columns usually just contain names, places, descriptions, and other straightforward text. But if you’re wondering why the word <em>Ladybug</em> appears before <em>ladybug</em> in your sort, you now have an explanation.</p>
+</div>
+<p class="indent">The ability to sort in our queries gives us great flexibility in how we view and present data. For example, we’re not limited to sorting on just one column. Enter the statement in <a href="ch02.xhtml#ch02list6">Listing 2-6</a>:</p>
+<p class="programs">  SELECT last_name, school, hire_date<br/>  FROM teachers<br/><span class="ent">➊</span> ORDER BY school ASC, hire_date DESC;</p>
+<p class="listing" id="ch02list6"><em>Listing 2-6: Sorting multiple columns with <span class="literal">ORDER BY</span></em></p>
+<p class="indent">In this case, we’re retrieving the last names of teachers, their school, and the date they were hired. By sorting the <span class="literal">school</span> column in ascending order <span epub:type="pagebreak" id="page_17"/>and <span class="literal">hire_date</span> in descending order <span class="ent">➊</span>, we create a listing of teachers grouped by school with the most recently hired teachers listed first. This shows us who the newest teachers are at each school. The result set should look like this:</p>
+<p class="programs">last_name    school                 hire_date<br/>---------    -------------------    ----------<br/>Smith        F.D. Roosevelt HS      2011-10-30<br/>Roush        F.D. Roosevelt HS      2010-10-22<br/>Reynolds     F.D. Roosevelt HS      1993-05-22<br/>Bush         Myers Middle School    2011-10-30<br/>Diaz         Myers Middle School    2005-08-30<br/>Cole         Myers Middle School    2005-08-01</p>
+<p class="indent">You can use <span class="literal">ORDER BY</span> on more than two columns, but you’ll soon reach a point of diminishing returns where the effect will be hardly noticeable. Imagine if you added columns about teachers’ highest college degree attained, the grade level taught, and birthdate to the <span class="literal">ORDER BY</span> clause. It would be difficult to understand the various sort directions in the output all at once, much less communicate that to others. Digesting data happens most easily when the result focuses on answering a specific question; therefore, a better strategy is to limit the number of columns in your query to only the most important, and then run several queries to answer each question you have.</p>
+<h3 class="h3" id="lev26">Filtering Rows with WHERE</h3>
+<p class="noindent">Sometimes, you’ll want to limit the rows a query returns to only those in which one or more columns meet certain criteria. Using <span class="literal">teachers</span> as an example, you might want to find all teachers hired before a particular year or all teachers making more than $75,000 at elementary schools. For these tasks, we use the <span class="literal">WHERE</span> clause.</p>
+<p class="indent">The <span class="literal">WHERE</span> keyword allows you to find rows that match a specific value, a range of values, or multiple values based on criteria supplied via an <em>operator</em>. You also can exclude rows based on criteria.</p>
+<p class="indent"><a href="ch02.xhtml#ch02list7">Listing 2-7</a> shows a basic example. Note that in standard SQL syntax, the <span class="literal">WHERE</span> clause follows the <span class="literal">FROM</span> keyword and the name of the table or tables being queried:</p>
+<p class="programs">SELECT last_name, school, hire_date<br/>FROM teachers<br/>WHERE school = 'Myers Middle School';</p>
+<p class="listing" id="ch02list7"><em>Listing 2-7: Filtering rows using <span class="literal">WHERE</span></em></p>
+<p class="indent">The result set shows just the teachers assigned to Myers Middle School:</p>
+<p class="programs">last_name    school                 hire_date<br/>---------    -------------------    ----------<br/>Cole         Myers Middle School    2005-08-01<br/>Bush         Myers Middle School    2011-10-30<br/>Diaz         Myers Middle School    2005-08-30</p>
+<p class="indent"><span epub:type="pagebreak" id="page_18"/>Here, I’m using the equals comparison operator to find rows that exactly match a value, but of course you can use other operators with <span class="literal">WHERE</span> to customize your filter criteria. <a href="ch02.xhtml#ch02tab1">Table 2-1</a> provides a summary of the most commonly used comparison operators. Depending on your database system, many more might be available.</p>
+<p class="tabcap" id="ch02tab1"><strong>Table 2-1:</strong> Comparison and Matching Operators in PostgreSQL</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Operator</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Function</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Example</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">=</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Equal to</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE school = 'Baker Middle'</span></p></td>
+</tr><tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">&lt;&gt;</span> or <span class="literal">!=</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Not equal to<sup>*</sup></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE school &lt;&gt; 'Baker Middle'</span></p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">&gt;</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Greater than</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE salary &gt; 20000</span></p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">&lt;</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Less than</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE salary &lt; 60500</span></p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">&gt;=</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Greater than or equal to</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE salary &gt;= 20000</span></p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">&lt;=</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Less than or equal to</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE salary &lt;= 60500</span></p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">BETWEEN</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Within a range</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE salary BETWEEN 20000 AND 40000</span></p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">IN</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Match one of a set of values</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE last_name IN ('Bush', 'Roush')</span></p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">LIKE</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Match a pattern (case sensitive)</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE first_name LIKE 'Sam%'</span></p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">ILIKE</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Match a pattern (case insensitive)</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE first_name ILIKE 'sam%'</span></p></td>
+</tr>
+<tr>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">NOT</span></p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba">Negates a condition</p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">WHERE first_name NOT ILIKE 'sam%'</span></p></td>
+</tr>
+<tr>
+<td colspan="3" style="vertical-align: top;"><p class="taba"><sup>*</sup> The <span class="literal">!=</span> operator is not part of standard ANSI SQL but is available in PostgreSQL and several other database systems.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">The following examples show comparison operators in action. First, we use the equals operator to find teachers whose first name is Janet:</p>
+<p class="programs">SELECT first_name, last_name, school<br/>FROM teachers<br/>WHERE first_name = 'Janet';</p>
+<p class="indent">Next, we list all school names in the table but exclude F.D. Roosevelt HS using the not equal operator:</p>
+<p class="programs">SELECT school<br/>FROM teachers<br/>WHERE school != 'F.D. Roosevelt HS';</p>
+<p class="indent">Here we use the less than operator to list teachers hired before January 1, 2000 (using the date format <span class="codeitalic">YYYY-MM-DD</span>):</p>
+<p class="programs">SELECT first_name, last_name, hire_date<br/>FROM teachers<br/>WHERE hire_date &lt; '2000-01-01';</p>
+<p class="indent"><span epub:type="pagebreak" id="page_19"/>Then we find teachers who earn $43,500 or more using the <span class="literal">&gt;=</span> operator:</p>
+<p class="programs">SELECT first_name, last_name, salary<br/>FROM teachers<br/>WHERE salary &gt;= 43500;</p>
+<p class="indent">The next query uses the <span class="literal">BETWEEN</span> operator to find teachers who earn between $40,000 and $65,000. Note that <span class="literal">BETWEEN</span> is <em>inclusive</em>, meaning the result will include values matching the start and end ranges specified.</p>
+<p class="programs">SELECT first_name, last_name, school, salary<br/>FROM teachers<br/>WHERE salary BETWEEN 40000 AND 65000;</p>
+<p class="indent">We’ll return to these operators throughout the book, because they’ll play a key role in helping us ferret out the data and answers we want to find.</p>
+<h4 class="h4" id="lev27"><em>Using LIKE and ILIKE with WHERE</em></h4>
+<p class="noindentb">Comparison operators are fairly straightforward, but <span class="literal">LIKE</span> and <span class="literal">ILIKE</span> deserve additional explanation. First, both let you search for patterns in strings by using two special characters:</p>
+<p class="hang"><strong>Percent sign (<span class="literal">%</span>)</strong> A wildcard matching one or more characters</p>
+<p class="hang"><strong>Underscore (<span class="literal">_</span>)</strong> A wildcard matching just one character</p>
+<p class="indentt">For example, if you’re trying to find the word <span class="literal">baker</span>, the following <span class="literal">LIKE</span> patterns will match it:</p>
+<p class="programs">LIKE 'b%'<br/>LIKE '%ak%'<br/>LIKE '_aker'<br/>LIKE 'ba_er'</p>
+<p class="indent">The difference? The <span class="literal">LIKE</span> operator, which is part of the ANSI SQL standard, is case sensitive. The <span class="literal">ILIKE</span> operator, which is a PostgreSQL-only implementation, is case insensitive. <a href="ch02.xhtml#ch02list8">Listing 2-8</a> shows how the two keywords give you different results. The first <span class="literal">WHERE</span> clause uses <span class="literal">LIKE</span> <span class="ent">➊</span> to find names that start with the characters <span class="literal">sam</span>, and because it’s case sensitive, it will return zero results. The second, using the case-insensitive <span class="literal">ILIKE</span> <span class="ent">➋</span>, will return <span class="literal">Samuel</span> and <span class="literal">Samantha</span> from the table:</p>
+<p class="programs">  SELECT first_name<br/>  FROM teachers<br/><span class="ent">➊</span> WHERE first_name LIKE 'sam%';<br/><br/>  SELECT first_name<br/>  FROM teachers<br/><span class="ent">➋</span> WHERE first_name ILIKE 'sam%';</p>
+<p class="listing" id="ch02list8"><em>Listing 2-8: Filtering with <span class="literal">LIKE</span> and <span class="literal">ILIKE</span></em></p>
+<p class="indent"><span epub:type="pagebreak" id="page_20"/>Over the years, I’ve gravitated toward using <span class="literal">ILIKE</span> and wildcard operators in searches to make sure I’m not inadvertently excluding results from searches. I don’t assume that whoever typed the names of people, places, products, or other proper nouns always remembered to capitalize them. And if one of the goals of interviewing data is to understand its quality, using a case-insensitive search will help you find variations.</p>
+<p class="indent">Because <span class="literal">LIKE</span> and <span class="literal">ILIKE</span> search for patterns, performance on large databases can be slow. We can improve performance using indexes, which I’ll cover in <a href="ch07.xhtml#lev113">“Speeding Up Queries with Indexes”</a> on <a href="ch07.xhtml#page_108">page 108</a>.</p>
+<h4 class="h4" id="lev28"><em>Combining Operators with AND and OR</em></h4>
+<p class="noindent">Comparison operators become even more useful when we combine them. To do this, we connect them using keywords <span class="literal">AND</span> and <span class="literal">OR</span> along with, if needed, parentheses.</p>
+<p class="indent">The statements in <a href="ch02.xhtml#ch02list9">Listing 2-9</a> show three examples that combine operators this way:</p>
+<p class="programs">  SELECT *<br/>  FROM teachers<br/><span class="ent">➊</span> WHERE school = 'Myers Middle School'<br/>        AND salary &lt; 40000;<br/><br/>  SELECT *<br/>  FROM teachers<br/><span class="ent">➋</span> WHERE last_name = 'Cole'<br/>        OR last_name = 'Bush';<br/><br/>  SELECT *<br/>  FROM teachers<br/><span class="ent">➌</span> WHERE school = 'F.D. Roosevelt HS'<br/>        AND (salary &lt; 38000 OR salary &gt; 40000);</p>
+<p class="listing" id="ch02list9"><em>Listing 2-9: Combining operators using <span class="literal">AND</span> and <span class="literal">OR</span></em></p>
+<p class="indent">The first query uses <span class="literal">AND</span> in the <span class="literal">WHERE</span> clause <span class="ent">➊</span> to find teachers who work at Myers Middle School and have a salary less than $40,000. Because we connect the two conditions using <span class="literal">AND</span>, both must be true for a row to meet the criteria in the <span class="literal">WHERE</span> clause and be returned in the query results.</p>
+<p class="indent">The second example uses <span class="literal">OR</span> <span class="ent">➋</span> to search for any teacher whose last name matches Cole or Bush. When we connect conditions using <span class="literal">OR</span>, only one of the conditions must be true for a row to meet the criteria of the <span class="literal">WHERE</span> clause.</p>
+<p class="indent">The final example looks for teachers at Roosevelt whose salaries are either less than $38,000 or greater than $40,000 <span class="ent">➌</span>. When we place statements inside parentheses, those are evaluated as a group before being combined with other criteria. In this case, the school name must be exactly <span class="literal">F.D. Roosevelt HS</span> and the salary must be either less or higher than specified for a row to meet the criteria of the <span class="literal">WHERE</span> clause.</p>
+<h3 class="h3" id="lev29"><span epub:type="pagebreak" id="page_21"/>Putting It All Together</h3>
+<p class="noindent">You can begin to see how even the previous simple queries allow us to delve into our data with flexibility and precision to find what we’re looking for. You can combine comparison operator statements using the <span class="literal">AND</span> and <span class="literal">OR</span> keywords to provide multiple criteria for filtering, and you can include an <span class="literal">ORDER BY</span> clause to rank the results.</p>
+<p class="indent">With the preceding information in mind, let’s combine the concepts in this chapter into one statement to show how they fit together. SQL is particular about the order of keywords, so follow this convention:</p>
+<p class="programs">SELECT column_names<br/>FROM table_name<br/>WHERE criteria<br/>ORDER BY column_names;</p>
+<p class="indent"><a href="ch02.xhtml#ch02list10">Listing 2-10</a> shows a query against the <span class="literal">teachers</span> table that includes all the aforementioned pieces:</p>
+<p class="programs">SELECT first_name, last_name, school, hire_date, salary<br/>FROM teachers<br/>WHERE school LIKE '%Roos%'<br/>ORDER BY hire_date DESC;</p>
+<p class="listing" id="ch02list10"><em>Listing 2-10: A <span class="literal">SELECT</span> statement including <span class="literal">WHERE</span> and <span class="literal">ORDER BY</span></em></p>
+<p class="indent">This listing returns teachers at Roosevelt High School, ordered from newest hire to earliest. We can see a clear correlation between a teacher’s hire date at the school and his or her current salary level:</p>
+<div class="image"><img alt="image" src="../images/prog_page_21.jpg"/></div>
+<h3 class="h3" id="lev30">Wrapping Up</h3>
+<p class="noindent">Now that you’ve learned the basic structure of a few different SQL queries, you’ve acquired the foundation for many of the additional skills I’ll cover in later chapters. Sorting, filtering, and choosing only the most important columns from a table can yield a surprising amount of information from your data and help you find the story it tells.</p>
+<p class="indent">In the next chapter, you’ll learn about another foundational aspect of SQL: data types.</p>
+<div class="sidebar" id="ch02sb1">
+<p class="sidebart"><span epub:type="pagebreak" id="page_22"/><strong>TRY IT YOURSELF</strong></p>
+<p class="spara">Explore basic queries with these exercises:</p>
+<ol>
+<li class="noindent"><p class="list">The school district superintendent asks for a list of teachers in each school. Write a query that lists the schools in alphabetical order along with teachers ordered by last name A–Z.</p></li>
+<li class="noindent"><p class="list">Write a query that finds the one teacher whose first name starts with the letter S and who earns more than $40,000.</p></li>
+<li class="noindent"><p class="list">Rank teachers hired since January 1, 2010, ordered by highest paid to lowest.</p></li>
+</ol>
+</div>
+</body>
+</html>

@@ -1,0 +1,287 @@
+* Introduction
+
+** Pre
+Shortly after joining the staff of USA TODAY I received a data set I would analyze almost every week for the next decade. It was the weekly Best-Selling Books list, which ranked the nation's top-selling books based on confidential sales data. The list not only produced an endless stream of story ideas to pitch, but it also captured the zeitgeist of America in a singular way.
+
+For example, did you know that cookbooks sell a bit more during the week of Mother's Day, or that Oprah Winfrey turned many obscure writers into number one best-selling authors just by having them on her show? Week after week, the book list editor and I ~pored~ over the sales figures and book genres, ranking the data in search of the next headline. Rarely did we come up empty: we chronicled everything from the rocket-rise of the ~blockbuster~ Harry Potter series to the fact that Oh, the Places You'll Go! by Dr. Seuss has become a ~perennial~ gift for new graduates.
+
+My technical companion during this time was the database programming language SQL (for Structured Query Language). Early on, I convinced USA TODAY's IT department to grant me access to the SQL-based database system that powered our book list application. Using SQL, I was able to unlock the stories hidden in the database, which contained titles, authors, genres, and various codes that defined the publishing world. Analyzing data with SQL to discover interesting stories is exactly what you'll learn to do using this book.
+
+** What Is SQL?
+
+
+SQL is a widely used programming language that allows you to define and query databases. Whether you're a marketing analyst, a journalist, or a researcher mapping neurons in the brain of a fruit fly, you'll benefit from using SQL to manage database objects as well as create, modify, explore, and summarize data.
+
+Because SQL is a mature language that has been around for decades, it's deeply ~ingrained~ in many modern systems. A pair of IBM researchers first outlined the syntax for SQL (then called SEQUEL) in a 1974 paper, building on the theoretical work of the British computer scientist Edgar F. Codd. In 1979, a precursor to the database company Oracle (then called Relational Software) became the first to use the language in a commercial product. Today, it continues to rank as one of the most-used computer languages in the world, and that's unlikely to change soon.
+
+SQL comes in several variants, which are generally tied to specific database systems. The American National Standards Institute (ANSI) and International Organization for Standardization (ISO), which set standards for products and technologies, provide standards for the language and shepherd revisions to it. The good news is that the variants don't stray far from the standard, so once you learn the SQL conventions for one database, you can transfer that knowledge to other systems.
+
+** Why Use SQL?
+
+
+So why should you use SQL? After all, SQL is not usually the first tool people choose when they're learning to analyze data. In fact, many people start with Microsoft Excel spreadsheets and their ~assortment~ of analytic functions. After working with Excel, they might graduate to Access, the database system built into Microsoft Office, which has a graphical query interface that makes it easy to get work done, making SQL skills optional.
+
+But as you might know, Excel and Access have their limits. Excel currently allows 1,048,576 rows maximum per worksheet, and Access limits database size to two gigabytes and limits columns to 255 per table. It's not uncommon for data sets to surpass those limits, particularly when you're working with data dumped from government systems. The last obstacle you want to discover while facing a deadline is that your database system doesn't have the capacity to get the job done.
+
+Using a robust SQL database system allows you to work with ~terabytes~ of data, multiple related tables, and thousands of columns. It gives you improved programmatic control over the structure of your data, leading to efficiency, speed, and---most important---accuracy.
+
+SQL is also an excellent adjunct to programming languages used in the data sciences, such as R and Python. If you use either language, you can connect to SQL databases and, in some cases, even incorporate SQL syntax directly into the language. For people with no background in programming languages, SQL often serves as an easy-to-understand introduction into concepts related to data structures and programming logic.
+
+Additionally, knowing SQL can help you beyond data analysis. If you ~delve into~ building online applications, you'll find that databases provide the backend power for many common web frameworks, interactive maps, and content management systems. When you need to dig beneath the surface of these applications, SQL's capability to manipulate data and databases will come in very handy.
+
+** About This Book
+
+
+Practical SQL is for people who encounter data in their everyday lives and want to learn how to analyze and transform it. To this end, I discuss real-world data and scenarios, such as U.S. Census ~demographics~, crime statistics, and data about taxi rides in New York City. Along with information about databases and code, you'll also learn tips on how to analyze and acquire data as well as other valuable insights I've accumulated throughout my career. I won't focus on setting up servers or other tasks typically handled by a database administrator, but the SQL and PostgreSQL fundamentals you learn in this book will serve you well if you intend to go that route.
+
+I've designed the exercises for beginner SQL coders but will assume that you know your way around your computer, including how to install programs, navigate your hard drive, and download files from the internet. Although many chapters in this book can stand alone, you should work through the book sequentially to build on the fundamentals. Some data sets used in early chapters reappear later in the book, so following the book in order will help you stay on track.
+
+Practical SQL starts with the basics of databases, queries, tables, and data that are common to SQL across many database systems. [[file:ch13.xhtml#ch13][Chapters 13]] to [[file:ch17.xhtml#ch17][17]] cover topics more specific to PostgreSQL, such as full text search and GIS. The following table of contents provides more detail about the topics discussed in each chapter:
+
+*[[file:ch01.xhtml#ch01][Chapter 1]]: Creating Your First Database and Table introduces* PostgreSQL, the pgAdmin user interface, and the code for loading a simple data set about teachers into a new database.
+
+*[[file:ch02.xhtml#ch02][Chapter 2]]: Beginning Data Exploration with* SELECT explores basic SQL query syntax, including how to sort and filter data.
+
+*[[file:ch03.xhtml#ch03][Chapter 3]]: Understanding Data Types* explains the definitions for setting columns in a table to hold specific types of data, from text to dates to various forms of numbers.
+
+*[[file:ch04.xhtml#ch04][Chapter 4]]: Importing and Exporting Data* explains how to use SQL commands to load data from external files and rthen export it. You'll load a table of U.S. Census population data that you'll use throughout the book.
+
+*[[file:ch05.xhtml#ch05][Chapter 5]]: Basic Math and Stats with SQL* covers arithmetic operations and introduces aggregate functions for finding sums, averages, and medians.
+
+*[[file:ch06.xhtml#ch06][Chapter 6]]: Joining Tables in a Relational Database* explains how to query multiple, related tables by joining them on key columns. You'll learn how and when to use different types of joins.
+
+*[[file:ch07.xhtml#ch07][Chapter 7]]: Table Design that Works for You* covers how to set up tables to improve the organization and integrity of your data as well as how to speed up queries using indexes.
+
+*[[file:ch08.xhtml#ch08][Chapter 8]]: Extracting Information by Grouping and Summarizing* explains how to use aggregate functions to find trends in U.S. library use based on annual surveys.
+
+*[[file:ch09.xhtml#ch09][Chapter 9]]: Inspecting and Modifying Data* explores how to find and fix incomplete or inaccurate data using a collection of records about meat, egg, and poultry producers as an example.
+
+*[[file:ch10.xhtml#ch10][Chapter 10]]: Statistical Functions in SQL* introduces correlation, regression, and ranking functions in SQL to help you derive more meaning from data sets.
+
+*[[file:ch11.xhtml#ch11][Chapter 11]]: Working with Dates and Times* explains how to create, manipulate, and query dates and times in your database, including working with time zones, using data on New York City taxi trips and Amtrak train schedules.
+
+*[[file:ch12.xhtml#ch12][Chapter 12]]: Advanced Query Techniques explains how to use more* complex SQL operations, such as subqueries and cross tabulations, and the CASE statement to reclassify values in a data set on temperature readings.
+
+*[[file:ch13.xhtml#ch13][Chapter 13]]: Mining Text to Find Meaningful Data covers how to use PostgreSQL's full text search engine and regular expressions to extract* data from unstructured text, using a collection of speeches by U.S. presidents as an example.
+
+*[[file:ch14.xhtml#ch14][Chapter 14]]: Analyzing Spatial Data with PostGIS* introduces data types and queries related to spatial objects, which will let you analyze geographical features like states, roads, and rivers.
+
+*[[file:ch15.xhtml#ch15][Chapter 15]]: Saving Time with Views, Functions, and Triggers* explains how to automate database tasks so you can avoid repeating routine work.
+
+*[[file:ch16.xhtml#ch16][Chapter 16]]: Using PostgreSQL from the Command Line* covers how to use text commands at your computer's command prompt to connect to your database and run queries.
+
+*[[file:ch17.xhtml#ch17][Chapter 17]]: Maintaining Your Database* provides tips and procedures for tracking the size of your database, customizing settings, and backing up data.
+
+*[[file:ch18.xhtml#ch18][Chapter 18]]: Identifying and Telling the Story Behind Your Data* provides guidelines for generating ideas for analysis, vetting data, drawing sound conclusions, and presenting your findings clearly.
+
+*Appendix: Additional PostgreSQL Resources* lists software and documentation to help you grow your skills.
+
+Each chapter ends with a “Try It Yourself” section that contains exercises to help you reinforce the topics you learned.
+
+** Using the Book's Code Examples
+
+
+Each chapter includes code examples, and most use data sets I've already compiled. All the code and sample data in the book is available to download at [[https:www.nostarch.compracticalSQL]]. Click the *Download the code from GitHub* link to go to the GitHub repository that holds this material. At GitHub, you should see a “Clone or Download” button that gives you the option to download a ZIP file with all the materials. Save the file to your computer in a location where you can easily find it, such as your desktop.
+
+Inside the ZIP file is a folder for each chapter. Each folder contains a file named Chapter_XX (XX is the chapter number) that ends with a .sql extension. You can open those files with a text editor or with the PostgreSQL administrative tool you'll install. You can copy and paste code when the book instructs you to run it. Note that in the book, several code examples are truncated to save space, but you'll need the full listing from the .sql file to complete the exercise. You'll know an example is truncated when you see --snip-- inside the listing.
+
+Also in the .sql files, you'll see lines that begin with two hyphens (--) and a space. These are comments that provide the code's listing number and additional context, but they're not part of the code. These comments also note when the file has additional examples that aren't in the book.
+
+*NOTE*
+
+After downloading data, Windows users might need to provide permission for the database to read files. To do so, right-click the folder containing the code and data, select Properties, and click the Security tab. Click *Edit*, then *Add*. Type the name Everyone into the object names box and click *OK*. Highlight Everyone in the user list, select all boxes under Allow, and then click *Apply* and *OK*.
+
+** Using PostgreSQL
+
+
+In this book, I'll teach you SQL using the open source PostgreSQL database system. PostgreSQL, or simply Postgres, is a robust database system that can handle very large amounts of data. Here are some reasons PostgreSQL is a great choice to use with this book:
+
+1) It's free.
+2) It's available for Windows, macOS, and Linux operating systems.
+3) Its SQL implementation closely follows ANSI standards.
+4) It's widely used for analytics and data mining, so finding help online from peers is easy.
+5) Its geospatial extension, PostGIS, lets you analyze geometric data and perform mapping functions.
+6) It's available in several variants, such as Amazon Redshift and Green­plum, which focus on processing huge data sets.
+7) It's a common choice for web applications, including those powered by the popular web frameworks Django and Ruby on Rails.
+
+Of course, you can also use another database system, such as Microsoft SQL Server or MySQL; many code examples in this book translate easily to either SQL implementation. However, some examples, especially later in the book, do not, and you'll need to search online for equivalent solutions. Where appropriate, I'll note whether an example code follows the ANSI SQL standard and may be portable to other systems or whether it's specific to PostgreSQL.
+
+*** Installing PostgreSQL
+
+
+You'll start by installing the PostgreSQL database and the graphical administrative tool pgAdmin, which is software that makes it easy to manage your database, import and export data, and write queries.
+
+One great benefit of working with PostgreSQL is that regardless of whether you work on Windows, macOS, or Linux, the open source community has made it easy to get PostgreSQL up and running. The following sections outline installation for all three operating systems as of this writing, but options might change as new versions are released. Check the documentation noted in each section as well as the GitHub repository with the book's resources; I'll maintain the files with updates and answers to frequently asked questions.
+
+*NOTE*
+
+Always install the latest available version of PostgreSQL for your operating system to ensure that it's up to date on security patches and new features. For this book, I'll assume you're using version 10.0 or later.
+
+**** Windows Installation
+
+
+For Windows, I recommend using the installer provided by the company EnterpriseDB, which offers support and services for PostgreSQL users. EnterpriseDB's package bundles PostgreSQL with pgAdmin and the company's own Stack Builder, which also installs the spatial database extension PostGIS and programming language support, among other tools. To get the software, visit [[https:www.enterprisedb.com]] and create a free account. Then go to the downloads page at [[https:www.enterprisedb.comsoftware-downloads-postgres]].
+
+Select the latest available 64-bit Windows version of EDB Postgres Standard unless you're using an older PC with 32-bit Windows. After you download the installer, follow these steps:
+
+1.  Right-click the installer and select *Run as administrator*. Answer *Yes* to the question about allowing the program to make changes to your computer. The program will perform a setup task and then present an initial welcome screen. Click through it.
+
+2.  Choose your installation directory, accepting the default.
+
+3.  On the Select Components screen, select the boxes to install PostgreSQL Server, the pgAdmin tool, Stack Builder, and Command Line Tools.
+
+4.  Choose the location to store data. You can choose the default, which is in a “data” subdirectory in the PostgreSQL directory.
+
+5.  Choose a password. PostgreSQL is robust with security and permissions. This password is for the initial database superuser account, which is called postgres.
+
+6.  Select a port number where the server will listen. Unless you have another database or application using it, the default of 5432 should be fine. If you have another version of PostgreSQL already installed or some other application is using that default, the value might be 5433 or another number, which is also okay.
+
+7.  Select your locale. Using the default is fine. Then click through the summary screen to begin the installation, which will take several minutes.
+
+8.  When the installation is done, you'll be asked whether you want to launch EnterpriseDB's Stack Builder to obtain additional packages. Select the box and click *Finish*.
+
+9.  When Stack Builder launches, choose the PostgreSQL installation on the drop-down menu and click *Next*. A list of additional applications should download.
+
+10. Expand the *Spatial Extensions* menu and select either the 32-bit or 64-bit version of PostGIS Bundle for the version of Postgres you installed. Also, expand the *Add-ons, tools and utilities* menu and select EDB Language Pack, which installs support for programming languages including Python. Click through several times; you'll need to wait while the installer downloads the additional components.
+
+11. When installation files have been downloaded, click *Next* to install both components. For PostGIS, you'll need to agree to the license terms; click through until you're asked to Choose Components. Make sure PostGIS and Create spatial database are selected. Click *Next*, accept the default database location, and click *Next* again.
+
+12. Enter your database password when prompted and continue through the prompts to finish installing PostGIS.
+
+13. Answer *Yes* when asked to register GDAL. Also, answer *Yes* to the questions about setting POSTGIS_ENABLED_DRIVERS and enabling the POSTGIS_ENABLE_OUTDB_RASTERS environment variable.
+
+When finished, a PostgreSQL folder that contains shortcuts and links to documentation should be on your Windows Start menu.
+
+If you experience any hiccups installing PostgreSQL, refer to the “Troubleshooting” section of the EDB guide at [[https:www.enterprisedb.comresourcesproduct-documentation]]. If you're unable to install PostGIS via Stack Builder, try downloading a separate installer from the PostGIS site at [[http:postgis.netwindows_downloads]] and consult the guides at [[http:postgis.netdocumentation]].
+
+**** macOS Installation
+
+
+For macOS users, I recommend obtaining Postgres.app, an open source macOS application that includes PostgreSQL as well as the PostGIS extension and a few other goodies:
+
+1. Visit [[http:postgresapp.com]] and download the app's Disk Image file that ends in .dmg.
+
+2. Double-click the .dmg file to open it, and then drag and drop the app icon into your Applications folder.
+
+3. Double-click the app icon. When Postgres.app opens, click *Initialize* to create and start a PostgreSQL database.
+
+A small elephant icon in your menu bar indicates that you now have a database running. To use included PostgreSQL command line tools, you'll need to open your Terminal application and run the following code at the prompt (you can copy the code as a single line from the Postgres.app site at [[https:postgresapp.comdocumentationinstall.html]]):
+
+sudo mkdir -p etcpaths.d &&
+echo ApplicationsPostgres.appContentsVersionslatestbin | sudo tee etcpaths.d
+postgresapp
+
+Next, because Postgres.app doesn't include pgAdmin, you'll need to follow these steps to download and run pgAdmin:
+
+1. Visit the pgAdmin site's page for macOS downloads at [[https:www.pgadmin.orgdownloadpgadmin-4-macos]].
+
+2. Select the latest version and download the installer (look for a Disk Image file that ends in .dmg).
+
+3. Double-click the .dmg file, click through the prompt to accept the terms, and then drag pgAdmin's elephant app icon into your Applications folder.
+
+4. Double-click the app icon to launch pgAdmin.
+
+*NOTE*
+
+On macOS, when you launch pgAdmin the first time, a dialog might appear that displays “pgAdmin4.app can't be opened because it is from an unidentified developer.” Right-click the icon and select *Open*. The next dialog should give you the option to open the app; going forward, your Mac will remember you've granted this permission.
+
+Installation on macOS is relatively simple, but if you encounter any issues, review the documentation for Postgres.app at [[https:postgresapp.comdocumentation]] and for pgAdmin at [[https:www.pgadmin.orgdocs]].
+
+**** Linux Installation
+
+
+If you're a Linux user, installing PostgreSQL becomes simultaneously easy and difficult, which in my experience is very much the way it is in the Linux universe. Most popular Linux distributions---including Ubuntu, Debian, and CentOS---bundle PostgreSQL in their standard package. However, some distributions stay on top of updates more than others. The best path is to consult your distribution's documentation for the best way to install PostgreSQL if it's not already included or if you want to upgrade to a more recent version.
+
+Alternatively, the PostgreSQL project maintains complete up-to-date package repositories for Red Hat variants, Debian, and Ubuntu. Visit [[https:yum.postgresql.org]] and [[https:wiki.postgresql.orgwikiApt]] for details. The packages you'll want to install include the client and server for PostgreSQL, pgAdmin (if available), PostGIS, and PLPython. The exact names of these packages will vary according to your Linux distribution. You might also need to manually start the PostgreSQL database server.
+
+pgAdmin is rarely part of Linux distributions. To install it, refer to the pgAdmin site at [[https:www.pgadmin.orgdownload]] for the latest instructions and to see whether your platform is supported. If you're feeling adventurous, you can find instructions on building the app from source code at [[https:www.pgadmin.orgdownloadpgadmin-4-source-code]].
+
+*** Working with pgAdmin
+
+
+Before you can start writing code, you'll need to become familiar with pgAdmin, which is the administration and management tool for PostgreSQL. It's free, but don't underestimate its performance. In fact, pgAdmin is a full-featured tool similar to tools for purchase, such as Microsoft's SQL Server Management Studio, in its capability to let you control multiple aspects of server operations. It includes a graphical interface for configuring and administrating your PostgreSQL server and databases, and---most appropriately for this book---offers a SQL query tool for writing, testing, and saving queries.
+
+If you're using Windows, pgAdmin should come with the PostgreSQL package you downloaded from EnterpriseDB. On the Start menu, select *PostgreSQL ▸ pgAdmin 4* (the version number of Postgres should also appear in the menu). If you're using macOS and have installed pgAdmin separately, click the pgAdmin icon in your Applications folder, making sure you've also launched Postgres.app.
+
+When you open pgAdmin, it should look similar to [[file:intro.xhtml#introfig1][Figure 1]].
+
+[[../images/f0xxxiii-01.jpg]]
+
+Figure 1: The macOS version of the pgAdmin opening screen
+
+The left vertical pane displays an object browser where you can view available servers, databases, users, and other objects. Across the top of the screen is a collection of menu items, and below those are tabs to display various aspects of database objects and performance.
+
+Next, use the following steps to connect to the default database:
+
+1. In the object browser, expand the plus sign (+) to the left of the Servers node to show the default server. Depending on your operating system, the default server name could be localhost or PostgreSQL x, where x is the Postgres version number.
+
+2. Double-click the server name. Enter the password you chose during installation if prompted. A brief message appears while pgAdmin is establishing a connection. When you're connected, several new object items should display under the server name.
+
+3. Expand Databases and then expand the default database postgres.
+
+4. Under postgres, expand the Schemas object, and then expand public.
+
+Your object browser pane should look similar to [[file:intro.xhtml#introfig2][Figure 2]].
+
+*NOTE*
+
+If pgAdmin doesn't show a default under Servers, you'll need to add it. Right-click Servers, and choose the Create Server option. In the dialog, type a name for your server in the General tab. On the Connection tab, in the Host nameaddress box, type localhost. Click *Save*, and you should see your server listed.
+
+This collection of objects defines every feature of your database server. There's a lot here, but for now we'll focus on the location of tables. To view a table's structure or perform actions on it with pgAdmin, this is where you can access the table. In [[file:ch01.xhtml#ch01][Chapter 1]], you'll use this browser to create a new database and leave the default postgres as is.
+
+In addition, pgAdmin includes a Query Tool, which is where you write and execute code. To open the Query Tool, in pgAdmin's object browser, click once on any database to highlight it. For example, click the postgres database and then select *Tools ▸ Query Tool*. The Query Tool has two panes: one for writing queries and one for output.
+
+It's possible to open multiple tabs to connect to and write queries for different databases or just to organize your code the way you would like. To open another tab, click another database in the object browser and open the Query Tool again via the menu.
+
+[[../images/f0xxiv-01.jpg]]
+
+Figure 2: The pgAdmin object browser
+
+*** Alternatives to pgAdmin
+
+
+Although pgAdmin is great for beginners, you're not required to use it. If you prefer another administrative tool that works with PostgreSQL, feel free to use it. If you want to use your system's command line for all the exercises in this book, [[file:ch16.xhtml#ch16][Chapter 16]] provides instructions on using the PostgreSQL command line tool psql. (The Appendix lists PostgreSQL resources you can explore to find additional administrative tools.)
+
+** Wrapping Up
+
+Now that you've installed PostgreSQL and pgAdmin, you're ready to start learning SQL and use it to discover valuable insights into your data!
+
+In [[file:ch01.xhtml#ch01][Chapter 1]], you'll learn how to create a database and a table, and then you'll load some data to explore its contents. Let's get started!
+
+Although pgAdmin is great for beginners, you're not required to use it. If you prefer another administrative tool that works with PostgreSQL, feel free to use it. If you want to use your system's command line for all the exercises in this book, [[file:ch16.xhtml#ch16][Chapter 16]] provides instructions on using the PostgreSQL command line tool psql. (The Appendix lists PostgreSQL resources you can explore to find additional administrative tools.)
+
+** Change user password
+https://stackoverflow.com/questions/12720967/how-to-change-postgresql-user-password
+
+Then type:
+
+: $ sudo -u postgres psql
+Then:
+
+: \password postgres
+Then to quit psql:
+: \q
+
+If that does not work, reconfigure authentication.
+Edit /etc/postgresql/9.1/main/pg_hba.conf (path will differ) and change:
+:  local   all             all                                     peer
+to:
+:   local   all             all                                     md5
+Then restart the server:
+
+: $ sudo service postgresql restart
+
+
+
+For my case on Ubuntu 14.04 installed with postgres 10.3. I need to follow the following steps
+
+    su - postgres to switch user to postgres
+    psql to enter postgres shell
+    \password then enter your password
+    \q to quit the shell session
+
+    Then you switch back to root by executing exit and configure your pg_hba.conf (mine is at /etc/postgresql/10/main/pg_hba.conf) by making sure you have the following line
+
+    local all   postgres    md5
+    Restart your postgres service by service postgresql restart
+    Now switch to postgres user and enter postgres shell again. It will prompt you with password.

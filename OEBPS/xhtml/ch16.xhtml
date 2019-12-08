@@ -1,0 +1,420 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:ns="http://www.w3.org/2001/10/synthesis" lang="en-us" xml:lang="en-us">
+<head>
+<title>Practical SQL: A Beginner’s Guide to Storytelling with Data</title>
+<link href="../styles/9781593278458.css" rel="stylesheet" type="text/css"/>
+<meta content="urn:uuid:c3d53d4c-356a-4b39-bef0-591c04016b72" name="Adept.expected.resource"/>
+</head>
+<body>
+<h2 class="h2" id="ch16"><span epub:type="pagebreak" id="page_291"/><strong><span class="big">16</span></strong><br/><strong>USING POSTGRESQL FROM THE COMMAND LINE</strong></h2>
+<div class="image1"><img alt="image" src="../images/common01.jpg"/></div>
+<p class="noindent">Before computers featured a graphical user interface (GUI), which lets you use menus, icons, and buttons to navigate applications, the main way to issue instructions to them was by entering commands on the <em>command line</em>. The command line—also called a command line interface, console, shell, or terminal—is a text-based interface where you enter names of programs or other commands to perform tasks, such as editing files or listing the contents of a file directory.</p>
+<p class="indent"><span epub:type="pagebreak" id="page_292"/>When I was in college, to edit a file, I had to enter commands into a terminal connected to an IBM mainframe computer. The reams of text that then scrolled onscreen were reminiscent of the green characters that define the virtual world portrayed in <em>The Matrix</em>. It felt mysterious and as though I had attained new powers. Even today, movies portray fictional hackers by showing them entering cryptic, text-only commands on a computer.</p>
+<p class="indent">In this chapter, I’ll show you how to access this text-only world. Here are some advantages of working from the command line instead of a GUI, such as pgAdmin:</p>
+<ul>
+<li class="noindent"><p class="list">You can often work faster by entering short commands instead of clicking through layers of menu items.</p></li>
+<li class="noindent"><p class="list">You gain access to some functions that only the command line provides.</p></li>
+<li class="noindent"><p class="list">If command line access is all you have to work with (for example, when you’ve connected to a remote computer), you can still get work done.</p></li>
+</ul>
+<p class="indent">We’ll use <span class="literal">psql</span>, a command line tool in PostgreSQL that lets you run queries, manage database objects, and interact with the computer’s operating system via text command. You’ll first learn how to set up and access your computer’s command line, and then launch <span class="literal">psql</span>.</p>
+<p class="indent">It takes time to learn how to use the command line, and even experienced experts often resort to documentation to recall the available command line options. But learning to use the command line greatly enhances your work efficiency.</p>
+<h3 class="h3" id="lev286">Setting Up the Command Line for psql</h3>
+<p class="noindent">To start, we’ll access the command line on your operating system and set an <em>environment variable</em> called <span class="literal">PATH</span> that tells your system where to find <span class="literal">psql</span>. Environment variables hold parameters that specify system or application configurations, such as where to store temporary files, or allow you to enable or disable options. Setting <span class="literal">PATH</span>, which stores the names of one or more directories containing executable programs, tells the command line interface the location of <span class="literal">psql</span>, avoiding the hassle of having to enter its full directory path each time you launch it.</p>
+<h4 class="h4" id="lev287"><em>Windows psql Setup</em></h4>
+<p class="noindent">On Windows, you’ll run <span class="literal">psql</span> within Command Prompt, the application that provides that system’s command line interface. Let’s start by using <span class="literal">PATH</span> to tell Command Prompt where to find <em>psql.exe</em>, which is the full name of the <span class="literal">psql</span> application on Windows, as well as other PostgreSQL command line utilities.</p>
+<h5 class="h5"><span epub:type="pagebreak" id="page_293"/>Adding psql and Utilities to the Windows PATH</h5>
+<p class="noindent">The following steps assume that you installed PostgreSQL according to the instructions described in <a href="intro.xhtml#introlev3sec1">“Windows Installation”</a> on page xxix. (If you installed PostgreSQL another way, use the Windows File Explorer to search your C: drive to find the directory that holds <em>psql.exe</em>, and then replace <em>C:\Program Files\PostgreSQL\x.y\bin</em> in steps 5 and 6 with your own path.)</p>
+<ol>
+<li class="noindent"><p class="list">Open the Windows Control Panel. Enter <span class="literal"><strong>Control Panel</strong></span> in the search box on the Windows taskbar, and then click the <strong>Control Panel</strong> icon.</p></li>
+<li class="noindent"><p class="list">Inside the Control Panel app, enter <span class="literal"><strong>Environment</strong></span> in the search box at the top right. In the list of search results displayed, click <strong>Edit the System Environment Variables</strong>. A System Properties dialog should appear.</p></li>
+<li class="noindent"><p class="list">In the System Properties dialog, on the Advanced tab, click <strong>Environment Variables</strong>. The dialog that opens should have two sections: User variables and System variables. In the User variables section, if you don’t see a <span class="literal">PATH</span> variable, continue to step a to create a new one. If you do see an existing <span class="literal">PATH</span> variable, continue to step b to modify it.</p>
+<ol type="a">
+<li class="noindent"><p class="list">If you don’t see <span class="literal">PATH</span> in the User variables section, click <strong>New</strong> to open a New User Variable dialog, shown in <a href="ch16.xhtml#ch16fig1">Figure 16-1</a>.</p>
+<div class="image"><a id="ch16fig1"/><img alt="image" src="../images/f0293-01.jpg"/></div>
+<p class="figcap"><em>Figure 16-1: Creating a new <span class="literal">PATH</span> environment variable in Windows 10</em></p>
+<p class="indent">In the Variable name box, enter <span class="literal"><strong>PATH</strong></span>. In the Variable value box, enter <span class="literal"><strong>C:\Program Files\PostgreSQL\<em>x</em>.<em>y</em>\bin</strong></span>, where <span class="literal"><strong><em>x</em>.<em>y</em></strong></span> is the version of PostgreSQL you’re using. Click <strong>OK</strong> to close all the dialogs.</p></li>
+<li class="noindent"><p class="list">If you do see an existing <span class="literal">PATH</span> variable in the User variables section, highlight it and click <strong>Edit</strong>. In the list of variables that displays, click <strong>New</strong> and enter <span class="literal"><strong>C:\Program Files\PostgreSQL\<em>x</em>.<em>y</em>\bin</strong></span>, where <span class="literal"><strong><em>x</em>.<em>y</em></strong></span> is the version of PostgreSQL you’re using. It should look like the highlighted line in <a href="ch16.xhtml#ch16fig2">Figure 16-2</a>. When you’re finished, click <strong>OK</strong> to close all the dialogs.</p></li>
+</ol></li>
+</ol>
+<div class="image"><span epub:type="pagebreak" id="page_294"/><a id="ch16fig2"/><img alt="image" src="../images/f0294-01.jpg"/></div>
+<p class="figcap"><em>Figure 16-2: Editing existing <span class="literal">PATH</span> environment variables in Windows 10</em></p>
+<p class="indent">Now when you launch Command Prompt, the <span class="literal">PATH</span> should include the directory. Note that any time you make changes to the <span class="literal">PATH</span>, you must close and reopen Command Prompt for the changes to take effect. Next, let’s set up Command Prompt.</p>
+<h5 class="h5">Launching and Configuring the Windows Command Prompt</h5>
+<p class="noindent">Command Prompt is an executable file named <em>cmd.exe</em>. To launch it, select <strong>Start <span class="ent">▸</span> Windows System <span class="ent">▸</span> Command Prompt</strong>. When the application opens, you should see a window with a black background that displays version and copyright information along with a prompt showing your current directory. On my Windows 10 system, Command Prompt opens to my default user directory and displays <span class="literal">C:\Users\Anthony&gt;</span>, as shown in <a href="ch16.xhtml#ch16fig3">Figure 16-3</a>.</p>
+<div class="image"><a id="ch16fig3"/><img alt="image" src="../images/f0294-02.jpg"/></div>
+<p class="figcap"><em>Figure 16-3: My Command Prompt in Windows 10</em></p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>For fast access to Command Prompt, you can add it to your Windows taskbar. When Command Prompt is running, right-click its icon on the taskbar and then select <strong>Pin to taskbar</strong>.</em></p>
+</div>
+<p class="indent"><span epub:type="pagebreak" id="page_295"/>The line <span class="literal">C:\Users\Anthony&gt;</span> indicates that Command Prompt’s current working directory is my C: drive, which is typically the main hard drive on a Windows system, and the <em>\Users\Anthony</em> directory on that drive. The right arrow (<span class="literal">&gt;</span>) indicates the area where you type your commands.</p>
+<p class="indent">You can customize the font and colors plus access other settings by clicking the Command Prompt icon at the left of its window bar and selecting <strong>Properties</strong> from the menu. To make Command Prompt more suited for query output, I recommend setting the window size (on the Layout tab) to a width of 80 and a height of 25. My preferred font is Lucida Console 14, but experiment to find one you like.</p>
+<h5 class="h5">Entering Instructions on Windows Command Prompt</h5>
+<p class="noindent">Now you’re ready to enter instructions in Command Prompt. Enter <span class="literal"><strong>help</strong></span> at the prompt, and press <small>ENTER</small> on your keyboard to see a list of available commands. You can view information about a particular command by typing its name after <span class="literal"><strong>help</strong></span>. For example, enter <span class="literal"><strong>help time</strong></span> to display information on using the <span class="literal"><strong>time</strong></span> command to set or view the system time.</p>
+<p class="indent">Exploring the full workings of Command Prompt is beyond the scope of this book; however, you should try some of the commands in <a href="ch16.xhtml#ch16tab1">Table 16-1</a>, which contains frequently used commands you’ll find immediately useful but are not necessary for the exercises in this chapter. Also, check out Command Prompt cheat sheets online for more information.</p>
+<p class="tabcap" id="ch16tab1"><strong>Table 16-1:</strong> Useful Windows Commands</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Command</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Function</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Example</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Action</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">cd</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Change directory</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">cd C:\my-stuff</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Change to the <em>my-stuff</em> directory on the C: drive</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">copy</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Copy a file</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">copy C:\my-stuff\song.mp3 C:\Music\song_favorite.mp3</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Copy the <em>song.mp3</em> file from <em>my-stuff</em> to a new file called <em>song_favorite.mp3</em> in the <em>Music</em> directory</p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">del</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Delete</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">del *.jpg</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Delete all files with a <em>.jpg</em> extension in the current directory (asterisk wildcard)</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">dir</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">List directory contents</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">dir /p</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Show directory contents one screen at a time (using the <span class="literal">/p</span> option)</p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">findstr</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Find strings in text files matching a regular expression</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">findstr "peach" *.txt</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Search for the text “peach” in all <em>.txt</em> files in the current directory</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">mkdir</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Make a new directory</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">makedir C:\my-stuff\Salad</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Create a <em>Salad</em> directory inside the <em>my-stuff</em> directory</p></td>
+</tr>
+<tr>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">move</span></p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba">Move a file</p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">move C:\my-stuff\song.mp3 C:\Music\</span></p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba">Move the file <em>song.mp3</em> to the <em>C:\Music</em> directory</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">With your Command Prompt open and configured, you’re ready to roll. Skip ahead to <a href="ch16.xhtml#lev290">“Working with <span class="literal">psql</span>”</a> on <a href="ch16.xhtml#page_299">page 299</a>.</p>
+<h4 class="h4" id="lev288"><span epub:type="pagebreak" id="page_296"/><em>macOS psql Setup</em></h4>
+<p class="noindent">On macOS, you’ll run <span class="literal">psql</span> within Terminal, the application that provides access to that system’s command line via a <em>shell</em> program called <span class="literal">bash</span>. Shell programs on Unix- or Linux-based systems, including macOS, provide not only the command prompt where users enter instructions, but also their own programming language for automating tasks. For example, you can use <span class="literal">bash</span> commands to write a program to log in to a remote computer, transfer files, and log out. Let’s start by telling <span class="literal">bash</span> where to find <span class="literal">psql</span> and other PostgreSQL command line utilities by setting the <span class="literal">PATH</span> environment variable. Then we’ll launch Terminal.</p>
+<h5 class="h5">Adding psql and Utilities to the macOS PATH</h5>
+<p class="noindent">Before Terminal loads the <span class="literal">bash</span> shell, it checks for the presence of several optional text files that can supply configuration information. We’ll place our <span class="literal">PATH</span> information inside <em>.bash_profile</em>, which is one of these optional text files. Then, whenever we open Terminal, the startup process should read <em>.bash_profile</em> and obtain the <span class="literal">PATH</span> value.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>You can also use</em> .bash_profile <em>to set your command line’s colors, automatically run programs, and create shortcuts, among other tasks. See</em> <a href="https://natelandau.com/my-mac-osx-bash_profile/">https://natelandau.com/my-mac-osx-bash_profile/</a> <em>for a great example of customizing the file</em>.</p>
+</div>
+<p class="indent">On Unix- or Linux-based systems, files that begin with a period are called <em>dot files</em> and are hidden by default. We’ll need to edit <em>.bash_profile</em> to add <span class="literal">PATH</span>. Using the following steps, unhide <em>.bash_profile</em> so it appears in the macOS Finder:</p>
+<ol>
+<li class="noindent"><p class="list">Launch Terminal by navigating to <strong>Applications <span class="ent">▸</span> Utilities <span class="ent">▸</span> Terminal</strong>.</p></li>
+<li class="noindent"><p class="list">At the command prompt, which displays your username and computer name followed by a dollar sign (<span class="literal">$</span>), enter the following text and then press <small>RETURN</small>:</p>
+<p class="programs">defaults write com.apple.finder AppleShowAllFiles YES</p></li>
+<li class="noindent"><p class="list">Quit Terminal (<span class="ent">⌘</span>-Q). Then, while holding down the <small>OPTION</small> key, right-click the Finder icon on your Mac dock, and select <strong>Relaunch</strong>.</p></li>
+</ol>
+<p class="indent">Follow these steps to edit or create <em>.bash_profile</em>:</p>
+<ol>
+<li class="noindent"><p class="list">Using the macOS Finder, navigate to your user directory by opening the Finder and clicking <strong>Macintosh HD</strong> then <strong>Users</strong>.</p></li>
+<li class="noindent"><p class="list">Open your user directory (it should have a house icon). Because you changed the setting to show hidden files, you should now see grayed-out files and directories, which are normally hidden, along with regular files and directories.</p></li>
+<li class="noindent"><p class="list"><span epub:type="pagebreak" id="page_297"/>Check for an existing <em>.bash_profile</em> file. If one exists, right-click and open it with your preferred text editor or use the macOS TextEdit app. If <em>.bash_profile</em> doesn’t exist, open TextEdit to create and save a file with that name to your user directory.</p></li>
+</ol>
+<p class="indent">Next, we’ll add a <span class="literal">PATH</span> statement to <em>.bash_profile</em>. These instructions assume you installed PostgreSQL using Postgres.app, as outlined in <a href="intro.xhtml#introlev3sec2">“macOS Installation”</a> on page xxx. To add to the path, place the following line in <em>.bash_profile</em>:</p>
+<p class="programs">export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"</p>
+<p class="indent">Save and close the file. If Terminal is open, close and relaunch it before moving on to the next section.</p>
+<h5 class="h5">Launching and Configuring the macOS Terminal</h5>
+<p class="noindent">Launch Terminal by navigating to <strong>Applications <span class="ent">▸</span> Utilities <span class="ent">▸</span> Terminal</strong>. When it opens, you should see a window that displays the date and time of your last login followed by a prompt that includes your computer name, current working directory, and username, ending with a dollar sign (<span class="literal">$</span>). On my Mac, the prompt displays <span class="literal">ad:~ anthony$</span>, as shown in <a href="ch16.xhtml#ch16fig4">Figure 16-4</a>.</p>
+<div class="image"><a id="ch16fig4"/><img alt="image" src="../images/f0297-01.jpg"/></div>
+<p class="figcap"><em>Figure 16-4: Terminal command line in macOS</em></p>
+<p class="indent">The tilde (<span class="literal">~</span>) indicates that Terminal is currently working in my home directory, which is <span class="literal">/Users/anthony</span>. Terminal doesn’t display the full directory <span epub:type="pagebreak" id="page_298"/>path, but you can see that information at any time by entering the <span class="literal">pwd</span> command (short for “print working directory”) and pressing <small>RETURN</small> on your keyboard. The area after the dollar sign is where you type commands.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>For fast access to Terminal, add it to your macOS Dock. While Terminal is running, right-click its icon and select <strong>Options <span class="ent">▸</span> Keep in Dock</strong>.</em></p>
+</div>
+<p class="indent">If you’ve never used Terminal, its default black and white color scheme might seem boring. You can change fonts, colors, and other settings by selecting <strong>Terminal <span class="ent">▸</span> Preferences</strong>. To make Terminal bigger to better fit the query output display, I recommend setting the window size (on the Window tab) to a width of 80 columns and a height of 25 rows. My preferred font (on the Text tab) is Monaco 14, but experiment to find one you like.</p>
+<p class="indent">Exploring the full workings of Terminal and related commands is beyond the scope of this book, but take some time to try several commands. <a href="ch16.xhtml#ch16tab2">Table 16-2</a> lists commonly used commands you’ll find immediately useful but not necessary for the exercises in this chapter. Enter <span class="literal"><strong>man</strong></span> (short for “manual”) followed by a command name to get help on any command. For example, you can use <span class="literal"><strong>man ls</strong></span> to find out how to use the <span class="literal"><strong>ls</strong></span> command to list directory contents.</p>
+<p class="tabcap" id="ch16tab2"><strong>Table 16-2:</strong> Useful Terminal Commands</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Command</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Function</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Example</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Action</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">cd</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Change directory</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">cd /Users/pparker/my-stuff/</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Change to the <em>my-stuff</em> directory</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">cp</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Copy files</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">cp song.mp3 song_backup.mp3</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Copy the file <em>song.mp3</em> to <em>song_backup</em><em>.mp3</em> in the current directory</p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">grep</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Find strings in a text file matching a regular expression</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">grep 'us_counties_2010' *.sql</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Find all lines in files with a <em>.sql</em> extension that have the text “us_counties_2010”</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">ls</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">List directory contents</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">ls -al</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">List all files and directories (including hidden) in “long” format</p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">mkdir</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Make a new directory</p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">mkdir resumes</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Make a directory named <em>resumes</em> under the current working directory</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">mv</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Move a file</p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">mv song.mp3 /Users/pparker/songs</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Move the file <em>song.mp3</em> from the current directory to a <em>/songs</em> directory under a user directory</p></td>
+</tr>
+<tr>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">rm</span></p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba">Remove (delete) files</p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba"><span class="literal">rm *.jpg</span></p></td>
+<td class="tableba" style="vertical-align: top;"><p class="taba">Delete all files with a <em>.jpg</em> extension in the current directory (asterisk wildcard)</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">With your Terminal open and configured, you’re ready to roll. Skip ahead to <a href="ch16.xhtml#lev290">“Working with <span class="literal">psql</span>”</a> on <a href="ch16.xhtml#page_299">page 299</a>.</p>
+<h4 class="h4" id="lev289"><span epub:type="pagebreak" id="page_299"/><em>Linux psql Setup</em></h4>
+<p class="noindent">Recall from <a href="intro.xhtml#introlev3sec3">“Linux Installation”</a> on page xxxi that methods for installing PostgreSQL vary according to your Linux distribution. Nevertheless, <span class="literal">psql</span> is part of the standard PostgreSQL install, and you probably already ran <span class="literal">psql</span> commands as part of the installation process via your distribution’s command line terminal application. Even if you didn’t, standard Linux installations of PostgreSQL will automatically add <span class="literal">psql</span> to your <span class="literal">PATH</span>, so you should be able to access it.</p>
+<p class="indent">Launch a terminal application. On some distributions, such as Ubuntu, you can open a terminal by pressing <small>CTRL</small>-<small>ALT</small>-T. Also note that the macOS Terminal commands in <a href="ch16.xhtml#ch16tab2">Table 16-2</a> apply to Linux as well and may be useful to you.</p>
+<p class="indent">With your terminal open, you’re ready to roll. Proceed to the next section, “Working with <span class="literal">psql</span>.”</p>
+<h3 class="h3" id="lev290">Working with psql</h3>
+<p class="noindent">Now that you’ve identified your command line interface and set it up to recognize the location of <span class="literal">psql</span>, let’s launch <span class="literal">psql</span> and connect to a database on your local installation of PostgreSQL. Then we’ll explore executing queries and special commands for retrieving database information.</p>
+<h4 class="h4" id="lev291"><em>Launching psql and Connecting to a Database</em></h4>
+<p class="noindent">Regardless of the operating system you’re using, you start <span class="literal">psql</span> in the same way. Open your command line interface (Command Prompt on Windows, Terminal on macOS or Linux). To launch <span class="literal">psql</span>, we use the following pattern at the command prompt:</p>
+<p class="programs">psql -d <em>database_name</em> -U <em>user_name</em></p>
+<p class="indent">Following the <span class="literal">psql</span> application name, we provide the database name after a <span class="literal">-d</span> argument and a username after <span class="literal">-U</span>.</p>
+<p class="indent">For the database name, we’ll use <span class="literal">analysis</span>, which is where we created the majority of our tables for the book’s exercises. For username, we’ll use <span class="literal">postgres</span>, which is the default user created during installation. For example, to connect your local machine to the <span class="literal">analysis</span> database, you would enter this:</p>
+<p class="programs">psql -d analysis -U postgres</p>
+<p class="indent">You can connect to a database on a remote server by specifying the <span class="literal">-h</span> argument followed by the host name. For example, you would use the following line if you were connecting to a computer on a server called <span class="literal">example.com</span>:</p>
+<p class="programs">psql -d analysis -U postgres -h example.com</p>
+<p class="indent"><span epub:type="pagebreak" id="page_300"/>If you set a password during installation, you should receive a password prompt when <span class="literal">psql</span> launches. If so, enter your password and press <small>ENTER</small>. You should then see a prompt that looks like this:</p>
+<p class="programs">psql (10.1)<br/>Type "help" for help.<br/><br/>analysis=#</p>
+<p class="indent">Here, the first line lists the version number of <span class="literal">psql</span> and the server you’re connected to. Your version will vary depending on when you installed PostgreSQL. The prompt where you’ll enter commands is <span class="literal">analysis=#</span>, which refers to the name of the database, followed by an equal sign (<span class="literal">=</span>) and a hash mark (<span class="literal">#</span>). The hash mark indicates that you’re logged in with <em>superuser</em> privileges, which give you unlimited ability to access and create objects and set up accounts and security. If you’re logged in as a user without superuser privileges, the last character of the prompt will be a greater-than sign (<span class="literal">&gt;</span>). As you can see, the user account you logged in with here (<span class="literal">postgres</span>) is a superuser.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>PostgreSQL installations create a default superuser account called <span class="literal">postgres</span>. If you’re running postgres.app on macOS, that installation created an additional superuser account that has your system username and no password.</em></p>
+</div>
+<h4 class="h4" id="lev292"><em>Getting Help</em></h4>
+<p class="noindent">At the <span class="literal">psql</span> prompt, you can easily get help with <span class="literal">psql</span> commands and SQL commands. <a href="ch16.xhtml#ch16tab3">Table 16-3</a> lists commands you can type at the <span class="literal">psql</span> prompt and shows the information they’ll display.</p>
+<p class="tabcap" id="ch16tab3"><strong>Table 16-3:</strong> Help Commands Within <span class="literal">psql</span></p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Command</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Displays</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">\?</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Commands available within <span class="literal">psql</span>, such as <span class="literal">\dt</span> to list tables.</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">\? options</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Options for use with the <span class="literal">psql</span> command, such as <span class="literal">-U</span> to specify a username.</p></td>
+</tr>
+<tr>
+<td class="table-a" style="vertical-align: top;"><p class="taba"><span class="literal">\? variables</span></p></td>
+<td class="table-a" style="vertical-align: top;"><p class="taba">Variables for use with <span class="literal">psql</span>, such as <span class="literal">VERSION</span> for the current <span class="literal">psql</span> version.</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">\h</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">List of SQL commands. Add a command name to see detailed help for it (for example, <span class="literal">\h INSERT</span>).</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">Even experienced users often need a refresher on commands and options, and having the details in the <span class="literal">psql</span> application is handy. Let’s move on and explore some commands.</p>
+<h4 class="h4" id="lev293"><em>Changing the User and Database Connection</em></h4>
+<p class="noindent">You can use a series of <em>meta-commands</em>, which are preceded by a backslash, to issue instructions to <span class="literal">psql</span> rather than the database. For example, to connect <span epub:type="pagebreak" id="page_301"/>to a different database or switch the user account you’re connected to, you can use the <span class="literal">\c</span> meta-command. To switch to the <span class="literal">gis_analysis</span> database we created in <a href="ch14.xhtml#ch14">Chapter 14</a>, enter <span class="literal">\c</span> followed by the name of the database at the <span class="literal">psql</span> prompt:</p>
+<p class="programs">analysis=# \c gis_analysis</p>
+<p class="indent">The application should respond with the following message:</p>
+<p class="programs">You are now connected to database "gis_analysis" as user "postgres".<br/>gis_analysis=#</p>
+<p class="indent">To log in as a different user, for example, using a username the macOS installation created for me, I could add that username after the database name. On my Mac, the syntax looks like this:</p>
+<p class="programs">analysis-# \c gis_analysis anthony</p>
+<p class="indent">The response should be as follows:</p>
+<p class="programs">You are now connected to database "gis_analysis" as user "anthony".<br/>gis_analysis=#</p>
+<p class="indent">You might have various reasons to use multiple user accounts like this. For example, you might want to create a user account with limited permissions for colleagues or for a database application. You can learn more about creating and managing user roles by reading the PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/sql-createrole.html">https://www.postgresql.org/docs/current/static/sql-createrole.html</a></em>.</p>
+<p class="indent">Let’s switch back to the <span class="literal">analysis</span> database using the <span class="literal">\c</span> command. Next, we’ll enter SQL commands at the <span class="literal">psql</span> prompt.</p>
+<h4 class="h4" id="lev294"><em>Running SQL Queries on psql</em></h4>
+<p class="noindent">We’ve configured <span class="literal">psql</span> and connected to a database, so now let’s run some SQL queries, starting with a single-line query and then a multiline query.</p>
+<p class="indent">To enter SQL into <span class="literal">psql</span>, you can type it directly at the prompt. For example, to see a few rows from the 2010 Census table we’ve used throughout the book, enter a query at the prompt, as shown in <a href="ch16.xhtml#ch16list1">Listing 16-1</a>:</p>
+<p class="programs">analysis=# SELECT geo_name FROM us_counties_2010 LIMIT 3;</p>
+<p class="listing" id="ch16list1"><em>Listing 16-1: Entering a single-line query in <span class="literal">psql</span></em></p>
+<p class="indent">Press <small>ENTER</small> to execute the query, and <span class="literal">psql</span> should display the following results in text including the number of rows returned:</p>
+<p class="programs">    geo_name<br/>----------------<br/> Autauga County<br/> Baldwin County<br/><span epub:type="pagebreak" id="page_302"/> Barbour County<br/>(3 rows)<br/><br/>analysis=#</p>
+<p class="indent">Below the result, you can see the <span class="literal">analysis=#</span> prompt again, ready for further input from the user. Press the up and down arrows on your keyboard to you scroll through recent queries to avoid having to retype them. Or you can simply enter a new query.</p>
+<h5 class="h5">Entering a Multiline Query</h5>
+<p class="noindent">You’re not limited to single-line queries. For example, you can press <small>ENTER</small> each time you want to enter a new line. Note that <span class="literal">psql</span> won’t execute the query until you provide a line that ends with a semicolon. To see an example, reenter the query in <a href="ch16.xhtml#ch16list1">Listing 16-1</a> using the format shown in <a href="ch16.xhtml#ch16list2">Listing 16-2</a>:</p>
+<p class="programs">analysis=# SELECT geo_name<br/>analysis-# FROM us_counties_2010<br/>analysis-# LIMIT 3;</p>
+<p class="listing" id="ch16list2"><em>Listing 16-2: Entering a multiline query in <span class="literal">psql</span></em></p>
+<p class="indent">Note that when your query extends past one line, the symbol between the database name and the hash mark changes from an equal sign (<span class="literal">=</span>) to a hyphen (<span class="literal">-</span>). This multiline query executes only when you press <small>ENTER</small> after the final line, which ends with a semicolon.</p>
+<h5 class="h5">Checking for Open Parentheses in the psql Prompt</h5>
+<p class="noindent">Another helpful feature of <span class="literal">psql</span> is that it shows when you haven’t closed a pair of parentheses. <a href="ch16.xhtml#ch16list3">Listing 16-3</a> shows this in action:</p>
+<p class="programs">analysis=# CREATE TABLE wineries (<br/>analysis(# id bigint,<br/>analysis(# winery_name varchar(100)<br/>analysis(# );<br/>CREATE TABLE</p>
+<p class="listing" id="ch16list3"><em>Listing 16-3: Showing open parentheses in the <span class="literal">psql</span> prompt</em></p>
+<p class="indent">Here, you create a simple table called <span class="literal">wineries</span> that has two columns. After entering the first line of the <span class="literal">CREATE TABLE</span> statement and an open parenthesis, the prompt then changes from <span class="literal">analysis=#</span> to <span class="literal">analysis(#</span> to include an open parenthesis that reminds you an open parenthesis needs closing. The prompt maintains that configuration until you add the closing parenthesis.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>If you have a lengthy query saved in a text file, such as one from this book’s resources, you can copy it to your computer clipboard and paste it into <span class="codeitalic">psql</span> (<small>CTRL</small>-V on Windows,</em> <span class="ent">⌘</span><em>-V on macOS, and <small>SHIFT</small>-<small>CTRL</small>-V on Linux). That saves you from typing the whole query. After you paste the query text into <span class="codeitalic">psql</span>, press <small>ENTER</small> to execute it.</em></p>
+</div>
+<h5 class="h5"><span epub:type="pagebreak" id="page_303"/>Editing Queries</h5>
+<p class="noindent">If you’re working with a query in <span class="literal">psql</span> and want to modify it, you can edit it using the <span class="literal">\e</span> or <span class="literal">\edit</span> meta-command. Enter <span class="literal">\e</span> to open the last-executed query in a text editor. Which editor <span class="literal">psql</span> uses by default depends on your operating system.</p>
+<p class="indent">On Windows, <span class="literal">psql</span> defaults to Notepad, a simple GUI text editor. On macOS and Linux, <span class="literal">psql</span> uses a command line application called <span class="literal">vim</span>, which is a favorite among programmers but can seem inscrutable for beginners. Check out a helpful <span class="literal">vim</span> cheat sheet at <em><a href="https://vim.rtorr.com/">https://vim.rtorr.com/</a></em>. For now, you can use the following steps to make simple edits:</p>
+<ul>
+<li class="noindent">When <span class="literal">vim</span> opens the query in an editing window, press <span class="literal"><strong>I</strong></span> to activate insert mode.</li>
+<li class="noindent">Make your edits to the query.</li>
+<li class="noindent">Press <small>ESC</small> and then <small>SHIFT</small>+: to display a colon command prompt at the bottom left of the <span class="literal">vim</span> screen, which is where you enter commands to control <span class="literal">vim</span>.</li>
+<li class="noindent">Enter <span class="literal"><strong>wq</strong></span> (for “write, quit”) and press <small>ENTER</small> to save your changes.</li>
+</ul>
+<p class="indent">Now when you exit to the <span class="literal">psql</span> prompt, it should execute your revised query. Press the up arrow key to see the revised text.</p>
+<h4 class="h4" id="lev295"><em>Navigating and Formatting Results</em></h4>
+<p class="noindent">The query you ran in <a href="ch16.xhtml#ch16list1">Listings 16-1</a> and <a href="ch16.xhtml#ch16list2">16-2</a> returned only one column and a handful of rows, so its output was contained nicely in your command line interface. But for queries with more columns or rows, the output can take up more than one screen, making it difficult to navigate. Fortunately, you can use formatting options using the <span class="literal">\pset</span> meta-command to tailor the output into a format you prefer.</p>
+<h5 class="h5">Setting Paging of Results</h5>
+<p class="noindent">You can adjust the output format by specifying how <span class="literal">psql</span> displays lengthy query results. For example, <a href="ch16.xhtml#ch16list4">Listing 16-4</a> shows the change in output format when we remove the <span class="literal">LIMIT</span> clause from the query in <a href="ch16.xhtml#ch16list1">Listing 16-1</a> and execute it at the <span class="literal">psql</span> prompt:</p>
+<p class="programs">analysis=# SELECT geo_name FROM us_counties_2010;<br/>             geo_name<br/>-----------------------------------<br/> Autauga County<br/> Baldwin County<br/> Barbour County<br/> Bibb County<br/> Blount County<br/> Bullock County<br/> Butler County<br/> Calhoun County<br/> Chambers County<br/><span epub:type="pagebreak" id="page_304"/> Cherokee County<br/> Chilton County<br/> Choctaw County<br/> Clarke County<br/> Clay County<br/> Cleburne County<br/> Coffee County<br/> Colbert County<br/>:</p>
+<p class="listing" id="ch16list4"><em><a href="ch16.xhtml#ch16list4">Listing 16-4</a>: A query with scrolling results</em></p>
+<p class="indent">Recall that this table has 3,143 rows. <a href="ch16.xhtml#ch16list4">Listing 16-4</a> shows only the first 17 on the screen with a colon at the bottom (the number of visible rows depends on your terminal configuration). The colon indicates that there are more results than shown; press the down arrow key to scroll through them. Scrolling through this many rows can take a while. Press Q at any time to exit the scrolling results and return to the <span class="literal">psql</span> prompt.</p>
+<p class="indent">You can have your results immediately scroll to the end by changing the <span class="literal">pager</span> setting using the <span class="literal">\pset pager</span> meta-command. Run that command at your <span class="literal">psql</span> prompt, and it should return the message <span class="literal">Pager usage is off</span>. Now when you rerun the query in <a href="ch16.xhtml#ch16list3">Listing 16-3</a> with the <span class="literal">pager</span> setting turned off, you should see something like this:</p>
+<p class="programs"> <em>--snip--</em><br/> Niobrara County<br/> Park County<br/> Platte County<br/> Sheridan County<br/> Sublette County<br/> Sweetwater County<br/> Teton County<br/> Uinta County<br/> Washakie County<br/> Weston County<br/>(3143 rows)<br/><br/>analysis=#</p>
+<p class="indent">You’re immediately taken to the end of the results without having to scroll. To turn paging back on, run <span class="literal">\pset pager</span> again.</p>
+<h5 class="h5">Formatting the Results Grid</h5>
+<p class="noindent">You can also use the <span class="literal">\pset</span> meta-command with the following options to format how the results look:</p>
+<p class="hang"><span class="codestrong">border</span> <span class="literal"><strong><em>int</em></strong></span> Use this option to specify whether the results grid has no border (<span class="literal">0</span>), internal lines dividing columns (<span class="literal">1</span>), or lines around all cells (<span class="literal">2</span>). For example, <span class="literal">\pset border 2</span> sets lines around all cells.</p>
+<p class="hang"><span class="codestrong">format unaligned</span> Use the option <span class="literal">\pset format unaligned</span> to display the results in lines separated by a delimiter rather than in columns, similar <span epub:type="pagebreak" id="page_305"/>to what you would see in a CSV file. The separator defaults to a pipe symbol (<span class="literal">|</span>). You can set a different separator using the <span class="literal">fieldsep</span> command. For example, to set a comma as the separator, run <span class="literal">\pset fieldsep ','</span>. To revert to a column view, run <span class="literal">\pset format aligned</span>. You can use the <span class="literal">psql</span> meta-command <span class="literal">\a</span> to toggle between aligned and unaligned views.</p>
+<p class="hang"><span class="codestrong">footer</span> Use this option to toggle the results footer, which displays the result row count, on or off.</p>
+<p class="hang"><span class="codestrong">null</span> Use this option to set how null values are displayed. By default, they show as blanks. You can run <span class="literal">\pset null 'NULL'</span> to replace blanks with all-caps <span class="literal">NULL</span> when the column value is <span class="literal">NULL</span>.</p>
+<p class="indentt">You can explore additional options in the PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/app-psql.html">https://www.postgresql.org/docs/current/static/app-psql.html</a></em>. In addition, it’s possible to set up a <em>.psqlrc</em> file on macOS or Linux or a <em>psqlrc.conf</em> file on Windows to hold your configuration preferences and load them each time <span class="literal">psql</span> starts. A good example is provided at <em><a href="https://www.citusdata.com/blog/2017/07/16/customizing-my-postgres-shell-using-psqlrc/">https://www.citusdata.com/blog/2017/07/16/customizing-my-postgres-shell-using-psqlrc/</a></em>.</p>
+<h5 class="h5">Viewing Expanded Results</h5>
+<p class="noindent">Sometimes, it’s helpful to view results as a vertical block listing rather than in rows and columns, particularly when data is too big to fit onscreen in the normal horizontal results grid. Also, I often employ this format when I want an easy-to-scan way to review the values in columns on a row-by-row basis. In <span class="literal">psql</span>, you can switch to this view using the <span class="literal">\x</span> (for expanded) meta-command. The best way to understand the difference between normal and expanded view is by looking at an example. <a href="ch16.xhtml#ch16list5">Listing 16-5</a> shows the normal display you see when querying the <span class="literal">grades</span> table in <a href="ch15.xhtml#ch15">Chapter 15</a> using <span class="literal">psql</span>:</p>
+<p class="programs">analysis=# SELECT * FROM grades;<br/> student_id | course_id |      course       | grade <br/>------------+-----------+-------------------+-------<br/>          1 |         2 | English 11B       | D<br/>          1 |         3 | World History 11B | C<br/>          1 |         4 | Trig 2            | B<br/>          1 |         1 | Biology 2         | C<br/>(4 rows)</p>
+<p class="listing" id="ch16list5"><em>Listing 16-5: Normal display of the <span class="literal">grades</span> table query</em></p>
+<p class="indent">To change to the expanded view, enter <span class="literal">\x</span> at the <span class="literal">psql</span> prompt, which should display the <span class="literal">Expanded display is on</span> message. Then, when you run the same query again, you should see the expanded results, as shown in <a href="ch16.xhtml#ch16list6">Listing 16-6</a>:</p>
+<p class="programs">analysis=# SELECT * FROM grades;<br/>-[ RECORD 1 ]-----------------<br/>student_id | 1<br/>course_id  | 2<br/>course     | English 11B<br/>grade      | D<br/><span epub:type="pagebreak" id="page_306"/>-[ RECORD 2 ]-----------------<br/>student_id | 1<br/>course_id  | 3<br/>course     | World History 11B<br/>grade      | C<br/>-[ RECORD 3 ]-----------------<br/>student_id | 1<br/>course_id  | 4<br/>course     | Trig 2<br/>grade      | B<br/>-[ RECORD 4 ]-----------------<br/>student_id | 1<br/>course_id  | 1<br/>course     | Biology 2<br/>grade      | C</p>
+<p class="listing" id="ch16list6"><em>Listing 16-6: Expanded display of the <span class="literal">grades</span> table query</em></p>
+<p class="indent">The results appear in vertical blocks separated by record numbers. Depending on your needs and the type of data you’re working with, this format might be easier to read. You can revert to column display by entering <span class="literal">\x</span> again at the <span class="literal">psql</span> prompt. In addition, setting <span class="literal">\x auto</span> will make PostgreSQL automatically display the results in a table or expanded view based on the size of the output.</p>
+<p class="indent">Next, let’s explore how to use <span class="literal">psql</span> to dig into database information.</p>
+<h4 class="h4" id="lev296"><em>Meta-Commands for Database Information</em></h4>
+<p class="noindent">In addition to writing queries from the command line, you can also use <span class="literal">psql</span> to display details about tables and other objects and functions in your database. To do this, you use a series of meta-commands that start with <span class="literal">\d</span> and append a plus sign (<span class="literal">+</span>) to expand the output. You can also supply an optional pattern to filter the output.</p>
+<p class="indent">For example, you can enter <span class="literal">\dt+</span> to list all tables in the database and their size. Here’s a snippet of the output on my system:</p>
+<div class="image"><img alt="image" src="../images/prog_page_306.jpg"/></div>
+<p class="indent">This result lists all tables in the current database alphabetically.</p>
+<p class="indent"><span epub:type="pagebreak" id="page_307"/>You can filter the output by adding a pattern to match using a regular expression. For example, use <span class="literal">\dt+ us*</span> to show only tables whose names begin with <span class="literal">us</span> (the asterisk acts as a wildcard). The results should look like this:</p>
+<div class="image"><img alt="image" src="../images/prog_page_307.jpg"/></div>
+<p class="indent"><a href="ch16.xhtml#ch16tab4">Table 16-4</a> shows several additional <span class="literal">\d</span> commands you might find helpful.</p>
+<p class="tabcap" id="ch16tab4"><strong>Table 16-4:</strong> Examples of <span class="literal">psql \d</span> Commands</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Command</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Displays</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">\d [pattern]</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Columns, data types, plus other information on objects</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">\di [pattern]</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Indexes and their associated tables</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">\dt [pattern]</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Tables and the account that owns them</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">\du [pattern]</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">User accounts and their attributes</p></td>
+</tr>
+<tr>
+<td class="table-b" style="vertical-align: top;"><p class="taba"><span class="literal">\dv [pattern]</span></p></td>
+<td class="table-b" style="vertical-align: top;"><p class="taba">Views and the account that owns them</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">\dx [pattern]</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">Installed extensions</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">The entire list of <span class="literal">\d</span> commands is available in the PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/app-psql.html">https://www.postgresql.org/docs/current/static/app-psql.html</a></em>, or you can see details by using the <span class="literal">\?</span> command noted earlier.</p>
+<h4 class="h4" id="lev297"><em>Importing, Exporting, and Using Files</em></h4>
+<p class="noindent">Now let’s explore how to get data in and out of tables or save information when you’re working on a remote server. The <span class="literal">psql</span> command line tool offers one meta-command for importing and exporting data (<span class="literal">\copy</span>) and another for copying query output to a file (<span class="literal">\o</span>). We’ll start with the <span class="literal">\copy</span> command.</p>
+<h5 class="h5" id="lev298">Using \copy for Import and Export</h5>
+<p class="noindent">In <a href="ch04.xhtml#ch04">Chapter 4</a>, you learned how to use the SQL <span class="literal">COPY</span> command to import and export data. It’s a straightforward process, but there is one significant limitation: the file you’re importing or exporting must be on the same machine as the PostgreSQL server. That’s fine if you’re working on your local machine, as you’ve been doing with these exercises. But if you’re connecting to a database on a remote computer, you might not have access to the file system to provide a file to import or to fetch a file you’ve exported. You can get around this restriction by using the <span class="literal">\copy</span> meta-command in <span class="literal">psql</span>.</p>
+<p class="indent"><span epub:type="pagebreak" id="page_308"/>The <span class="literal">\copy</span> meta-command works just like the SQL <span class="literal">COPY</span> command except when you execute it at the <span class="literal">psql</span> prompt, it can route data from your local machine to a remote server if that’s what you’re connected to. We won’t actually connect to a remote server to try this, but you can still learn the syntax.</p>
+<p class="indent">In <a href="ch16.xhtml#ch16list7">Listing 16-7</a>, we use <span class="literal">psql</span> to <span class="literal">DROP</span> the small <span class="literal">state_regions</span> table you created in <a href="ch09.xhtml#ch09">Chapter 9</a>, and then re-create the table and import data using <span class="literal">\copy</span>. You’ll need to change the file path to match the location of the file on your computer.</p>
+<p class="programs">analysis=# DROP TABLE state_regions;<br/>DROP TABLE<br/><br/>analysis=# CREATE TABLE state_regions (<br/>analysis(#     st varchar(2) CONSTRAINT st_key PRIMARY KEY,<br/>analysis(#     region varchar(20) NOT NULL<br/>analysis(# );<br/><br/>CREATE TABLE<br/><br/>analysis=# \copy state_regions FROM '<em>C:\YourDirectory\</em>state_regions.csv' WITH (FORMAT CSV, HEADER);<br/>COPY 56</p>
+<p class="listing" id="ch16list7"><em>Listing 16-7: Importing data using <span class="literal">\copy</span></em></p>
+<p class="indent">The <span class="literal">DROP TABLE</span> and <span class="literal">CREATE TABLE</span> statements in <a href="ch16.xhtml#ch16list7">Listing 16-7</a> are straightforward. We first delete the <span class="literal">state_regions</span> table if it exists, and then re-create it. Then, to load the table, we use <span class="literal">\copy</span> with the same syntax used with SQL <span class="literal">COPY</span>, naming a <span class="literal">FROM</span> clause that includes the file path on your machine, and a <span class="literal">WITH</span> clause that specifies the file is a CSV and has a header row. When you execute the statement, the server should respond with <span class="literal">COPY 56</span>, letting you know the rows have been successfully imported.</p>
+<p class="indent">If you were connected via <span class="literal">psql</span> to a remote server, you would use the same <span class="literal">\copy</span> syntax, and the command would just route your local file to the remote server for importing. In this example, we used <span class="literal">\copy FROM</span> to import a file. We could also use <span class="literal">\copy TO</span> for exporting. Let’s look at another way to export output to a file.</p>
+<h5 class="h5">Saving Query Output to a File</h5>
+<p class="noindent">It’s sometimes helpful to save the query results and messages generated during a <span class="literal">psql</span> session to a file, whether to keep a history of your work or to use the output in a spreadsheet or other application. To send query output to a file, you can use the <span class="literal">\o</span> meta-command along with the full path and name of the output file.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>On Windows, file paths for the <span class="literal">\o</span> command must either use Linux-style forward slashes, such as</em> C:/my-stuff/my-file.txt, <em>or double backslashes, such as</em> C:\\my-stuff\\my-file.txt.</p>
+</div>
+<p class="indent"><span epub:type="pagebreak" id="page_309"/>For example, one of my favorite tricks is to set the output format to unaligned with a comma as a field separator and no row count in the footer, similar but not identical to a CSV output. (It’s not identical because a true CSV file, as you learned in <a href="ch04.xhtml#ch04">Chapter 4</a>, can include a character to quote values that contain a delimiter. Still, this trick works for simple CSV-like output.) <a href="ch16.xhtml#ch16list8">Listing 16-8</a> shows the sequence of commands at the <span class="literal">psql</span> prompt:</p>
+<p class="programs"><span class="ent">➊</span> analysis=# \a \f , \pset footer<br/>  Output format is unaligned.<br/>  Field separator is ",".<br/>  Default footer is off.<br/><br/>  analysis=# SELECT * FROM grades;<br/><span class="ent">➋</span> student_id,course_id,course,grade<br/>  1,2,English 11B,D<br/>  1,3,World History 11B,C<br/>  1,4,Trig 2,B<br/>  1,1,Biology 2,C<br/><br/><span class="ent">➌</span> analysis=# \o '<em>C:/YourDirectory/</em>query_output.csv'<br/><br/>  analysis=# SELECT * FROM grades;<br/><span class="ent">➍</span> analysis=#</p>
+<p class="listing" id="ch16list8"><em>Listing 16-8: Saving query output to a file</em></p>
+<p class="indent">First, set the output format <span class="ent">➊</span> using the meta-commands <span class="literal">\a</span>, <span class="literal">\f</span>, and <span class="literal">\pset</span> <span class="literal">footer</span> for unaligned, comma-separated data with no footer. When you run a simple <span class="literal">SELECT</span> query on the <span class="literal">grades</span> table, the output <span class="ent">➋</span> should return as values separated by commas. Next, to send that data to a file the next time you run the query, use the <span class="literal">\o</span> meta-command and then provide a complete path to a file called <em>query_output.csv</em> <span class="ent">➌</span>. When you run the <span class="literal">SELECT</span> query again, there should be no output to the screen <span class="ent">➍</span>. Instead, you’ll find a file with the contents of the query in the directory specified at <span class="ent">➌</span>.</p>
+<p class="indent">Note that every time you run a query from this point, the output is appended to the same file specified after the <span class="literal">\o</span> command. To stop saving output to that file, you can either specify a new file or enter <span class="literal">\o</span> with no filename to resume having results output to the screen.</p>
+<h5 class="h5">Reading and Executing SQL Stored in a File</h5>
+<p class="noindent">You can run SQL stored in a text file by executing <span class="literal">psql</span> on the command line and supplying the file name after an <span class="literal">-f</span> argument. This syntax lets you quickly run a query or table update from the command line or in conjunction with a system scheduler to run a job at regular intervals.</p>
+<p class="indent">Let’s say you saved the <span class="literal">SELECT * FROM grades;</span> query in a file called <em>display-grades.sql</em>. To run the saved query, use the following <span class="literal">psql</span> syntax at your command line:</p>
+<p class="programs">psql -d analysis -U postgres -f display-grades.sql</p>
+<p class="indent"><span epub:type="pagebreak" id="page_310"/>When you press <small>ENTER</small>, <span class="literal">psql</span> should launch, run the stored query in the file, display the results, and exit. For repetitive tasks, this workflow can save you considerable time because you avoid launching pgAdmin or rewriting a query. You also can stack multiple queries in the file so they run in succession, which, for example, you might do if you want to run multiple updates on your database.</p>
+<h3 class="h3" id="lev299">Additional Command Line Utilities to Expedite Tasks</h3>
+<p class="noindent">PostgreSQL includes additional command line utilities that come in handy if you’re connected to a remote server or just want to save time by using the command line instead of launching pgAdmin or another GUI. You can enter these commands in your command line interface without launching <span class="literal">psql</span>. A listing is available at <em><a href="https://www.postgresql.org/docs/current/static/reference-client.html">https://www.postgresql.org/docs/current/static/reference-client.html</a></em>, and I’ll explain several in <a href="ch17.xhtml#ch17">Chapter 17</a> that are specific to database maintenance. But here I’ll cover two that are particularly useful: creating a database at the command line with the <span class="literal">createdb</span> utility and loading shapefiles into a PostGIS database via the <span class="literal">shp2pgsql</span> utility.</p>
+<h4 class="h4" id="lev300"><em>Adding a Database with createdb</em></h4>
+<p class="noindent">The first SQL statement you learned in <a href="ch01.xhtml#ch01">Chapter 1</a> was <span class="literal">CREATE DATABASE</span>, which you used to add the database <span class="literal">analysis</span> to your PostgreSQL server. Rather than launching pgAdmin and writing a <span class="literal">CREATE DATABASE</span> statement, you can perform a similar action using the <span class="literal">createdb</span> command line utility. For example, to create a new database on your server named <span class="literal">box_office</span>, run the following at your command line:</p>
+<p class="programs">createdb -U postgres -e box_office</p>
+<p class="indent">The <span class="literal">-U</span> argument tells the command to connect to the PostgreSQL server using the <span class="literal">postgres</span> account. The <span class="literal">-e</span> argument (for “echo”) tells the command to print the SQL statement to the screen. Running this command generates the response <span class="literal">CREATE DATABASE box_office;</span> in addition to creating the database. You can then connect to the new database via <span class="literal">psql</span> using the following line:</p>
+<p class="programs">psql -d box_office -U postgres</p>
+<p class="indent">The <span class="literal">createdb</span> command accepts arguments to connect to a remote server (just like <span class="literal">psql</span> does) and to set options for the new database. A full list of arguments is available at <em><a href="https://www.postgresql.org/docs/current/static/app-createdb.html">https://www.postgresql.org/docs/current/static/app-createdb.html</a></em>. Again, the <span class="literal">createdb</span> command is a time-saver that comes in handy when you don’t have access to a GUI.</p>
+<h4 class="h4" id="lev301"><span epub:type="pagebreak" id="page_311"/><em>Loading Shapefiles with shp2pgsql</em></h4>
+<p class="noindent">In <a href="ch14.xhtml#ch14">Chapter 14</a>, you learned to import a shapefile into a database with the Shapefile Import/Export Manager included in the PostGIS suite. That tool’s GUI is easy to navigate, but importing a shapefile using the PostGIS command line tool <span class="literal">shp2pgsql</span> lets you accomplish the same thing using a single text command.</p>
+<p class="indent">To import a shapefile into a new table from the command line, use the following syntax:</p>
+<p class="programs">shp2pgsql -I -s <em>SRID</em> -W <em>encoding shapefile_name table_name</em> | psql -d <em>database</em> -U <em>user</em></p>
+<p class="indent">A lot is happening in this single line. Here’s a breakdown of the arguments (if you skipped <a href="ch14.xhtml#ch14">Chapter 14</a>, you might need to review it now):</p>
+<p class="hang"><span class="codestrong">-I</span> Adds a GiST index on the new table’s geometry column.</p>
+<p class="hang"><span class="codestrong">-s</span> Lets you specify an SRID for the geometric data.</p>
+<p class="hang"><span class="codestrong">-W</span> Lets you specify encoding. (Recall that we used <span class="literal">Latin1</span> for census shapefiles.)</p>
+<p class="hang"><span class="codestrong">shapefile_name</span> The name (including full path) of the file ending with the <em>.shp</em> extension.</p>
+<p class="hang"><span class="codestrong">table_name</span> The name of the table the shapefile is imported to.</p>
+<p class="indentt">Following these arguments, you place a pipe symbol (<span class="literal">|</span>) to direct the output of <span class="literal">shp2pgsql</span> to <span class="literal">psql</span>, which has the arguments for naming the database and user. For example, to load the <em>tl_2010_us_county10.shp</em> shapefile into a <span class="literal">us_counties_2010_shp</span> table in the <span class="literal">gis_analysis</span> database, as you did in <a href="ch14.xhtml#ch14">Chapter 14</a>, you can simply run the following command. Note that although this command wraps onto two lines here, it should be entered as one line in the command line:</p>
+<p class="programs">shp2pgsql -I -s 4269 -W Latin1 tl_2010_us_county10.shp us_counties_2010_shp | psql -d<br/>gis_analysis -U postgres</p>
+<p class="indent">The server should respond with a number of SQL <span class="literal">INSERT</span> statements before creating the index and returning you to the command line. It might take some time to construct the entire set of arguments the first time around. But after you’ve done one, subsequent imports should take less time because you can simply substitute file and table names into the syntax you already wrote.</p>
+<h3 class="h3" id="lev302">Wrapping Up</h3>
+<p class="noindent">Are you feeling mysterious and powerful yet? Indeed, when you delve into a command line interface and make the computer do your bidding using text commands, you enter a world of computing that resembles a sci-fi movie sequence. Not only does working from the command line save you time, but it also helps you overcome barriers you encounter when you’re <span epub:type="pagebreak" id="page_312"/>working in environments that don’t support graphical tools. In this chapter, you learned the basics of working with the command line plus PostgreSQL specifics. You discovered your operating system’s command line application and set it up to work with <span class="literal">psql</span>. Then you connected <span class="literal">psql</span> to a database and learned how to run SQL queries via the command line. Many experienced computer users prefer to use the command line for its simplicity and speed once they become familiar with using it. You might, too.</p>
+<p class="indent">In <a href="ch17.xhtml#ch17">Chapter 17</a>, we’ll review common database maintenance tasks including backing up data, changing server settings, and managing the growth of your database. These tasks will give you more control over your working environment and help you better manage your data analysis projects.</p>
+<div class="sidebar" id="ch16sb1">
+<p class="sidebart"><strong>TRY IT YOURSELF</strong></p>
+<p class="spara">To reinforce the techniques in this chapter, choose an example from an earlier chapter and try working through it using only the command line. <a href="ch14.xhtml#ch14">Chapter 14</a> is a good choice because it gives you the opportunity to work with <span class="literal">psql</span> and the shapefile loader <span class="literal">shp2pgsql</span>. But choose any example that you think you would benefit from reviewing.</p>
+</div>
+</body>
+</html>

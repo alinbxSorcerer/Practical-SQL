@@ -1,0 +1,1016 @@
+<?xml version="1.0"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+<head>
+<meta name="dtb:uid" content="9781593278458"/>
+<meta name="dtb:depth" content="1"/>
+<meta name="dtb:totalPageCount" content="392"/>
+<meta name="dtb:maxPageNumber" content="392"/>
+</head>
+<docTitle>
+<text>Practical SQL: A Beginner&#8217;s Guide to Storytelling with Data</text>
+</docTitle>
+<navMap>
+<navPoint id="i1" playOrder="1">
+<navLabel>
+<text>Cover Page</text>
+</navLabel>
+<content src="xhtml/cover.xhtml"/>
+</navPoint>
+<navPoint id="i2" playOrder="2">
+<navLabel>
+<text>Title Page</text>
+</navLabel>
+<content src="xhtml/title.xhtml"/>
+</navPoint>
+<navPoint id="i3" playOrder="3">
+<navLabel>
+<text>Copyright Page</text>
+</navLabel>
+<content src="xhtml/copy.xhtml"/>
+</navPoint>
+<navPoint id="i4" playOrder="4">
+<navLabel>
+<text>About the Author</text>
+</navLabel>
+<content src="xhtml/author.xhtml"/>
+</navPoint>
+<navPoint id="i5" playOrder="5">
+<navLabel>
+<text>About the Technical Reviewer</text>
+</navLabel>
+<content src="xhtml/technical.xhtml"/>
+</navPoint>
+<navPoint id="i6" playOrder="6">
+<navLabel>
+<text>Brief Contents</text>
+</navLabel>
+<content src="xhtml/toc01.xhtml"/>
+</navPoint>
+<navPoint id="i7" playOrder="7">
+<navLabel>
+<text>Contents in Detail</text>
+</navLabel>
+<content src="xhtml/toc.xhtml"/>
+</navPoint>
+<navPoint id="i8" playOrder="8">
+<navLabel>
+<text>Foreword by Sarah Frostenson</text>
+</navLabel>
+<content src="xhtml/foreward.xhtml"/>
+</navPoint>
+<navPoint id="i9" playOrder="9">
+<navLabel>
+<text>Acknowledgments</text>
+</navLabel>
+<content src="xhtml/ack.xhtml"/>
+</navPoint>
+<navPoint id="i10" playOrder="10">
+<navLabel>
+<text>Introduction</text>
+</navLabel>
+<content src="xhtml/intro.xhtml"/>
+<navPoint id="i11" playOrder="11">
+<navLabel>
+<text>What Is SQL?</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev1"/>
+</navPoint>
+<navPoint id="i12" playOrder="12">
+<navLabel>
+<text>Why Use SQL?</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev2"/>
+</navPoint>
+<navPoint id="i13" playOrder="13">
+<navLabel>
+<text>About This Book</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev3"/>
+</navPoint>
+<navPoint id="i14" playOrder="14">
+<navLabel>
+<text>Using the Book&#8217;s Code Examples</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev4"/>
+</navPoint>
+<navPoint id="i15" playOrder="15">
+<navLabel>
+<text>Using PostgreSQL</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev5"/>
+</navPoint>
+<navPoint id="i16" playOrder="16">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/intro.xhtml#lev9"/>
+</navPoint>
+</navPoint>
+<navPoint id="i17" playOrder="17">
+<navLabel>
+<text>1. Creating Your First Database and Table</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml"/>
+<navPoint id="i18" playOrder="18">
+<navLabel>
+<text>Creating a Database</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev10"/>
+</navPoint>
+<navPoint id="i19" playOrder="19">
+<navLabel>
+<text>Creating a Table</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev13"/>
+</navPoint>
+<navPoint id="i20" playOrder="20">
+<navLabel>
+<text>Inserting Rows into a Table</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev16"/>
+</navPoint>
+<navPoint id="i21" playOrder="21">
+<navLabel>
+<text>When Code Goes Bad</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev19"/>
+</navPoint>
+<navPoint id="i22" playOrder="22">
+<navLabel>
+<text>Formatting SQL for Readability</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev20"/>
+</navPoint>
+<navPoint id="i23" playOrder="23">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#lev21"/>
+</navPoint>
+<navPoint id="i24" playOrder="24">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch01.xhtml#ch01sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i25" playOrder="25">
+<navLabel>
+<text>2. Beginning Data Exploration with SELECT</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml"/>
+<navPoint id="i26" playOrder="26">
+<navLabel>
+<text>Basic SELECT Syntax</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#lev22"/>
+</navPoint>
+<navPoint id="i27" playOrder="27">
+<navLabel>
+<text>Sorting Data with ORDER BY</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#lev25"/>
+</navPoint>
+<navPoint id="i28" playOrder="28">
+<navLabel>
+<text>Filtering Rows with WHERE</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#lev26"/>
+</navPoint>
+<navPoint id="i29" playOrder="29">
+<navLabel>
+<text>Putting It All Together</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#lev29"/>
+</navPoint>
+<navPoint id="i30" playOrder="30">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#lev30"/>
+</navPoint>
+<navPoint id="i31" playOrder="31">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch02.xhtml#ch02sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i32" playOrder="32">
+<navLabel>
+<text>3. Understanding Data Types</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml"/>
+<navPoint id="i33" playOrder="33">
+<navLabel>
+<text>Characters</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev31"/>
+</navPoint>
+<navPoint id="i34" playOrder="34">
+<navLabel>
+<text>Numbers</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev32"/>
+</navPoint>
+<navPoint id="i35" playOrder="35">
+<navLabel>
+<text>Dates and Times</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev41"/>
+</navPoint>
+<navPoint id="i36" playOrder="36">
+<navLabel>
+<text>Using the interval Data Type in Calculations</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev42"/>
+</navPoint>
+<navPoint id="i37" playOrder="37">
+<navLabel>
+<text>Miscellaneous Types</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev43"/>
+</navPoint>
+<navPoint id="i38" playOrder="38">
+<navLabel>
+<text>Transforming Values from One Type to Another with CAST</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev44"/>
+</navPoint>
+<navPoint id="i39" playOrder="39">
+<navLabel>
+<text>CAST Shortcut Notation</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev45"/>
+</navPoint>
+<navPoint id="i40" playOrder="40">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#lev46"/>
+</navPoint>
+<navPoint id="i41" playOrder="41">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch03.xhtml#ch03sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i42" playOrder="42">
+<navLabel>
+<text>4. Importing and Exporting Data</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml"/>
+<navPoint id="i43" playOrder="43">
+<navLabel>
+<text>Working with Delimited Text Files</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev47"/>
+</navPoint>
+<navPoint id="i44" playOrder="44">
+<navLabel>
+<text>Using COPY to Import Data</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev50"/>
+</navPoint>
+<navPoint id="i45" playOrder="45">
+<navLabel>
+<text>Importing Census Data Describing Counties</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev51"/>
+</navPoint>
+<navPoint id="i46" playOrder="46">
+<navLabel>
+<text>Importing a Subset of Columns with COPY</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev55"/>
+</navPoint>
+<navPoint id="i47" playOrder="47">
+<navLabel>
+<text>Adding a Default Value to a Column During Import</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev56"/>
+</navPoint>
+<navPoint id="i48" playOrder="48">
+<navLabel>
+<text>Using COPY to Export Data</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev57"/>
+</navPoint>
+<navPoint id="i49" playOrder="49">
+<navLabel>
+<text>Importing and Exporting Through pgAdmin</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev61"/>
+</navPoint>
+<navPoint id="i50" playOrder="50">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#lev62"/>
+</navPoint>
+<navPoint id="i51" playOrder="51">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch04.xhtml#ch04sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i52" playOrder="52">
+<navLabel>
+<text>5. Basic Math and Stats With SQL</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml"/>
+<navPoint id="i53" playOrder="53">
+<navLabel>
+<text>Math Operators</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev63"/>
+</navPoint>
+<navPoint id="i54" playOrder="54">
+<navLabel>
+<text>Doing Math Across Census Table Columns</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev69"/>
+</navPoint>
+<navPoint id="i55" playOrder="55">
+<navLabel>
+<text>Aggregate Functions for Averages and Sums</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev73"/>
+</navPoint>
+<navPoint id="i56" playOrder="56">
+<navLabel>
+<text>Finding the Median</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev74"/>
+</navPoint>
+<navPoint id="i57" playOrder="57">
+<navLabel>
+<text>Finding the Mode</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev79"/>
+</navPoint>
+<navPoint id="i58" playOrder="58">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#lev80"/>
+</navPoint>
+<navPoint id="i59" playOrder="59">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch05.xhtml#ch05sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i60" playOrder="60">
+<navLabel>
+<text>6. Joining Tables in a Relational Database</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml"/>
+<navPoint id="i61" playOrder="61">
+<navLabel>
+<text>Linking Tables Using JOIN</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev81"/>
+</navPoint>
+<navPoint id="i62" playOrder="62">
+<navLabel>
+<text>Relating Tables with Key Columns</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev82"/>
+</navPoint>
+<navPoint id="i63" playOrder="63">
+<navLabel>
+<text>Querying Multiple Tables Using JOIN</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev83"/>
+</navPoint>
+<navPoint id="i64" playOrder="64">
+<navLabel>
+<text>JOIN Types</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev84"/>
+</navPoint>
+<navPoint id="i65" playOrder="65">
+<navLabel>
+<text>Using NULL to Find Rows with Missing Values</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev89"/>
+</navPoint>
+<navPoint id="i66" playOrder="66">
+<navLabel>
+<text>Three Types of Table Relationships</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev90"/>
+</navPoint>
+<navPoint id="i67" playOrder="67">
+<navLabel>
+<text>Selecting Specific Columns in a Join</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev94"/>
+</navPoint>
+<navPoint id="i68" playOrder="68">
+<navLabel>
+<text>Simplifying JOIN Syntax with Table Aliases</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev95"/>
+</navPoint>
+<navPoint id="i69" playOrder="69">
+<navLabel>
+<text>Joining Multiple Tables</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev96"/>
+</navPoint>
+<navPoint id="i70" playOrder="70">
+<navLabel>
+<text>Performing Math on Joined Table Columns</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev97"/>
+</navPoint>
+<navPoint id="i71" playOrder="71">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#lev98"/>
+</navPoint>
+<navPoint id="i72" playOrder="72">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch06.xhtml#ch06sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i73" playOrder="73">
+<navLabel>
+<text>7. Table Design That Works for You</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml"/>
+<navPoint id="i74" playOrder="74">
+<navLabel>
+<text>Naming Tables, Columns, and Other Identifiers</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml#lev99"/>
+</navPoint>
+<navPoint id="i75" playOrder="75">
+<navLabel>
+<text>Controlling Column Values with Constraints</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml#lev103"/>
+</navPoint>
+<navPoint id="i76" playOrder="76">
+<navLabel>
+<text>Speeding Up Queries with Indexes</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml#lev113"/>
+</navPoint>
+<navPoint id="i77" playOrder="77">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml#lev119"/>
+</navPoint>
+<navPoint id="i78" playOrder="78">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch07.xhtml#ch07sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i79" playOrder="79">
+<navLabel>
+<text>8. Extracting Information by Grouping and Summarizing</text>
+</navLabel>
+<content src="xhtml/ch08.xhtml"/>
+<navPoint id="i80" playOrder="80">
+<navLabel>
+<text>Creating the Library Survey Tables</text>
+</navLabel>
+<content src="xhtml/ch08.xhtml#lev120"/>
+</navPoint>
+<navPoint id="i81" playOrder="81">
+<navLabel>
+<text>Exploring the Library Data Using Aggregate Functions</text>
+</navLabel>
+<content src="xhtml/ch08.xhtml#lev123"/>
+</navPoint>
+<navPoint id="i82" playOrder="82">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch08.xhtml#lev134"/>
+</navPoint>
+<navPoint id="i83" playOrder="83">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch08.xhtml#ch08sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i84" playOrder="84">
+<navLabel>
+<text>9. Inspecting and Modifying Data</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml"/>
+<navPoint id="i85" playOrder="85">
+<navLabel>
+<text>Importing Data on Meat, Poultry, and Egg Producers</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev135"/>
+</navPoint>
+<navPoint id="i86" playOrder="86">
+<navLabel>
+<text>Interviewing the Data Set</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev136"/>
+</navPoint>
+<navPoint id="i87" playOrder="87">
+<navLabel>
+<text>Modifying Tables, Columns, and Data</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev140"/>
+</navPoint>
+<navPoint id="i88" playOrder="88">
+<navLabel>
+<text>Deleting Unnecessary Data</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev151"/>
+</navPoint>
+<navPoint id="i89" playOrder="89">
+<navLabel>
+<text>Using Transaction Blocks to Save or Revert Changes</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev155"/>
+</navPoint>
+<navPoint id="i90" playOrder="90">
+<navLabel>
+<text>Improving Performance When Updating Large Tables</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev156"/>
+</navPoint>
+<navPoint id="i91" playOrder="91">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#lev157"/>
+</navPoint>
+<navPoint id="i92" playOrder="92">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch09.xhtml#ch09sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i93" playOrder="93">
+<navLabel>
+<text>10. Statistical Functions in SQL</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml"/>
+<navPoint id="i94" playOrder="94">
+<navLabel>
+<text>Creating a Census Stats Table</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml#lev158"/>
+</navPoint>
+<navPoint id="i95" playOrder="95">
+<navLabel>
+<text>Creating Rankings with SQL</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml#lev163"/>
+</navPoint>
+<navPoint id="i96" playOrder="96">
+<navLabel>
+<text>Calculating Rates for Meaningful Comparisons</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml#lev166"/>
+</navPoint>
+<navPoint id="i97" playOrder="97">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml#lev167"/>
+</navPoint>
+<navPoint id="i98" playOrder="98">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch10.xhtml#ch10sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i99" playOrder="99">
+<navLabel>
+<text>11. Working with Dates and Times</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml"/>
+<navPoint id="i100" playOrder="100">
+<navLabel>
+<text>Data Types and Functions for Dates and Times</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#lev168"/>
+</navPoint>
+<navPoint id="i101" playOrder="101">
+<navLabel>
+<text>Manipulating Dates and Times</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#lev169"/>
+</navPoint>
+<navPoint id="i102" playOrder="102">
+<navLabel>
+<text>Working with Time Zones</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#lev173"/>
+</navPoint>
+<navPoint id="i103" playOrder="103">
+<navLabel>
+<text>Calculations with Dates and Times</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#lev176"/>
+</navPoint>
+<navPoint id="i104" playOrder="104">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#lev184"/>
+</navPoint>
+<navPoint id="i105" playOrder="105">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch11.xhtml#ch11sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i106" playOrder="106">
+<navLabel>
+<text>12. Advanced Query Techniques</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml"/>
+<navPoint id="i107" playOrder="107">
+<navLabel>
+<text>Using Subqueries</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev202"/>
+</navPoint>
+<navPoint id="i108" playOrder="108">
+<navLabel>
+<text>Common Table Expressions</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev211"/>
+</navPoint>
+<navPoint id="i109" playOrder="109">
+<navLabel>
+<text>Cross Tabulations</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev212"/>
+</navPoint>
+<navPoint id="i110" playOrder="110">
+<navLabel>
+<text>Reclassifying Values with CASE</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev216"/>
+</navPoint>
+<navPoint id="i111" playOrder="111">
+<navLabel>
+<text>Using CASE in a Common Table Expression</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev217"/>
+</navPoint>
+<navPoint id="i112" playOrder="112">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#lev218"/>
+</navPoint>
+<navPoint id="i113" playOrder="113">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch12.xhtml#ch12sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i114" playOrder="114">
+<navLabel>
+<text>13. Mining Text to Find Meaningful Data</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml"/>
+<navPoint id="i115" playOrder="115">
+<navLabel>
+<text>Formatting Text Using String Functions</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml#lev219"/>
+</navPoint>
+<navPoint id="i116" playOrder="116">
+<navLabel>
+<text>Matching Text Patterns with Regular Expressions</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml#lev224"/>
+</navPoint>
+<navPoint id="i117" playOrder="117">
+<navLabel>
+<text>Full Text Search in PostgreSQL</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml#lev229"/>
+</navPoint>
+<navPoint id="i118" playOrder="118">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml#lev234"/>
+</navPoint>
+<navPoint id="i119" playOrder="119">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch13.xhtml#ch13sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i120" playOrder="120">
+<navLabel>
+<text>14. Analyzing Spatial Data with PostGIS</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml"/>
+<navPoint id="i121" playOrder="121">
+<navLabel>
+<text>Installing PostGIS and Creating a Spatial Database</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev235"/>
+</navPoint>
+<navPoint id="i122" playOrder="122">
+<navLabel>
+<text>The Building Blocks of Spatial Data</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev236"/>
+</navPoint>
+<navPoint id="i123" playOrder="123">
+<navLabel>
+<text>Two-Dimensional Geometries</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev237"/>
+</navPoint>
+<navPoint id="i124" playOrder="124">
+<navLabel>
+<text>PostGIS Data Types</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev241"/>
+</navPoint>
+<navPoint id="i125" playOrder="125">
+<navLabel>
+<text>Creating Spatial Objects with PostGIS Functions</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev242"/>
+</navPoint>
+<navPoint id="i126" playOrder="126">
+<navLabel>
+<text>Analyzing Farmers&#8217; Markets Data</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev248"/>
+</navPoint>
+<navPoint id="i127" playOrder="127">
+<navLabel>
+<text>Working with Census Shapefiles</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev253"/>
+</navPoint>
+<navPoint id="i128" playOrder="128">
+<navLabel>
+<text>Performing Spatial Joins</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev262"/>
+</navPoint>
+<navPoint id="i129" playOrder="129">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#lev266"/>
+</navPoint>
+<navPoint id="i130" playOrder="130">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch14.xhtml#ch14sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i131" playOrder="131">
+<navLabel>
+<text>15. Saving Time with Views, Functions, and Triggers</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml"/>
+<navPoint id="i132" playOrder="132">
+<navLabel>
+<text>Using Views to Simplify Queries</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml#lev267"/>
+</navPoint>
+<navPoint id="i133" playOrder="133">
+<navLabel>
+<text>Programming Your Own Functions</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml#lev274"/>
+</navPoint>
+<navPoint id="i134" playOrder="134">
+<navLabel>
+<text>Automating Database Actions with Triggers</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml#lev279"/>
+</navPoint>
+<navPoint id="i135" playOrder="135">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml#lev285"/>
+</navPoint>
+<navPoint id="i136" playOrder="136">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch15.xhtml#ch15sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i137" playOrder="137">
+<navLabel>
+<text>16. Using PostgreSQL from the Command Line</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml"/>
+<navPoint id="i138" playOrder="138">
+<navLabel>
+<text>Setting Up the Command Line for psql</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml#lev286"/>
+</navPoint>
+<navPoint id="i139" playOrder="139">
+<navLabel>
+<text>Working with psql</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml#lev290"/>
+</navPoint>
+<navPoint id="i140" playOrder="140">
+<navLabel>
+<text>Additional Command Line Utilities to Expedite Tasks</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml#lev299"/>
+</navPoint>
+<navPoint id="i141" playOrder="141">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml#lev302"/>
+</navPoint>
+<navPoint id="i142" playOrder="142">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch16.xhtml#ch16sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i143" playOrder="143">
+<navLabel>
+<text>17. Maintaining Your Database</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml"/>
+<navPoint id="i144" playOrder="144">
+<navLabel>
+<text>Recovering Unused Space with VACUUM</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml#lev303"/>
+</navPoint>
+<navPoint id="i145" playOrder="145">
+<navLabel>
+<text>Changing Server Settings</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml#lev310"/>
+</navPoint>
+<navPoint id="i146" playOrder="146">
+<navLabel>
+<text>Backing Up and Restoring Your Database</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml#lev313"/>
+</navPoint>
+<navPoint id="i147" playOrder="147">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml#lev317"/>
+</navPoint>
+<navPoint id="i148" playOrder="148">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch17.xhtml#ch17sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i149" playOrder="149">
+<navLabel>
+<text>18. Identifying and Telling the Story Behind Your Data</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml"/>
+<navPoint id="i150" playOrder="150">
+<navLabel>
+<text>Start with a Question</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev318"/>
+</navPoint>
+<navPoint id="i151" playOrder="151">
+<navLabel>
+<text>Document Your Process</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev319"/>
+</navPoint>
+<navPoint id="i152" playOrder="152">
+<navLabel>
+<text>Gather Your Data</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev320"/>
+</navPoint>
+<navPoint id="i153" playOrder="153">
+<navLabel>
+<text>No Data? Build Your Own Database</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev321"/>
+</navPoint>
+<navPoint id="i154" playOrder="154">
+<navLabel>
+<text>Assess the Data&#8217;s Origins</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev322"/>
+</navPoint>
+<navPoint id="i155" playOrder="155">
+<navLabel>
+<text>Interview the Data with Queries</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev323"/>
+</navPoint>
+<navPoint id="i156" playOrder="156">
+<navLabel>
+<text>Consult the Data&#8217;s Owner</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev324"/>
+</navPoint>
+<navPoint id="i157" playOrder="157">
+<navLabel>
+<text>Identify Key Indicators and Trends over Time</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev325"/>
+</navPoint>
+<navPoint id="i158" playOrder="158">
+<navLabel>
+<text>Ask Why</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev326"/>
+</navPoint>
+<navPoint id="i159" playOrder="159">
+<navLabel>
+<text>Communicate Your Findings</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev327"/>
+</navPoint>
+<navPoint id="i160" playOrder="160">
+<navLabel>
+<text>Wrapping Up</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#lev328"/>
+</navPoint>
+<navPoint id="i161" playOrder="161">
+<navLabel>
+<text>Try It Yourself</text>
+</navLabel>
+<content src="xhtml/ch18.xhtml#ch18sb1"/>
+</navPoint>
+</navPoint>
+<navPoint id="i162" playOrder="162">
+<navLabel>
+<text>Appendix: Additional PostgreSQL Resources</text>
+</navLabel>
+<content src="xhtml/appendix.xhtml"/>
+<navPoint id="i163" playOrder="163">
+<navLabel>
+<text>PostgreSQL Development Environments</text>
+</navLabel>
+<content src="xhtml/appendix.xhtml#lev329"/>
+</navPoint>
+<navPoint id="i164" playOrder="164">
+<navLabel>
+<text>PostgreSQL Utilities, Tools, and Extensions</text>
+</navLabel>
+<content src="xhtml/appendix.xhtml#lev330"/>
+</navPoint>
+<navPoint id="i165" playOrder="165">
+<navLabel>
+<text>PostgreSQL News</text>
+</navLabel>
+<content src="xhtml/appendix.xhtml#lev331"/>
+</navPoint>
+<navPoint id="i166" playOrder="166">
+<navLabel>
+<text>Documentation</text>
+</navLabel>
+<content src="xhtml/appendix.xhtml#lev332"/>
+</navPoint>
+</navPoint>
+<navPoint id="i167" playOrder="167">
+<navLabel>
+<text>Index</text>
+</navLabel>
+<content src="xhtml/index.xhtml"/>
+</navPoint>
+</navMap>
+</ncx>

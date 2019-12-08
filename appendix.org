@@ -1,0 +1,63 @@
+* Additional Postgresql Resources
+
+This appendix contains some resources to help you stay informed about PostgreSQL developments, find additional software, and get help. Because software resources are likely to change, I'll maintain a copy of this appendix at the GitHub repository that contains all the book's resources. You can find a link via /[[https://www.nostarch.com/practicalSQL/]]/.
+
+** PostgreSQL Development Environments
+
+Throughout the book, we've used the graphical user interface pgAdmin to connect to PostgreSQL, run queries, and view database objects. Although pgAdmin is free, open source, and popular, it's not your only choice for working with PostgreSQL. You can read the entry called “Community Guide to PostgreSQL GUI Tools,” which catalogs many alternatives, on the PostgreSQL wiki at /[[https://wiki.postgresql.org/wiki/Community_Guide_to_PostgreSQL_GUI_Tools]]/.
+
+The following list contains information on several tools I've tried, including free and paid options. The free tools work well for general analysis work. But if you wade deeper into database development, you might want to upgrade to the paid options, which typically offer advanced features and support:
+
+*DataGrip* A SQL development environment that offers code completion, bug detection, and suggestions for streamlining code, among many other features. It's a paid product, but the company, JetBrains, offers discounts and free versions for students, educators, and non­profits (see /[[http://www.jetbrains.com/datagrip/]]/).
+
+*Navicat* A richly featured SQL development environment with versions that support PostgreSQL as well as other databases, including MySQL, Oracle, and Microsoft SQL Server. Navicat is a paid version only, but the company offers a 14-day free trial (see /[[https://www.navicat.com/]]/).
+
+*pgManage* A free, open source GUI client for Windows, macOS, and Linux, formerly known as Postage (see /[[https://github.com/pgManage/pgManage/]]/).
+
+*Postico* A macOS-only client from the maker of Postgres.app that looks like it takes its cues from Apple design. The full version is paid, but a restricted-feature version is available with no time limit (see /[[https://eggerapps.at/postico/]]/).
+
+*PSequel* Also macOS-only, PSequel is a free PostgreSQL client that is decidedly minimalist (see /[[http://www.psequel.com/]]/).
+
+A trial version can help you decide whether the product is right for you.
+
+** PostgreSQL Utilities, Tools, and Extensions
+
+You can expand the capabilities of PostgreSQL via numerous third-party utilities, tools, and extensions. These range from additional backup and import/export options to improved formatting for the command line to powerful statistics packages. You'll find a curated list online at /[[https://github.com/dhamaniasad/awesome-postgres/]]/, but here are several to highlight:
+
+*Devart Excel Add-In for PostgreSQL* An add-in that lets you load and edit data from PostgreSQL directly in Excel workbooks (see /[[https://www.devart.com/excel-addins/postgresql.html]]/).
+
+*MADlib* A machine learning and analytics library for large data sets (see /[[http://madlib.apache.org/]]/).
+
+*pgAgent* A job manager that lets you run queries at scheduled times, among other tasks (see /[[https://www.pgadmin.org/docs/pgadmin4/dev/pgagent.html]]/).
+
+pgcli A replacement for psql that includes improved formatting when writing queries and viewing output (see /[[https://github.com/dbcli/pgcli/]]/).
+
+*PL/R* A loadable procedural language that provides the ability to use the R statistical programming language within PostgreSQL functions and triggers (see /[[http://www.joeconway.com/plr.html]]/).
+
+*SciPy* A collection of Python science and engineering libraries you can use with the PL/Python procedural language in PostgreSQL (see /[[https://www.scipy.org/]]/).
+
+** PostgreSQL News
+
+Now that you're a bona fide PostgreSQL user, it's wise to stay on top of community news. The PostgreSQL development team releases new versions of the software on a regular basis, and its ecosystem spawns constant innovation and related products. Updates to PostgreSQL might impact code you've written or even offer new opportunities for analysis.
+
+Here's a collection of online resources you can use to stay informed:
+
+*EDB Blog* Posts from the team at EnterpriseDB, a PostgreSQL services company that provides the Windows installer referenced in this book (see /[[https://www.enterprisedb.com/blog/]]/).
+
+*Planet PostgreSQL* A collection of blog posts and announcements from the database community (see /[[https://planet.postgresql.org/]]/).
+
+*Postgres Weekly* An email newsletter that rounds up announcements, blog posts, and product announcements (see /[[https://postgresweekly.com/]]/).
+
+*PostgreSQL Mailing Lists* These lists are useful for asking questions of community experts. The pgsql-novice and pgsql-general lists are particularly good for beginners, although note that email volume can be heavy (see /[[https://www.postgresql.org/list/]]/).
+
+*PostgreSQL News Archive* Official news from the Postgres team (see /[[https://www.postgresql.org/about/newsarchive/]]/).
+
+*PostGIS Blog* Announcements and updates on the PostGIS extension covered in [[file:ch14.xhtml#ch14][Chapter 14]] (see /[[http://postgis.net/blog/]]/).
+
+Additionally, I recommend paying attention to developer notes for any of the PostgreSQL-related software you use, such as pgAdmin.
+
+** Documentation
+
+Throughout this book, I've made frequent reference to pages in the official PostgreSQL documentation. You can find documentation for each version of the software along with an FAQ and wiki on the main page at /[[https://www.postgresql.org/docs/]]/. It's worth reading through various sections of the manual as you learn more about a particular topic, such as indexes, or search for all the options that come with functions. In particular, the Preface, Tutorial, and SQL Language sections cover much of the material presented in the book's chapters.
+
+Other good resources for documentation are the Postgres Guide at /[[http://postgresguide.com/]]/ and Stack Overflow, where you can find questions and answers posted by developers at /[[https://stackoverflow.com/questions/tagged/postgresql/]]/. You can also check out the Q&A site for PostGIS at /[[https://gis.stackexchange.com/questions/tagged/postgis/]]/.

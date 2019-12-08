@@ -1,0 +1,284 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:ns="http://www.w3.org/2001/10/synthesis" lang="en-us" xml:lang="en-us">
+<head>
+<title>Practical SQL: A Beginner’s Guide to Storytelling with Data</title>
+<link href="../styles/9781593278458.css" rel="stylesheet" type="text/css"/>
+<meta content="urn:uuid:c3d53d4c-356a-4b39-bef0-591c04016b72" name="Adept.expected.resource"/>
+</head>
+<body>
+<h2 class="h2" id="ch03"><span epub:type="pagebreak" id="page_23"/><strong><span class="big">3</span></strong><br/><strong>UNDERSTANDING DATA TYPES</strong></h2>
+<div class="image1"><img alt="image" src="../images/common01.jpg"/></div>
+<p class="noindent">Whenever I dig into a new database, I check the <em>data type</em> specified for each column in each table. If I’m lucky, I can get my hands on a <em>data dictionary</em>: a document that lists each column; specifies whether it’s a number, character, or other type; and explains the column values. Unfortunately, many organizations don’t create and maintain good documentation, so it’s not unusual to hear, “We don’t have a data dictionary.” In that case, I try to learn by inspecting the table structures in pgAdmin.</p>
+<p class="indent">It’s important to understand data types because storing data in the appropriate format is fundamental to building usable databases and performing accurate analysis. In addition, a data type is a programming concept applicable to more than just SQL. The concepts you’ll explore in this chapter will transfer well to additional languages you may want to learn.</p>
+<p class="indent"><span epub:type="pagebreak" id="page_24"/>In a SQL database, each column in a table can hold one and only one data type, which is defined in the <span class="literal">CREATE TABLE</span> statement. You declare the data type after naming the column. Here’s a simple example that includes two columns, one a date and the other an integer:</p>
+<p class="programs">CREATE TABLE eagle_watch (<br/>    observed_date date,<br/>    eagles_seen integer<br/>);</p>
+<p class="indent">In this table named <span class="literal">eagle_watch</span> (for an annual inventory of bald eagles), the <span class="literal">observed_date</span> column is declared to hold date values by adding the <span class="literal">date</span> type declaration after its name. Similarly, <span class="literal">eagles_seen</span> is set to hold whole numbers with the <span class="literal">integer</span> type declaration.</p>
+<p class="indent">These data types are among the three categories you’ll encounter most:</p>
+<p class="hang"><strong>Characters</strong> Any character or symbol</p>
+<p class="hang"><strong>Numbers</strong> Includes whole numbers and fractions</p>
+<p class="hang"><strong>Dates and times</strong> Types holding temporal information</p>
+<p class="indent">Let’s look at each data type in depth; I’ll note whether they’re part of standard ANSI SQL or specific to PostgreSQL.</p>
+<h3 class="h3" id="lev31">Characters</h3>
+<p class="noindent"><em>Character string types</em> are general-purpose types suitable for any combination of text, numbers, and symbols. Character types include:</p>
+<p class="noindentta"><span class="literal"><strong>char(</strong></span><span class="literal"><strong><em>n</em></strong></span><span class="literal"><strong>)</strong></span></p>
+<p class="noindent1">A fixed-length column where the character length is specified by <span class="codeitalic">n</span>. A column set at <span class="literal">char(20)</span> stores 20 characters per row regardless of how many characters you insert. If you insert fewer than 20 characters in any row, PostgreSQL pads the rest of that column with spaces. This type, which is part of standard SQL, also can be specified with the longer name <span class="literal">character(</span><span class="codeitalic">n</span><span class="literal">)</span>. Nowadays, <span class="literal">char(</span><span class="codeitalic">n</span><span class="literal">)</span> is used infrequently and is mainly a remnant of legacy computer systems.</p>
+<p class="noindentta"><span class="literal"><strong>varchar(</strong></span><span class="literal"><strong><em>n</em></strong></span><span class="literal"><strong>)</strong></span></p>
+<p class="noindent1">A variable-length column where the <em>maximum</em> length is specified by <span class="codeitalic">n</span>. If you insert fewer characters than the maximum, PostgreSQL will not store extra spaces. For example, the string <span class="literal">blue</span> will take four spaces, whereas the string <span class="literal">123</span> will take three. In large databases, this practice saves considerable space. This type, included in standard SQL, also can be specified using the longer name <span class="literal">character varying(</span><span class="codeitalic">n</span><span class="literal">)</span>.</p>
+<p class="noindentta"><span epub:type="pagebreak" id="page_25"/><span class="literal"><strong>text</strong></span></p>
+<p class="noindent1">A variable-length column of unlimited length. (According to the PostgreSQL documentation, the longest possible character string you can store is about 1 gigabyte.) The <span class="literal">text</span> type is not part of the SQL standard, but you’ll find similar implementations in other database systems, including Microsoft SQL Server and MySQL.</p>
+<p class="indentt">According to PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/datatype-character.html">https://www.postgresql.org/docs/current/static/datatype-character.html</a></em>, there is no substantial difference in performance among the three types. That may differ if you’re using another database manager, so it’s wise to check the docs. The flexibility and potential space savings of <span class="literal">varchar</span> and <span class="literal">text</span> seem to give them an advantage. But if you search discussions online, some users suggest that defining a column that will always have the same number of characters with <span class="literal">char</span> is a good way to signal what data it should contain. For instance, you might use <span class="literal">char(2)</span> for U.S. state postal abbreviations.</p>
+<p class="indent">To see these three character types in action, run the script in <a href="ch03.xhtml#ch03list1">Listing 3-1</a>. This script will build and load a simple table and then export the data to a text file on your computer.</p>
+<p class="programs">  CREATE TABLE char_data_types (<br/>    <span class="ent">➊</span> varchar_column varchar(10),<br/>      char_column char(10),<br/>      text_column text <br/>  );<br/><br/><span class="ent">➋</span> INSERT INTO char_data_types<br/>  VALUES <br/>      ('abc', 'abc', 'abc'),<br/>      ('defghi', 'defghi', 'defghi');<br/><br/><span class="ent">➌</span> COPY char_data_types TO '<em>C:\YourDirectory\</em>typetest.txt'<br/><span class="ent">➍</span> WITH (FORMAT CSV, HEADER, DELIMITER '|');</p>
+<p class="listing" id="ch03list1"><em>Listing 3-1: Character data types in action</em></p>
+<p class="indent">The script defines three character columns <span class="ent">➊</span> of different types and inserts two rows of the same string into each <span class="ent">➋</span>. Unlike the <span class="literal">INSERT INTO</span> statement you learned in <a href="ch01.xhtml#ch01">Chapter 1</a>, here we’re not specifying the names of the columns. If the <span class="literal">VALUES</span> statements match the number of columns in the table, the database will assume you’re inserting values in the order the column definitions were specified in the table.</p>
+<p class="indent">Next, the script uses the PostgreSQL <span class="literal">COPY</span> keyword <span class="ent">➌</span> to export the data to a text file named <span class="literal">typetest.txt</span> in a directory you specify. You’ll need to replace <span class="codeitalic">C:\YourDirectory\</span> with the full path to the directory on your computer where you want to save the file. The examples in this book use Windows format and a path to a directory called <span class="codeitalic">YourDirectory</span> on the C: drive. Linux and macOS file paths have a different format. On my Mac, the path to a file <span epub:type="pagebreak" id="page_26"/>on the desktop is <span class="codeitalic">/Users/anthony/Desktop/</span>. On Linux, my desktop is located at <span class="codeitalic">/home</span><span class="codeitalic">/anthony/Desktop/</span>. The directory must exist already; PostgreSQL won’t create it for you.</p>
+<p class="indent">In PostgreSQL, <span class="literal">COPY</span> <span class="codeitalic">table_name FROM</span> is the import function and <span class="literal">COPY</span> <span class="codeitalic">table_name TO</span> is the export function. I’ll cover them in depth in <a href="ch04.xhtml#ch04">Chapter 4</a>; for now, all you need to know is that the <span class="literal">WITH</span> keyword options <span class="ent">➍</span> will format the data in the file with each column separated by a <em>pipe</em> character (|). That way, you can easily see where spaces fill out the unused portions of the <span class="literal">char</span> column.</p>
+<p class="indent">To see the output, open <em>typetest.txt</em> using a plain text editor (not Word or Excel, or another spreadsheet application). The contents should look like this:</p>
+<p class="programs">varchar_column|char_column|text_column<br/>abc|abc       |abc<br/>defghi|defghi    |defghi</p>
+<p class="indent">Even though you specified 10 characters for both the <span class="literal">varchar</span> and <span class="literal">char</span> columns, only the <span class="literal">char</span> column outputs 10 characters every time, padding unused characters with spaces. The <span class="literal">varchar</span> and <span class="literal">text</span> columns store only the characters you inserted.</p>
+<p class="indent">Again, there’s no real performance difference among the three types, although this example shows that <span class="literal">char</span> can potentially consume more storage space than needed. A few unused spaces in each column might seem negligible, but multiply that over millions of rows in dozens of tables and you’ll soon wish you had been more economical.</p>
+<p class="indent">Typically, using <span class="literal">varchar</span> with an <span class="codeitalic">n</span> value sufficient to handle outliers is a solid strategy.</p>
+<h3 class="h3" id="lev32">Numbers</h3>
+<p class="noindent">Number columns hold various types of (you guessed it) numbers, but that’s not all: they also allow you to perform calculations on those numbers. That’s an important distinction from numbers you store as strings in a character column, which can’t be added, multiplied, divided, or perform any other math operation. Also, as I discussed in <a href="ch02.xhtml#ch02">Chapter 2</a>, numbers stored as characters sort differently than numbers stored as numbers, arranging in text rather than numerical order. So, if you’re doing math or the numeric order is important, use number types.</p>
+<p class="indent">The SQL number types include:</p>
+<p class="hang"><strong>Integers</strong> Whole numbers, both positive and negative</p>
+<p class="hang"><strong>Fixed-point and floating-point</strong> Two formats of fractions of whole numbers</p>
+<p class="indentt">We’ll look at each type separately.</p>
+<h4 class="h4" id="lev33"><span epub:type="pagebreak" id="page_27"/><em>Integers</em></h4>
+<p class="noindent">The integer data types are the most common number types you’ll find when exploring data in a SQL database. Think of all the places integers appear in life: your street or apartment number, the serial number on your refrigerator, the number on a raffle ticket. These are <em>whole numbers</em>, both positive and negative, including zero.</p>
+<p class="indent">The SQL standard provides three integer types: <span class="literal">smallint</span>, <span class="literal">integer</span>, and <span class="literal">bigint</span>. The difference between the three types is the maximum size of the numbers they can hold. <a href="ch03.xhtml#ch03tab1">Table 3-1</a> shows the upper and lower limits of each, as well as how much storage each requires in bytes.</p>
+<p class="tabcap" id="ch03tab1"><strong>Table 3-1:</strong> Integer Data Types</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Data type</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Storage size</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Range</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">smallint</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">2 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">−32768 to +32767</p></td>
+</tr>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">integer</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">−2147483648 to +2147483647</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">bigint</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">8 bytes</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">−9223372036854775808 to +9223372036854775807</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">Even though it eats up the most storage, <span class="literal">bigint</span> will cover just about any requirement you’ll ever have with a number column. Its use is a must if you’re working with numbers larger than about 2.1 billion, but you can easily make it your go-to default and never worry. On the other hand, if you’re confident numbers will remain within the <span class="literal">integer</span> limit, that type is a good choice because it doesn’t consume as much space as <span class="literal">bigint</span> (a concern when dealing with millions of data rows).</p>
+<p class="indent">When the data values will remain constrained, <span class="literal">smallint</span> makes sense: days of the month or years are good examples. The <span class="literal">smallint</span> type will use half the storage as <span class="literal">integer</span>, so it’s a smart database design decision if the column values will always fit within its range.</p>
+<p class="indent">If you try to insert a number into any of these columns that is outside its range, the database will stop the operation and return an <span class="literal">out of range</span> error.</p>
+<h4 class="h4" id="lev34"><em>Auto-Incrementing Integers</em></h4>
+<p class="noindent">In <a href="ch01.xhtml#ch01">Chapter 1</a>, when you made the <span class="literal">teachers</span> table, you created an <span class="literal">id</span> column with the declaration of <span class="literal">big</span><span class="literal">serial</span>: this and its siblings <span class="literal">smallserial</span> and <span class="literal">serial</span> are not so much true data types as a special <em>implementation</em> of the corresponding <span class="literal">smallint</span>, <span class="literal">integer</span>, and <span class="literal">bigint</span> types. When you add a column with a serial type, PostgreSQL will <em>auto-increment</em> the value in the column each time you insert a row, starting with 1, up to the maximum of each integer type.</p>
+<p class="indent">The serial types are implementations of the ANSI SQL standard for auto-numbered <em>identity columns</em>. Each database manager implements these in its own way. For example, Microsoft SQL Server uses an <span class="literal">IDENTITY</span> keyword to set a column to auto-increment.</p>
+<p class="indent"><span epub:type="pagebreak" id="page_28"/>To use a serial type on a column, declare it in the <span class="literal">CREATE TABLE</span> statement as you would an integer type. For example, you could create a table called <span class="literal">people</span> that has an <span class="literal">id</span> column in each row:</p>
+<p class="programs">CREATE TABLE people (<br/>    id serial,<br/>    person_name varchar(100)<br/>);</p>
+<p class="indent">Every time a new <span class="literal">person_name</span> is added to the table, the <span class="literal">id</span> column will increment by 1.</p>
+<p class="indent"><a href="ch03.xhtml#ch03tab2">Table 3-2</a> shows the serial types and the ranges they cover.</p>
+<p class="tabcap" id="ch03tab2"><strong>Table 3-2:</strong> Serial Data Types</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Data type</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Storage size</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Range</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">smallserial</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">2 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">1 to 32767</p></td>
+</tr>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">serial</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">1 to 2147483647</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">bigserial</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">8 bytes</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">1 to 9223372036854775807</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent">As with this example and in <span class="literal">teachers</span> in <a href="ch01.xhtml#ch01">Chapter 1</a>, makers of databases often employ a serial type to create a unique ID number, also known as a key, for each row in the table. Each row then has its own ID that other tables in the database can reference. I’ll cover this concept of relating tables in <a href="ch06.xhtml#ch06">Chapter 6</a>. Because the column is auto-incrementing, you don’t need to insert a number into that column when adding data; PostgreSQL handles that for you.</p>
+<div class="note">
+<p class="notet"><strong><span class="notes">NOTE</span></strong></p>
+<p class="notep"><em>Even though a column with a serial type auto-increments each time a row is added, some scenarios will create gaps in the sequence of numbers in the column. If a row is deleted, for example, the value in that row is never replaced. Or, if a row insert is aborted, the sequence for the column will still be incremented.</em></p>
+</div>
+<h4 class="h4" id="lev35"><em>Decimal Numbers</em></h4>
+<p class="noindent">As opposed to integers, <em>decimals</em> represent a whole number plus a fraction of a whole number; the fraction is represented by digits following a <em>decimal point</em>. In a SQL database, they’re handled by <em>fixed-point</em> and <em>floating-point</em> data types. For example, the distance from my house to the nearest grocery store is 6.7 miles; I could insert 6.7 into either a fixed-point or floating-point column with no complaint from PostgreSQL. The only difference is how the computer stores the data. In a moment, you’ll see that has important implications.</p>
+<h5 class="h5" id="lev36">Fixed-Point Numbers</h5>
+<p class="noindent">The fixed-point type, also called the <em>arbitrary precision</em> type, is <span class="literal">numeric(</span><span class="codeitalic">precision</span><span class="literal">,</span><span class="codeitalic">scale</span><span class="literal">)</span>. You give the argument <span class="literal">precision</span> as the maximum number of digits to the left and right of the decimal <span epub:type="pagebreak" id="page_29"/>point, and the argument <span class="literal">scale</span> as the number of digits allowable on the right of the decimal point. Alternately, you can specify this type using <span class="literal">decimal(</span><span class="codeitalic">precision</span><span class="literal">,</span><span class="codeitalic">scale</span><span class="literal">)</span>. Both are part of the ANSI SQL standard. If you omit specifying a scale value, the scale will be set to zero; in effect, that creates an integer. If you omit specifying the precision and the scale, the database will store values of any precision and scale up to the maximum allowed. (That’s up to 131,072 digits before the decimal point and 16,383 digits after the decimal point, according to the PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/datatype-numeric.html">https://www.postgresql.org/docs/current/static/datatype-numeric.html</a></em>.)</p>
+<p class="indent">For example, let’s say you’re collecting rainfall totals from several local airports—not an unlikely data analysis task. The U.S. National Weather Service provides this data with rainfall typically measured to two decimal places. (And, if you’re like me, you have a distant memory of your third-grade math teacher explaining that two digits after a decimal is the hundredths place.)</p>
+<p class="indent">To record rainfall in the database using five digits total (the precision) and two digits maximum to the right of the decimal (the scale), you’d specify it as <span class="literal">numeric(5,2)</span>. The database will always return two digits to the right of the decimal point, even if you don’t enter a number that contains two digits. For example, 1.47, 1.00, and 121.50.</p>
+<h5 class="h5" id="lev37">Floating-Point Types</h5>
+<p class="noindent">The two floating-point types are <span class="literal">real</span> and <span class="literal">double precision</span>. The difference between the two is how much data they store. The <span class="literal">real</span> type allows precision to six decimal digits, and <span class="literal">double precision</span> to 15 decimal points of precision, both of which include the number of digits on both sides of the point. These floating-point types are also called <em>variable-precision</em> types. The database stores the number in parts representing the digits and an exponent—the location where the decimal point belongs. So, unlike <span class="literal">numeric</span>, where we specify fixed precision and scale, the decimal point in a given column can “float” depending on the number.</p>
+<h5 class="h5" id="lev38">Using Fixed- and Floating-Point Types</h5>
+<p class="noindent">Each type has differing limits on the number of total digits, or precision, it can hold, as shown in <a href="ch03.xhtml#ch03tab3">Table 3-3</a>.</p>
+<p class="tabcap" id="ch03tab3"><strong>Table 3-3:</strong> Fixed-Point and Floating-Point Data Types</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Data type</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Storage size</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Storage type</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Range</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">numeric</span>, <span class="literal">decimal</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">variable</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Fixed-point</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Up to 131072 digits before the decimal point; up to 16383 digits after the decimal point</p></td>
+</tr>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">real</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Floating-point</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">6 decimal digits precision</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">double precision</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">8 bytes</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">Floating-point</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">15 decimal digits precision</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indent"><span epub:type="pagebreak" id="page_30"/>To see how each of the three data types handles the same numbers, create a small table and insert a variety of test cases, as shown in <a href="ch03.xhtml#ch03list2">Listing 3-2</a>:</p>
+<p class="programs">  CREATE TABLE number_data_types (<br/>    <span class="ent">➊</span> numeric_column numeric(20,5),<br/>      real_column real,<br/>      double_column double precision<br/>  );<br/><span class="ent">➋</span> INSERT INTO number_data_types<br/>  VALUES<br/>      (.7, .7, .7),<br/>      (2.13579, 2.13579, 2.13579),<br/>      (2.1357987654, 2.1357987654, 2.1357987654);<br/><br/>  SELECT * FROM number_data_types;</p>
+<p class="listing" id="ch03list2"><em>Listing 3-2: Number data types in action</em></p>
+<p class="indent">We’ve created a table with one column for each of the fractional data types <span class="ent">➊</span> and loaded three rows into the table <span class="ent">➋</span>. Each row repeats the same number across all three columns. When the last line of the script runs and we select everything from the table, we get the following:</p>
+<p class="programs">numeric_column    real_column    double_column<br/>--------------    -----------    -------------<br/>       0.70000            0.7              0.7<br/>       2.13579        2.13579          2.13579<br/>       2.13580         2.1358     2.1357987654</p>
+<p class="indent">Notice what happened. The <span class="literal">numeric</span> column, set with a scale of five, stores five digits after the decimal point whether or not you inserted that many. If fewer than five, it pads the rest with zeros. If more than five, it rounds them—as with the third-row number with 10 digits after the decimal.</p>
+<p class="indent">The <span class="literal">real</span> and <span class="literal">double precision</span> columns store only the number of digits present with no padding. Again on the third row, the number is rounded when inserted into the <span class="literal">real</span> column because that type has a maximum of six digits of precision. The <span class="literal">double precision</span> column can hold up to 15 digits, so it stores the entire number.</p>
+<h5 class="h5" id="lev39">Trouble with Floating-Point Math</h5>
+<p class="noindent">If you’re thinking, “Well, numbers stored as a floating-point look just like numbers stored as fixed,” tread cautiously. The way computers store floating-point numbers can lead to unintended mathematical errors. Look at what happens when we do some calculations on these numbers. Run the script in <a href="ch03.xhtml#ch03list3">Listing 3-3</a>.</p>
+<p class="programs">  SELECT<br/>    <span class="ent">➊</span> numeric_column * 10000000 AS "Fixed",<br/>      real_column  * 10000000 AS "Float"<br/><span epub:type="pagebreak" id="page_31"/>  FROM number_data_types<br/><span class="ent">➋</span> WHERE numeric_column = .7;</p>
+<p class="listing" id="ch03list3"><em>Listing 3-3: Rounding issues with float columns</em></p>
+<p class="indent">Here, we multiply the <span class="literal">numeric_column</span> and the <span class="literal">real_column</span> by 10 million <span class="ent">➊</span> and use a <span class="literal">WHERE</span> clause to filter out just the first row <span class="ent">➋</span>. We should get the same result for both calculations, right? Here’s what the query returns:</p>
+<p class="programs">Fixed             Float<br/>-------------     ----------------<br/>7000000.00000     6999999.88079071</p>
+<p class="indent">Hello! No wonder floating-point types are referred to as “inexact.” It’s a good thing I’m not using this math to launch a mission to Mars or calculate the federal budget deficit.</p>
+<p class="indent">The reason floating-point math produces such errors is that the computer attempts to squeeze lots of information into a finite number of bits. The topic is the subject of a lot of writings and is beyond the scope of this book, but if you’re interested, you’ll find the link to a good synopsis at <em><a href="https://www.nostarch.com/practicalSQL/">https://www.nostarch.com/practicalSQL/</a></em>.</p>
+<p class="indent">The storage required by the <span class="literal">numeric</span> data type is variable, and depending on the precision and scale specified, <span class="literal">numeric</span> can consume considerably more space than the floating-point types. If you’re working with millions of rows, it’s worth considering whether you can live with relatively inexact floating-point math.</p>
+<h4 class="h4" id="lev40"><em>Choosing Your Number Data Type</em></h4>
+<p class="noindent">For now, here are three guidelines to consider when you’re dealing with number data types:</p>
+<ol>
+<li class="noindent"><p class="list">Use integers when possible. Unless your data uses decimals, stick with integer types.</p></li>
+<li class="noindent"><p class="list">If you’re working with decimal data and need calculations to be exact (dealing with money, for example), choose <span class="literal">numeric</span> or its equivalent, <span class="literal">decimal</span>. Float types will save space, but the inexactness of floating-point math won’t pass muster in many applications. Use them only when exactness is not as important.</p></li>
+<li class="noindent"><p class="list">Choose a big enough number type. Unless you’re designing a database to hold millions of rows, err on the side of bigger. When using <span class="literal">numeric</span> or <span class="literal">decimal</span>, set the precision large enough to accommodate the number of digits on both sides of the decimal point. With whole numbers, use <span class="literal">bigint</span> unless you’re absolutely sure column values will be constrained to fit into the smaller <span class="literal">integer</span> or <span class="literal">smallint</span> types.</p></li>
+</ol>
+<h3 class="h3" id="lev41"><span epub:type="pagebreak" id="page_32"/>Dates and Times</h3>
+<p class="noindent">Whenever you enter a date into a search form, you’re reaping the benefit of databases having an awareness of the current time (received from the server) plus the ability to handle formats for dates, times, and the nuances of the calendar, such as leap years and time zones. This is essential for storytelling with data, because the issue of <em>when</em> something occurred is usually as valuable a question as who, what, or how many were involved.</p>
+<p class="indent">PostgreSQL’s date and time support includes the four major data types shown in <a href="ch03.xhtml#ch03tab4">Table 3-4</a>.</p>
+<p class="tabcap" id="ch03tab4"><strong>Table 3-4:</strong> Date and Time Data Types</p>
+<table class="topbot-d">
+<thead>
+<tr>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Data type</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Storage size</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Description</strong></p></td>
+<td class="table-h" style="vertical-align: top;"><p class="tab_th"><strong>Range</strong></p></td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">timestamp</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">8 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Date and time</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4713 BC to 294276 AD</p></td>
+</tr>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">date</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Date (no time)</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">4713 BC to 5874897 AD</p></td>
+</tr>
+<tr>
+<td class="table-c" style="vertical-align: top;"><p class="taba"><span class="literal">time</span></p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">8 bytes</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">Time (no date)</p></td>
+<td class="table-c" style="vertical-align: top;"><p class="taba">00:00:00 to 24:00:00</p></td>
+</tr>
+<tr>
+<td class="table-ca" style="vertical-align: top;"><p class="taba"><span class="literal">interval</span></p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">16 bytes</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">Time interval</p></td>
+<td class="table-ca" style="vertical-align: top;"><p class="taba">+/− 178,000,000 years</p></td>
+</tr>
+</tbody>
+</table>
+<p class="indentb">Here’s a rundown of data types for times and dates in PostgreSQL:</p>
+<p class="hang"><span class="codestrong">timestamp</span> Records date and time, which are useful for a range of situations you might track: departures and arrivals of passenger flights, a schedule of Major League Baseball games, or incidents along a timeline. Typically, you’ll want to add the keywords <span class="literal">with time zone</span> to ensure that the time recorded for an event includes the time zone where it occurred. Otherwise, times recorded in various places around the globe become impossible to compare. The format <span class="literal">timestamp with time zone</span> is part of the SQL standard; with PostgreSQL you can specify the same data type using <span class="literal">timestamptz</span>.</p>
+<p class="hang"><span class="codestrong">date</span> Records just the date.</p>
+<p class="hang"><span class="codestrong">time</span> Records just the time. Again, you’ll want to add the <span class="literal">with time zone</span> keywords.</p>
+<p class="hang"><span class="codestrong">interval</span> Holds a value representing a unit of time expressed in the format <span class="codeitalic">quantity</span> <span class="codeitalic">unit</span>. It doesn’t record the start or end of a time period, only its length. Examples include <span class="literal">12 days</span> or <span class="literal">8 hours</span>. (The PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/datatype-datetime.html">https://www.postgresql.org/docs/current/static/datatype-datetime.html</a></em> lists unit values ranging from <span class="literal">microsecond</span> to <span class="literal">millennium</span>.) You’ll typically use this type for calculations or filtering on other date and time columns.</p>
+<p class="indentt">Let’s focus on the <span class="literal">timestamp with time zone</span> and <span class="literal">interval</span> types. To see these in action, run the script in <a href="ch03.xhtml#ch03list4">Listing 3-4</a>.</p>
+<p class="programs"><span class="ent">➊</span> CREATE TABLE date_time_types (<br/>    timestamp_column timestamp with time zone,<br/>    interval_column interval<br/>  );<br/><span epub:type="pagebreak" id="page_33"/><span class="ent">➋</span> INSERT INTO date_time_types <br/>  VALUES <br/>      ('2018-12-31 01:00 EST','2 days'),<br/>      ('2018-12-31 01:00 -8','1 month'),<br/>      ('2018-12-31 01:00 Australia/Melbourne','1 century'),<br/>    <span class="ent">➌</span> (now(),'1 week');<br/><br/>  SELECT * FROM date_time_types;</p>
+<p class="listing" id="ch03list4"><em>Listing 3-4: The <span class="literal">timestamp</span> and <span class="literal">interval</span> types in action</em></p>
+<p class="indent">Here, we create a table with a column for both types <span class="ent">➊</span> and insert four rows <span class="ent">➋</span>. For the first three rows, our insert for the <span class="literal">timestamp_column</span> uses the same date and time (December 31, 2018 at 1 <small>AM</small>) using the International Organization for Standardization (ISO) format for dates and times: <span class="codeitalic">YYYY-</span><span class="codeitalic">MM-</span><span class="codeitalic">DD HH:</span><span class="codeitalic">MM:</span><span class="codeitalic">SS</span>. SQL supports additional date formats (such as <span class="codeitalic">MM/DD/YYYY</span>), but ISO is recommended for portability worldwide.</p>
+<p class="indent">Following the time, we specify a time zone but use a different format in each of the first three rows: in the first row, we use the abbreviation <span class="literal">EST</span>, which is Eastern Standard Time in the United States.</p>
+<p class="indent">In the second row, we set the time zone with the value <span class="literal">-8</span>. That represents the number of hours difference, or <em>offset</em>, from Coordinated Universal Time (UTC). UTC refers to an overall world time standard as well as the value of UTC +/− 00:00, the time zone that covers the United Kingdom and Western Africa. (For a map of UTC time zones, see <em><a href="https://en.wikipedia.org/wiki/Coordinated_Universal_Time#/media/File:Standard_World_Time_Zones.png">https://en.wikipedia.org/wiki/Coordinated_Universal_Time#/media/File:Standard_World_Time_Zones.png</a></em>.) Using a value of <span class="literal">-8</span> specifies a time zone eight hours behind UTC, which is the Pacific time zone in the United States and Canada.</p>
+<p class="indent">For the third row, we specify the time zone using the name of an area and location: <span class="literal">Australia/Melbourne</span>. That format uses values found in a standard time zone database often employed in computer programming. You can learn more about the time zone database at <em><a href="https://en.wikipedia.org/wiki/Tz_database">https://en.wikipedia.org/wiki/Tz_database</a></em>.</p>
+<p class="indent">In the fourth row, instead of specifying dates, times, and time zones, the script uses PostgreSQL’s <span class="literal">now()</span> function <span class="ent">➌</span>, which captures the current transaction time from your hardware.</p>
+<p class="indent">After the script runs, the output should look similar to (but not exactly like) this:</p>
+<p class="programs">timestamp_column                 interval_column<br/>-----------------------------    ---------------<br/>2018-12-31 01:00:00-05           2 days<br/>2018-12-31 04:00:00-05           1 mon<br/>2018-12-30 09:00:00-05           100 years<br/>2019-01-25 21:31:15.716063-05    7 days</p>
+<p class="indent">Even though we supplied the same date and time in the first three rows on the <span class="literal">timestamp_column</span>, each row’s output differs. The reason is that pgAdmin reports the date and time relative to my time zone, which in the <span epub:type="pagebreak" id="page_34"/>results shown is indicated by the UTC offset of <span class="literal">-05</span> at the end of each timestamp. A UTC offset of <span class="literal">-05</span> means five hours behind UTC time, equivalent to the U.S. Eastern time zone, where I live. If you live in a different time zone, you’ll likely see a different offset; the times and dates also may differ from what’s shown here. We can change how PostgreSQL reports these timestamp values, and I’ll cover how to do that plus other tips for wrangling dates and times in <a href="ch11.xhtml#ch11">Chapter 11</a>.</p>
+<p class="indent">Finally, the <span class="literal">interval_column</span> shows the values you entered. PostgreSQL changed <span class="literal">1 century</span> to <span class="literal">100 years</span> and <span class="literal">1 week</span> to <span class="literal">7 days</span> because of its preferred default settings for interval display. Read the “Interval Input” section of the PostgreSQL documentation at <em><a href="https://www.postgresql.org/docs/current/static/datatype-datetime.html">https://www.postgresql.org/docs/current/static/datatype-datetime.html</a></em> to learn more about options related to intervals.</p>
+<h3 class="h3" id="lev42">Using the interval Data Type in Calculations</h3>
+<p class="noindent">The <span class="literal">interval</span> data type is useful for easy-to-understand calculations on date and time data. For example, let’s say you have a column that holds the date a client signed a contract. Using interval data, you can add 90 days to each contract date to determine when to follow up with the client.</p>
+<p class="indent">To see how the <span class="literal">interval</span> data type works, we’ll use the <span class="literal">date_time_types</span> table we just created, as shown in <a href="ch03.xhtml#ch03list5">Listing 3-5</a>:</p>
+<p class="programs">SELECT<br/>    timestamp_column<br/>    interval_column,<br/>  <span class="ent">➊</span> timestamp_column - interval_column AS new_date<br/>FROM date_time_types;</p>
+<p class="listing" id="ch03list5"><em>Listing 3-5: Using the <span class="literal">interval</span> data type</em></p>
+<p class="indent">This is a typical <span class="literal">SELECT</span> statement except we’ll compute a column called <span class="literal">new_date</span> <span class="ent">➊</span> that contains the result of <span class="literal">timestamp_column</span> minus <span class="literal">interval_column</span>. (Computed columns are called <em>expressions</em>; we’ll use this technique often.) In each row, we subtract the unit of time indicated by the <span class="literal">interval</span> data type from the date. This produces the following result:</p>
+<div class="image"><img alt="image" src="../images/prog_page_34.jpg"/></div>
+<p class="indent">Note that the <span class="literal">new_date</span> column by default is formatted as type <span class="literal">timestamp with time zone</span>, allowing for the display of time values as well as dates if the interval value uses them. Again, your output may be different based on your time zone.</p>
+<h3 class="h3" id="lev43"><span epub:type="pagebreak" id="page_35"/>Miscellaneous Types</h3>
+<p class="noindent">The character, number, and date/time types you’ve learned so far will likely comprise the bulk of the work you do with SQL. But PostgreSQL supports many additional types, including but not limited to:</p>
+<ul>
+<li class="noindent">A Boolean type that stores a value of <span class="literal">true</span> or <span class="literal">false</span></li>
+<li class="noindent">Geometric types that include points, lines, circles, and other two-dimensional objects</li>
+<li class="noindent">Network address types, such as IP or MAC addresses</li>
+<li class="noindent">A Universally Unique Identifier (UUID) type, sometimes used as a unique key value in tables</li>
+<li class="noindent">XML and JSON data types that store information in those structured formats</li>
+</ul>
+<p class="indent">I’ll cover these types as required throughout the book.</p>
+<h3 class="h3" id="lev44">Transforming Values from One Type to Another with CAST</h3>
+<p class="noindent">Occasionally, you may need to transform a value from its stored data type to another type; for example, when you retrieve a number as a character so you can combine it with text or when you must treat a date stored as characters as an actual date type so you can sort it in date order or perform interval calculations. You can perform these conversions using the <span class="literal">CAST()</span> function.</p>
+<p class="indent">The <span class="literal">CAST()</span> function only succeeds when the target data type can accommodate the original value. Casting an integer as text is possible, because the character types can include numbers. Casting text with letters of the alphabet as a number is not.</p>
+<p class="indent"><a href="ch03.xhtml#ch03list6">Listing 3-6</a> has three examples using the three data type tables we just created. The first two examples work, but the third will try to perform an invalid type conversion so you can see what a type casting error looks like.</p>
+<p class="programs"><span class="ent">➊</span> SELECT timestamp_column, CAST(timestamp_column AS varchar(10))<br/>  FROM date_time_types;<br/><br/><span class="ent">➋</span> SELECT numeric_column,<br/>         CAST(numeric_column AS integer),<br/>         CAST(numeric_column AS varchar(6))<br/>  FROM number_data_types;<br/><br/><span class="ent">➌</span> SELECT CAST(char_column AS integer) FROM char_data_types;</p>
+<p class="listing" id="ch03list6"><em>Listing 3-6: Three <span class="literal">CAST()</span> examples</em></p>
+<p class="indent">The first <span class="literal">SELECT</span> statement <span class="ent">➊</span> returns the <span class="literal">timestamp_column</span> value as a <span class="literal">varchar</span>, which you’ll recall is a variable-length character column. In this case, I’ve set the character length to 10, which means when converted to a character string, only the first 10 characters are kept. That’s handy in this case, because that just gives us the date segment of the column and <span epub:type="pagebreak" id="page_36"/>excludes the time. Of course, there are better ways to remove the time from a timestamp, and I’ll cover those in <a href="ch11.xhtml#lev170">“Extracting the Components of a timestamp Value”</a> on <a href="ch11.xhtml#page_173">page 173</a>.</p>
+<p class="indent">The second <span class="literal">SELECT</span> statement <span class="ent">➋</span> returns the <span class="literal">numeric_column</span> three times: in its original form and then as an integer and as a character. Upon conversion to an integer, PostgreSQL rounds the value to a whole number. But with the <span class="literal">varchar</span> conversion, no rounding occurs: the value is simply sliced at the sixth character.</p>
+<p class="indent">The final <span class="literal">SELECT</span> doesn’t work <span class="ent">➌</span>: it returns an error of <span class="literal">invalid input</span> <span class="literal">syntax for integer</span> because letters can’t become integers!</p>
+<h3 class="h3" id="lev45">CAST Shortcut Notation</h3>
+<p class="noindent">It’s always best to write SQL that can be read by another person who might pick it up later, and the way <span class="literal">CAST()</span> is written makes what you intended when you used it fairly obvious. However, PostgreSQL also offers a less-obvious shortcut notation that takes less space: the <em>double colon</em>.</p>
+<p class="indent">Insert the double colon in between the name of the column and the data type you want to convert it to. For example, these two statements cast <span class="literal">timestamp_column</span> as a <span class="literal">varchar</span>:</p>
+<p class="programs">SELECT timestamp_column, CAST(timestamp_column AS varchar(10))<br/>FROM date_time_types;<br/><br/>SELECT timestamp_column::varchar(10)<br/>FROM date_time_types;</p>
+<p class="indent">Use whichever suits you, but be aware that the double colon is a PostgreSQL-only implementation not found in other SQL variants.</p>
+<h3 class="h3" id="lev46">Wrapping Up</h3>
+<p class="noindent">You’re now equipped to better understand the nuances of the data formats you encounter while digging into databases. If you come across monetary values stored as floating-point numbers, you’ll be sure to convert them to decimals before performing any math. And you’ll know how to use the right kind of text column to keep your database from growing too big.</p>
+<p class="indent">Next, I’ll continue with SQL foundations and show you how to import external data into your database.</p>
+<div class="sidebar" id="ch03sb1">
+<p class="sidebart"><span epub:type="pagebreak" id="page_37"/><strong>TRY IT YOURSELF</strong></p>
+<p class="spara">Continue exploring data types with these exercises:</p>
+<ol>
+<li class="noindent"><p class="list">Your company delivers fruit and vegetables to local grocery stores, and you need to track the mileage driven by each driver each day to a tenth of a mile. Assuming no driver would ever travel more than 999 miles in a day, what would be an appropriate data type for the mileage column in your table? Why?</p></li>
+<li class="noindent"><p class="list">In the table listing each driver in your company, what are appropriate data types for the drivers’ first and last names? Why is it a good idea to separate first and last names into two columns rather than having one larger name column?</p></li>
+<li class="noindent"><p class="list">Assume you have a text column that includes strings formatted as dates. One of the strings is written as <span class="literal">'4//2017'</span>. What will happen when you try to convert that string to the <span class="literal">timestamp</span> data type?<span epub:type="pagebreak" id="page_38"/></p></li>
+</ol>
+</div>
+</body>
+</html>

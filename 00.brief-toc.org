@@ -1,0 +1,196 @@
+** Cover
+#+ATTR_HTML: :width 300px
+[[./prac-images/9781593278458.jpg]]
+
+** Brief Contents
+
+0.Introduction
+
+Chapter 1: Creating Your First Database and Table
+
+Chapter 2: Beginning Data Exploration with SELECT
+
+Chapter 3: Understanding Data Types
+
+Chapter 4: Importing and Exporting Data
+
+Chapter 5: Basic Math and Stats with SQL
+
+Chapter 6: Joining Tables in a Relational Database
+
+Chapter 7: Table Design That Works for You
+
+Chapter 8: Extracting Information by Grouping and Summarizing
+
+Chapter 9: Inspecting and Modifying Data
+
+Chapter 10: Statistical Functions in SQL
+
+Chapter 11: Working with Dates and Times
+
+Chapter 12: Advanced Query Techniques
+
+Chapter 13: Mining Text to Find Meaningful Data
+
+Chapter 14: Analyzing Spatial Data with PostGIS
+
+Chapter 15: Saving Time with Views, Functions, and Triggers
+
+Chapter 16: Using PostgreSQL from the Command Line
+
+Chapter 17: Maintaining Your Database
+
+Chapter 18: Identifying and Telling the Story Behind Your Data
+
+Appendix: Additional PostgreSQL Resources
+** Convert to org
+#+begin_src ipython :session psql :results output
+import glob
+import subprocess
+
+htmls = glob.glob("*.xhtml")
+for html in htmls:
+    cmd = f"pandoc --wrap=none {html} -o {html.replace('.xhtml', '.org')}"
+    subprocess.run(cmd, shell=True)
+! ls
+#+end_src
+
+#+RESULTS:
+#+begin_example
+00.brief-toc.org     ch03.xhtml  ch08.xhtml  ch13.xhtml  ch18.xhtml
+00.cover.org	     ch04.org	 ch09.org    ch14.org	 cover.org
+00.detailed-toc.org  ch04.xhtml  ch09.xhtml  ch14.xhtml  cover.xhtml
+appendix.org	     ch05.org	 ch10.org    ch15.org	 foreward.org
+appendix.xhtml	     ch05.xhtml  ch10.xhtml  ch15.xhtml  foreward.xhtml
+ch01.org	     ch06.org	 ch11.org    ch16.org	 intro.org
+ch01.xhtml	     ch06.xhtml  ch11.xhtml  ch16.xhtml  intro.xhtml
+ch02.org	     ch07.org	 ch12.org    ch17.org
+ch02.xhtml	     ch07.xhtml  ch12.xhtml  ch17.xhtml
+ch03.org	     ch08.org	 ch13.org    ch18.org
+#+end_example
+** Clear Up
+#+begin_src ipython :session psql :results none
+import re
+import glob
+
+
+def clearup(filename):
+    fp = open(filename, "r+")
+    text = fp.read()
+    text = re.sub(r"\*([0-9]*)\*", "\g<1>", text)
+    text = re.sub(r"\\", "", text)
+    text = re.sub(r"<<.+>>","", text)
+    text = re.sub(r".*:PROPERTIES:.*\n.*:CUSTOM_ID:.*\n.*:END:.*", "",
+            text)
+    text = re.sub(r".*:PROPERTIES:.*\n.*:CUSTOM_ID:.*\n.*:CLASS:.*\n.*:END:.*",
+            "", text)
+    text = re.sub(r".*:PROPERTIES:.*\n(?:.*\n)+.*:END:.*", "", text)
+    text = re.sub(r"\*(\d\.\d)\*", "\g<1>", text)
+    text = re.sub(r"\[\[.*Click here to view code image.*\]",   "", text)
+    text = re.sub(r"\*\[\[.*\]\[([0-9]\.[0-9]*)\]\]\*", "\g<1>", text)
+    # print(text[:100])
+    fp.seek(0)
+    fp.write(text)
+    fp.close()
+
+clearup("ch03.org")
+
+# orgs = glob.glob("*.org")
+
+#+end_src
+#+begin_src ipython :session psql :results output
+! ls ch*.org
+
+#+end_src
+
+#+RESULTS:
+: ch01.org  ch04.org  ch07.org  ch10.org	ch13.org  ch16.org
+: ch02.org  ch05.org  ch08.org  ch11.org	ch14.org  ch17.org
+: ch03.org  ch06.org  ch09.org  ch12.org	ch15.org  ch18.org
+
+
+
+#+begin_src ipython :session psql :results output
+orgs = glob.glob("ch*.org")
+# print(orgs)
+for org in orgs:
+    clearup(org)
+
+#+end_src
+
+#+RESULTS:
+** Rename orgs
+
+#+begin_src ipython :session cprimer :results none
+chapters = """
+[1 Getting Ready]]
+
+[[file:ch02.html#ch02][2 Introducing C]]
+
+[[file:ch03.html#ch03][3 Data and C]]
+
+[[file:ch04.html#ch04][4 Character Strings and Formatted InputOutput]]
+
+[[file:ch05.html#ch05][5 Operators, Expressions, and Statements]]
+
+[[file:ch06.html#ch06][6 C Control Statements: Looping]]
+
+[[file:ch07.html#ch07][7 C Control Statements: Branching and Jumps]]
+
+[[file:ch08.html#ch08][8 Character Input/Output and Input Validation]]
+
+[[file:ch09.html#ch09][9 Functions]]
+
+[[file:ch10.html#ch10][10 Arrays and Pointers]]
+
+[[file:ch11.html#ch11][11 Character Strings and String Functions]]
+
+[[file:ch12.html#ch12][12 Storage Classes, Linkage, and Memory Management]]
+
+[[file:ch13.html#ch13][13 File Input/Output]]
+
+[[file:ch14.html#ch14][14 Structures and Other Data Forms]]
+
+[[file:ch15.html#ch15][15 Bit Fiddling]]
+
+[[file:ch16.html#ch16][16 The C Preprocessor and the C Library]]
+
+[[file:ch17.html#ch17][17 Advanced Data Representation]]
+"""
+#+end_src
+
+#+begin_src ipython :session cprimer :results output
+# print(chapters)
+import re
+import os
+chs = re.findall(r"\[([0-9]{1,2}[^]]+)\]", chapters)
+# print(chs)
+orgs = glob.glob("ch*.org")
+orgs.sort(key=lambda x: int(x[2:4]))
+# print(orgs)
+for old, new in zip(orgs, chs):
+    os.rename(old, new)
+
+#+end_src
+
+#+RESULTS:
+#+begin_example
+('ch01.org', '1 Getting Ready')
+('ch02.org', '2 Introducing C')
+('ch03.org', '3 Data and C')
+('ch04.org', '4 Character Strings and Formatted Input/Output')
+('ch05.org', '5 Operators, Expressions, and Statements')
+('ch06.org', '6 C Control Statements: Looping')
+('ch07.org', '7 C Control Statements: Branching and Jumps')
+('ch08.org', '8 Character Input/Output and Input Validation')
+('ch09.org', '9 Functions')
+('ch10.org', '10 Arrays and Pointers')
+('ch11.org', '11 Character Strings and String Functions')
+('ch12.org', '12 Storage Classes, Linkage, and Memory Management')
+('ch13.org', '13 File Input/Output')
+('ch14.org', '14 Structures and Other Data Forms')
+('ch15.org', '15 Bit Fiddling')
+('ch16.org', '16 The C Preprocessor and the C Library')
+('ch17.org', '17 Advanced Data Representation')
+#+end_example
+** Publish

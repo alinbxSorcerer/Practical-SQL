@@ -1,0 +1,735 @@
+* 15 Saving Time With Views, Functions, And Triggers
+
+One of the advantages of using a programming language is that it allows us to automate repetitive, boring tasks. For example, if you have to run the same query every month to update the same table, sooner or later you'll search for a shortcut to accomplish the task. The good news is that shortcuts exist! In this chapter, you'll learn techniques to encapsulate queries and logic into reusable PostgreSQL database objects that will speed up your workflow. As you read through this chapter, keep in mind the DRY programming principle: Don't Repeat Yourself. Avoiding repetition saves time and prevents unnecessary mistakes.
+
+You'll begin by learning to save queries as reusable database /views/. Next, you'll explore how to create your own functions to perform operations on your data. You've already used functions, such as round() and upper(), to transform data; now, you'll make functions to perform operations you specify. Then you'll set up /triggers/ to run functions automatically when certain events occur on a table. Using these techniques, you can reduce repetitive work and help maintain the integrity of your data.
+
+We'll use tables created from examples in earlier chapters to practice these techniques. If you connected to the gis_analysis database in pgAdmin while working through [[file:ch14.xhtml#ch14][Chapter 14]], follow the instructions in that chapter to return to the analysis database. All the code for this chapter is available for download along with the book's resources at /[[https://www.nostarch.com/practicalSQL/]]/. Let's get started.
+
+** Using Views to Simplify Queries
+
+
+A /view/ is a virtual table you can create dynamically using a saved query. For example, every time you access the view, the saved query runs automatically and displays the results. Similar to a regular table, you can query a view, join a view to regular tables (or other views), and use the view to update or insert data into the table it's based on, albeit with some caveats.
+
+In this section, we'll look at regular views with a PostgreSQL syntax that is largely in line with the ANSI SQL standard. These views execute their underlying query each time you access the view, but they don't store data the way a table does. A /materialized view/, which is specific to PostgreSQL, Oracle, and a limited number of other database systems, caches data created by the view, and you can later update that cached data. We won't explore materialized views here, but you can browse to /[[https://www.postgresql.org/docs/current/static/sql-creatematerializedview.html]]/ to learn more.
+
+Views are especially useful because they allow you to:
+
+- *Avoid duplicate effort* by letting you write a query once and access the results when needed
+
+- *Reduce complexity* for yourself or other database users by showing only columns relevant to your needs
+
+- *Provide security* by limiting access to only certain columns in a table
+
+*NOTE*
+
+/To ensure data security and fully prevent users from seeing sensitive information, such as the underlying salary data in the employees table, you must restrict access by setting account permissions in PostgreSQL. Typically, a database administrator handles this function for an organization, but if you want to explore this issue further, read the PostgreSQL documentation on user roles at/ [[https://www.postgresql.org/docs/current/static/sql-createrole.html]] /and the GRANT command at/ [[https://www.postgresql.org/docs/current/static/sql-grant.html]].
+
+Views are easy to create and maintain. Let's work through several examples to see how they work.
+
+ /Creating and Querying Views/
+
+
+In this section, we'll use data in the Decennial U.S. Census us_counties_2010 table you imported in [[file:ch04.xhtml#ch04][Chapter 4]]. [[file:ch15.xhtml#ch15list1][Listing 15-1]] uses this data to create a view called nevada_counties_pop_2010 that displays only four out of the original 16 columns, showing data on just Nevada counties:
+
+➊ CREATE OR REPLACE VIEW nevada_counties_pop_2010 AS
+    ➋ SELECT geo_name,
+             state_fips,
+             county_fips,
+             p0010001 AS pop_2010
+      FROM us_counties_2010
+      WHERE state_us_abbreviation = 'NV'
+    ➌ ORDER BY county_fips;
+
+/Listing 15-1: Creating a view that displays Nevada 2010 counties/
+
+Here, we define the view using the keywords CREATE OR REPLACE VIEW ➊, followed by the view's name and AS. Next is a standard SQL query SELECT ➋ that fetches the total population (the p0010001 column) for each Nevada county from the us_counties_2010 table. Then we order the data by the county's FIPS (Federal Information Processing Standards) code ➌, which is a standard designator the Census Bureau and other federal agencies use to specify each county and state.
+
+Notice the OR REPLACE keywords after CREATE, which tell the database that if a view with this name already exists, replace it with the definition here. But here's a caveat according to the PostgreSQL documentation: the query that generates the view ➋ must have the columns with the same names and same data types in the same order as the view it's replacing. However, you can add columns at the end of the column list.
+
+Run the code in [[file:ch15.xhtml#ch15list1][Listing 15-1]] using pgAdmin. The database should respond with the message CREATE VIEW. To find the view you created, in pgAdmin's object browser, right-click the analysis database and choose *Refresh*. Choose *Schemas ▸ public ▸ Views* to see the new view. When you right-click the view and choose *Properties*, you should see the query under the *Definition* tab in the dialog that opens.
+
+*NOTE*
+
+/As with other database objects, you can delete a view using the DROP command. In this example, the syntax would be DROP VIEW nevada_counties_pop_2010;./
+
+After creating the view, you can use the view in the FROM clause of a SELECT query the same way you would use an ordinary table. Enter the code in [[file:ch15.xhtml#ch15list2][Listing 15-2]], which retrieves the first five rows from the view:
+
+SELECT *
+FROM nevada_counties_pop_2010
+LIMIT 5;
+
+/Listing 15-2: Querying the nevada_counties_pop_2010 view/
+
+Aside from the five-row limit, the result should be the same as if you had run the SELECT query used to create the view in [[file:ch15.xhtml#ch15list1][Listing 15-1]]:
+
+geo_name            state_fips    county_fips    pop_2010
+----------------    ----------    -----------    --------
+Churchill County    32            001               24877
+Clark County        32            003             1951269
+Douglas County      32            005               46997
+Elko County         32            007               48818
+Esmeralda County    32            009                 783
+
+This simple example isn't very useful unless quickly listing Nevada county population is a task you'll perform frequently. So, let's imagine a question data-minded analysts in a political research organization might ask often: what was the percent change in population for each county in Nevada (or any other state) from 2000 to 2010?
+
+We wrote a query to answer this question in [[file:ch06.xhtml#ch06list13][Listing 6-13]] (see [[file:ch06.xhtml#lev97][“Performing Math on Joined Table Columns”]] on [[file:ch06.xhtml#page_88][page 88]]). It wasn't onerous to create, but it did require joining tables on two columns and using a percent change formula that involved rounding and type casting. To avoid repeating that work, we can save a query similar to the one in [[file:ch06.xhtml#ch06list13][Listing 6-13]] as a view. [[file:ch15.xhtml#ch15list3][Listing 15-3]] does this using a modified version of the earlier code in [[file:ch15.xhtml#ch15list1][Listing 15-1]]:
+
+➊ CREATE OR REPLACE VIEW county_pop_change_2010_2000 AS
+    ➋ SELECT c2010.geo_name,
+             c2010.state_us_abbreviation AS st,
+             c2010.state_fips,
+             c2010.county_fips,
+             c2010.p0010001 AS pop_2010,
+             c2000.p0010001 AS pop_2000,
+           ➌ round( (CAST(c2010.p0010001 AS numeric(8,1)) - c2000.p0010001)
+                 / c2000.p0010001 * 100, 1 ) AS pct_change_2010_2000
+    ➍ FROM us_counties_2010 c2010 INNER JOIN us_counties_2000 c2000
+      ON c2010.state_fips = c2000.state_fips
+         AND c2010.county_fips = c2000.county_fips
+      ORDER BY c2010.state_fips, c2010.county_fips;
+
+/Listing 15-3: Creating a view showing population change for U.S. counties/
+
+We start the view definition with CREATE OR REPLACE VIEW ➊, followed by the name of the view and AS. The SELECT query ➋ names columns from the census tables and includes a column definition with a percent change calculation ➌ that you learned about in [[file:ch05.xhtml#ch05][Chapter 5]]. Then we join the Census 2010 and 2000 tables ➍ using the state and county FIPS codes. Run the code, and the database should again respond with CREATE VIEW.
+
+Now that we've created the view, we can use the code in [[file:ch15.xhtml#ch15list4][Listing 15-4]] to run a simple query against the new view that retrieves data for Nevada counties:
+
+  SELECT geo_name,
+         st,
+         pop_2010,
+       ➊ pct_change_2010_2000
+  FROM county_pop_change_2010_2000
+➋ WHERE st = 'NV'
+  LIMIT 5;
+
+/Listing 15-4: Selecting columns from the county_pop_change_2010_2000 view/
+
+In [[file:ch15.xhtml#ch15list2][Listing 15-2]], in the query against the first view we created, we retrieved every column in the view by using the asterisk wildcard after the SELECT keyword. [[file:ch15.xhtml#ch15list4][Listing 15-4]] shows that, as with a query on a table, we can name specific columns when querying a view. Here, we specify four of the county_pop_change_2010_2000 view's seven columns. One is pct_change_2010_2000 ➊, which returns the result of the percent change calculation we're looking for. As you can see, it's much simpler to write the column name like this than the whole formula! We're also filtering the results using a WHERE clause ➋, similar to how we would filter any query instead of returning all rows.
+
+After querying the four columns from the view, the results should look like this:
+
+geo_name            st    pop_2010    pct_change_2010_2000
+----------------    --    --------    --------------------
+Churchill County    NV       24877                     3.7
+Clark County        NV     1951269                    41.8
+Douglas County      NV       46997                    13.9
+Elko County         NV       48818                     7.8
+Esmeralda County    NV         783                   -19.4
+
+Now we can revisit this view as often as we like to pull data for presentations or to answer questions about the percent change in population for each county in Nevada (or any other state) from 2000 to 2010.
+
+Looking at just these five rows, you can see that a couple of interesting stories emerge: the effect of the 2000s' housing boom on Clark County, which includes the city of Las Vegas, as well as a sharp drop in population in Esmeralda County, which has one of the lowest population densities in the United States.
+
+ /Inserting, Updating, and Deleting Data Using a View/
+
+
+You can update or insert data in the underlying table that a view queries as long as the view meets certain conditions. One requirement is that the view must reference a single table. If the view's query joins tables, as with the population change view we just built in the previous section, then you can't perform inserts or updates directly. Also, the view's query can't contain DISTINCT, GROUP BY, or other clauses. (See a complete list of restrictions at /[[https://www.postgresql.org/docs/current/static/sql-createview.html]]/.)
+
+You already know how to directly insert and update data on a table, so why do it through a view? One reason is that with a view you can exercise more control over which data a user can update. Let's work through an example to see how this works.
+
+** Creating a View of Employees
+
+
+In the [[file:ch06.xhtml#ch06][Chapter 6]] lesson on joins, we created and filled departments and employees tables with four rows about people and where they work (if you skipped that section, you can revisit [[file:ch06.xhtml#ch06list1][Listing 6-1]] on [[file:ch06.xhtml#page_75][page 75]]). Running a quick SELECT * FROM employees; query shows the table's contents, as you can see here:
+
+emp_id    first_name    last_name    salary    dept_id
+------    ----------    ---------    ------    -------
+     1    Nancy         Jones         62500          1
+     2    Lee           Smith         59300          1
+     3    Soo           Nguyen        83000          2
+     4    Janet         King          95000          2
+
+Let's say we want to give users in the Tax Department (its dept_id is 1) the ability to add, remove, or update their employees' names without letting them change salary information or data of employees in another department. To do this, we can set up a view using [[file:ch15.xhtml#ch15list5][Listing 15-5]]:
+
+CREATE OR REPLACE VIEW employees_tax_dept AS
+     SELECT emp_id,
+            first_name,
+            last_name,
+            dept_id
+     FROM employees
+   ➊ WHERE dept_id = 1
+     ORDER BY emp_id
+   ➋ WITH LOCAL CHECK OPTION;
+
+/Listing 15-5: Creating a view on the employees table/
+
+Similar to the views we've created so far, we're selecting only the columns we want to show from the employees table and using WHERE to filter the results on dept_id = 1 ➊ to list only Tax Department staff. To restrict inserts or updates to Tax Department employees only, we add the WITH LOCAL CHECK OPTION ➋, which rejects any insert or update that does not meet the criteria of the WHERE clause. For example, the option won't allow anyone to insert or update a row in the underlying table where the employee's dept_id is 3.
+
+Create the employees_tax_dept view by running the code in [[file:ch15.xhtml#ch15list5][Listing 15-5]]. Then run SELECT * FROM employees_tax_dept;, which should provide these two rows:
+
+emp_id    first_name    last_name    dept_id
+------    ----------    ---------    -------
+     1    Nancy         Jones              1
+     2    Lee           Smith              1
+
+The result shows the employees who work in the Tax Department; they're two of the four rows in the entire employees table.
+
+Now, let's look at how inserts and updates work via this view.
+
+** Inserting Rows Using the employees_tax_dept View
+
+
+We can also use a view to insert or update data, but instead of using the table name in the INSERT or UPDATE statement, we substitute the view name. After we add or change data using a view, the change is applied to the underlying table, which in this case is employees. The view then reflects the change via the query it runs.
+
+[[file:ch15.xhtml#ch15list6][Listing 15-6]] shows two examples that attempt to add new employee records via the employees_tax_dept view. The first succeeds, but the second fails.
+
+➊ INSERT INTO employees_tax_dept (first_name, last_name, dept_id)
+  VALUES ('Suzanne', 'Legere', 1);
+
+➋ INSERT INTO employees_tax_dept (first_name, last_name, dept_id)
+  VALUES ('Jamil', 'White', 2);
+
+➌ SELECT * FROM employees_tax_dept;
+
+➍ SELECT * FROM employees;
+
+/Listing 15-6: Successful and rejected inserts via the employees_tax_dept view/
+
+In the first INSERT ➊, which follows the insert format you learned in [[file:ch01.xhtml#ch01][Chapter 1]], we supply the first and last names of Suzanne Legere plus her dept_id. Because the dept_id is 1, the value satisfies the LOCAL CHECK in the view, and the insert succeeds when it executes.
+
+But when we run the second INSERT ➋ to add an employee named Jamil White using a dept_id of 2, the operation fails with the error message new row violates check option for view "employees_tax_dept". The reason is that when we created the view in [[file:ch15.xhtml#ch15list5][Listing 15-5]], we used the WHERE clause to show only rows with dept_id = 1. The dept_id of 2 does not pass the LOCAL CHECK in the view, and it's prevented from being inserted.
+
+Run the SELECT statement ➌ on the view to check that Suzanne Legere was successfully added:
+
+emp_id    first_name    last_name    dept_id
+------    ----------    ---------    -------
+     1    Nancy         Jones              1
+     2    Lee           Smith              1
+     5    Suzanne       Legere             1
+
+We can also query the employees table ➍ to see that, in fact, Suzanne Legere was added to the full table. The view queries the employees table each time we access it.
+
+emp_id    first_name    last_name    salary    dept_id
+------    ----------    ---------    ------    -------
+     1    Nancy         Jones         62500          1
+     2    Lee           Smith         59300          1
+     3    Soo           Nguyen        83000          2
+     4    Janet         King          95000          2
+     5    Suzanne       Legere                       1
+
+As you can see from the addition of “Suzanne Legere,” the data we add using a view is also added to the underlying table. However, because the view doesn't include the salary column, its value in her row is NULL. If you attempt to insert a salary value using this view, you would receive the error message column "salary" of relation "employees_tax_dept" does not exist. The reason is that even though the salary column exists in the underlying employees table, it's not referenced in the view. Again, this is one way to limit access to sensitive data. Check the links I provided in the note on [[file:ch15.xhtml#page_268][page 268]] to learn more about granting permissions to users if you plan to take on database administrator responsibilities.
+
+** Updating Rows Using the employees_tax_dept View
+
+
+The same restrictions on accessing data in an underlying table apply when we make updates on data in the employees_tax_dept view. [[file:ch15.xhtml#ch15list7][Listing 15-7]] shows a standard query to update the spelling of Suzanne's last name using UPDATE (as a person with more than one uppercase letter in his last name, I can confirm misspelling names isn't unusual).
+
+UPDATE employees_tax_dept
+SET last_name = 'Le Gere'
+WHERE emp_id = 5;
+
+SELECT * FROM employees_tax_dept;
+
+/Listing 15-7: Updating a row via the employees_tax_dept view/
+
+Run the code, and the result from the SELECT query should show the updated last name, which occurs in the underlying employees table:
+
+emp_id    first_name    last_name    dept_id
+------    ----------    ---------    -------
+     1    Nancy         Jones              1
+     2    Lee           Smith              1
+     5    Suzanne       Le Gere            1
+
+Suzanne's last name is now correctly spelled as “Le Gere,” not “Legere.”
+
+However, if we try to update the name of an employee who is not in the Tax Department, the query fails just as it did when we tried to insert Jamil White in [[file:ch15.xhtml#ch15list6][Listing 15-6]]. In addition, trying to use this view to update the salary of an employee---even one in the Tax Department---will fail with the same error I noted in the previous section. If the view doesn't reference a column in the underlying table, you cannot access that column through the view. Again, the fact that updates on views are restricted in this way offers ways to ensure privacy and security for certain pieces of data.
+
+** Deleting Rows Using the employees_tax_dept View
+
+
+Now, let's explore how to delete rows using a view. The restrictions on which data you can affect apply here as well. For example, if Suzanne Le Gere in the Tax Department gets a better offer from another firm and decides to join the other company, you could remove her from the employees table through the employees_tax_dept view. [[file:ch15.xhtml#ch15list8][Listing 15-8]] shows the query in the standard DELETE syntax:
+
+DELETE FROM employees_tax_dept
+WHERE emp_id = 5;
+
+/Listing 15-8: Deleting a row via the employees_tax_dept view/
+
+Run the query, and PostgreSQL should respond with DELETE 1. However, when you try to delete a row for an employee in a department other than the Tax Department, PostgreSQL won't allow it and will report DELETE 0.
+
+In summary, views not only give you control over access to data, but also shortcuts for working with data. Next, let's explore how to use functions to save more time.
+
+** Programming Your Own Functions
+
+
+You've used plenty of functions throughout the book, whether to capitalize letters with upper() or add numbers with sum(). Behind these functions is a significant amount of (sometimes complex) programming that takes an input, transforms it or initiates an action, and returns a response. You saw that extent of code in [[file:ch05.xhtml#ch05list14][Listing 5-14]] on [[file:ch05.xhtml#page_69][page 69]] when you created a median() function, which uses 30 lines of code to find the middle value in a group of numbers. PostgreSQL's built-in functions and other functions database programmers develop to automate processes can use even more lines of code, including links to external code written in another language, such as C.
+
+We won't write complicated code here, but we'll work through some examples of building functions that you can use as a launching pad for your own ideas. Even simple, user-created functions can help you avoid repeating code when you're analyzing data.
+
+The code in this section is specific to PostgreSQL and is not part of the ANSI SQL standard. In some databases, notably Microsoft SQL Server and MySQL, implementing reusable code happens in a /stored procedure/. If you're using another database management system, check its documentation for specifics.
+
+ /Creating the percent_change() Function/
+
+
+To learn the syntax for creating a function, let's write a function to simplify calculating the percent change of two values, which is a staple of data analysis. In [[file:ch05.xhtml#ch05][Chapter 5]], you learned that the percent change formula can be expressed this way:
+
+percent change = (/New Number/ -- /Old Number/) / /Old Number/
+
+Rather than writing that formula each time we need it, we can create a function called percent_change() that takes the new and old numbers as inputs and returns the result rounded to a user-specified number of decimal places. Let's walk through the code in [[file:ch15.xhtml#ch15list9][Listing 15-9]] to see how to declare a simple SQL function:
+
+➊ CREATE OR REPLACE FUNCTION
+➋ percent_change(new_value numeric,
+                 old_value numeric,
+                 decimal_places integer ➌DEFAULT 1)
+➍ RETURNS numeric AS
+➎ 'SELECT round(
+          ((new_value - old_value) / old_value) * 100, decimal_places
+  );'
+➏ LANGUAGE SQL
+➐ IMMUTABLE
+➑ RETURNS NULL ON NULL INPUT;
+
+/Listing 15-9: Creating a percent_change() function/
+
+A lot is happening in this code, but it's not as complicated as it looks. We start with the command CREATE OR REPLACE FUNCTION ➊, followed by the name of the function ➋ and, in parentheses, a list of /arguments/ that are the function's inputs. Each argument has a name and data type. For example, we specify that new_value and old_value are numeric, whereas decimal_places (which specifies the number of places to round results) is integer. For decimal_places, we specify 1 as the DEFAULT ➌ value to indicate that we want the results to display only one decimal place. Because we set a default value, the argument will be optional when we call the function later.
+
+We then use the keywords RETURNS numeric AS ➍ to tell the function to return its calculation as type numeric. If this were a function to concatenate strings, we might return text.
+
+Next, we write the meat of the function that performs the calculation. Inside single quotes, we place a SELECT query ➎ that includes the percent change calculation nested inside a round() function. In the formula, we use the function's argument names instead of numbers.
+
+We then supply a series of keywords that define the function's attributes and behavior. The LANGUAGE ➏ keyword specifies that we've written this function using plain SQL, which is one of several languages PostgreSQL supports in functions. Another common option is a PostgreSQL-specific /procedural language/ called PL/pgSQL that, in addition to providing the means to create functions, adds features not found in standard SQL, such as logical control structures (IF ... THEN ... ELSE). PL/pgSQL is the default procedural language installed with PostgreSQL, but you can install others, such as PL/Perl and PL/Python, to use the Perl and Python programming languages in your database. Later in this chapter, I'll show examples of PL/pgSQL and Python.
+
+Next, the IMMUTABLE keyword ➐ indicates that the function won't be making any changes to the database, which can improve performance. The line RETURNS NULL ON NULL INPUT ➑ guarantees that the function will supply a NULL response if any input that is not supplied by default is a NULL.
+
+Run the code using pgAdmin to create the percent_change() function. The server should respond with the message CREATE FUNCTION.
+
+ /Using the percent_change() Function/
+
+
+To test the new percent_change() function, run it by itself using SELECT, as shown in [[file:ch15.xhtml#ch15list10][Listing 15-10]]:
+
+SELECT percent_change(110, 108, 2);
+
+/Listing 15-10: Testing the percent_change() function/
+
+This example uses a value of 110 for the new number, 108 for the old number, and 2 as the desired number of decimal places to round the result.
+
+Run the code; the result should look like this:
+
+percent_change
+--------------
+          1.85
+
+The result indicates that there is a 1.85 percent increase between 108 and 110. You can experiment with other numbers to see how the results change. Also, try changing the decimal_places argument to values including 0, or omit it, to see how that affects the output. You should see results that have more or fewer numbers after the decimal point, based on your input.
+
+Of course, we created this function to avoid having to write the full percent change formula in queries. Now let's use it to calculate the percent change using a version of the Decennial Census population change query we wrote in [[file:ch06.xhtml#ch06][Chapter 6]], as shown in [[file:ch15.xhtml#ch15list11][Listing 15-11]]:
+
+SELECT c2010.geo_name,
+       c2010.state_us_abbreviation AS st,
+       c2010.p0010001 AS pop_2010,
+     ➊ percent_change(c2010.p0010001, c2000.p0010001) AS pct_chg_func,
+     ➋ round( (CAST(c2010.p0010001 AS numeric(8,1)) - c2000.p0010001)
+           / c2000.p0010001 * 100, 1 ) AS pct_chg_formula
+FROM us_counties_2010 c2010 INNER JOIN us_counties_2000 c2000
+ON c2010.state_fips = c2000.state_fips
+   AND c2010.county_fips = c2000.county_fips
+ORDER BY pct_chg_func DESC
+LIMIT 5;
+
+/Listing 15-11: Testing percent_change() on census data/
+
+[[file:ch15.xhtml#ch15list11][Listing 15-11]] uses the original query in [[file:ch06.xhtml#ch06list13][Listing 6-13]] and adds the percent_change() function ➊ as a column before the formula ➋ so we can compare results. As inputs, we use the 2010 total population column (c2010.p0010001) as the new number and the 2000 total population as the old (c2000.p0010001).
+
+When you run the query, the results should display the five counties with the greatest percent change in population, and the results from the function should match the results from the formula entered directly into the query ➋.
+
+[[../images/prog_page_278.jpg]]
+
+Each result displays one decimal place, the function's default value, because we didn't provide the optional third argument when we called the function. Now that we know the function works as intended, we can use percent_change() any time we need to solve that calculation. Using a function is much faster than having to write a formula each time we need to use it!
+
+ /Updating Data with a Function/
+
+
+We can also use a function to simplify routine updates to data. In this section, we'll write a function that assigns the correct number of personal days available to a teacher (in addition to vacation) based on their hire date. We'll use the teachers table from the first lesson in [[file:ch01.xhtml#ch01][Chapter 1]], [[file:ch01.xhtml#lev13][“Creating a Table”]] on [[file:ch01.xhtml#page_5][page 5]]. If you skipped that section, you can return to it to create the table and insert the data using the example code in [[file:ch01.xhtml#ch01list2][Listing 1-2]] on [[file:ch01.xhtml#page_6][page 6]] and [[file:ch01.xhtml#ch01list3][Listing 1-3]] on [[file:ch01.xhtml#page_8][page 8]].
+
+Let's start by adding a column to teachers to hold the personal days using the code in [[file:ch15.xhtml#ch15list12][Listing 15-12]]:
+
+ALTER TABLE teachers ADD COLUMN personal_days integer;
+SELECT first_name,
+       last_name,
+       hire_date,
+       personal_days
+FROM teachers;
+
+/Listing 15-12: Adding a column to the teachers table and seeing the data/
+
+[[file:ch15.xhtml#ch15list12][Listing 15-12]] updates the teachers table using ALTER and adds the personal_days column using the keywords ADD COLUMN. Run the SELECT statement to view the data. When both queries finish, you should see the following six rows:
+
+first_name    last_name    hire_date     personal_days
+----------    ---------    ----------    -------------
+Janet         Smith        2011-10-30
+Lee           Reynolds     1993-05-22
+Samuel        Cole         2005-08-01
+Samantha      Bush         2011-10-30
+Betty         Diaz         2005-08-30
+Kathleen      Roush        2010-10-22      
+
+The personal_days column holds NULL values because we haven't provided any values yet.
+
+Now, let's create a function called update_personal_days() that updates the personal_days column with the correct personal days based on the teacher's hire date. We'll use the following rules to update the data in the personal_days column:
+
+- Less than five years since hire: 3 personal days
+- Between five and 10 years since hire: 4 personal days
+- More than 10 years since hire: 5 personal days
+
+The code in [[file:ch15.xhtml#ch15list13][Listing 15-13]] is similar to the code we used to create the percent_change() function, but this time we'll use the PL/pgSQL language instead of plain SQL. Let's walk through some differences.
+
+  CREATE OR REPLACE FUNCTION update_personal_days()
+➊ RETURNS void AS ➋$$
+➌ BEGIN
+      UPDATE teachers
+      SET personal_days =
+        ➍ CASE WHEN (now() - hire_date) BETWEEN '5 years'::interval
+                                        AND '10 years'::interval THEN 4
+               WHEN (now() - hire_date) > '10 years'::interval THEN 5
+               ELSE 3
+          END;
+   ➎ RAISE NOTICE 'personal_days updated!';
+  END;
+➏ $$ LANGUAGE plpgsql;
+
+/Listing 15-13: Creating an update_personal_days() function/
+
+We begin with CREATE OR REPLACE FUNCTION, followed by the function's name. This time, we provide no arguments because no user input is required. The function operates on predetermined columns with set rules for calculating intervals. Also, we use RETURNS void ➊ to note that the function returns no data; it simply updates the personal_days column.
+
+Often, when writing PL/pgSQL-based functions, the PostgreSQL convention is to use the non-ANSI SQL standard dollar-quote ($$) ➋ to mark the start and end of the string that contains all the function's commands. (As with the percent_change() function earlier, you could use single quote marks to enclose the string, but then any single quotes in the string would need to be doubled, and that looks messy.) So, everything between the pairs of $$ is the code that does the work. You can also add some text between the dollar signs, like $namestring$, to create a unique pair of beginning and ending quotes. This is useful, for example, if you need to quote a query inside the function.
+
+Right after the first $$ we start a BEGIN ... END; ➌ block to denote the function; inside it we place an UPDATE statement that uses a CASE statement ➍ to determine the number of days each teacher gets. We subtract the hire_date from the current date, which is retrieved from the server by the now() function. Depending on which range now() - hire_date falls into, the CASE statement returns the correct number of days off corresponding to the range. We use RAISE NOTICE ➎ to display a message in pgAdmin that the function is done. At the end, we use the LANGUAGE ➏ keyword to specify that we've written this function using PL/pgSQL.
+
+Run the code in [[file:ch15.xhtml#ch15list13][Listing 15-13]] to create the update_personal_days() function. Then use the following line to run it in pgAdmin:
+
+SELECT update_personal_days();
+
+Now when you rerun the SELECT statement in [[file:ch15.xhtml#ch15list12][Listing 15-12]], you should see that each row of the personal_days column is filled with the appropriate values. Note that your results may vary depending on when you run this function, because the result of now() is constantly updated with the passage of time.
+
+first_name    last_name    hire_date     personal_days
+----------    ---------    ----------    -------------
+Janet         Smith        2011-10-30                4
+Lee           Reynolds     1993-05-22                5
+Samuel        Cole         2005-08-01                5
+Samantha      Bush         2011-10-30                4
+Betty         Diaz         2005-08-30                5
+Kathleen      Roush        2010-10-22                4
+
+You could use the update_personal_days() function to regularly update data manually after performing certain tasks, or you could use a task scheduler such as pgAgent (a separate open source tool) to run it automatically. You can learn about pgAgent and other tools in [[file:appendix.xhtml#lev330][“PostgreSQL Utilities, Tools, and Extensions”]] on [[file:appendix.xhtml#page_334][page 334]].
+
+ /Using the Python Language in a Function/
+
+
+Previously, I mentioned that PL/pgSQL is the default procedural language within PostgreSQL, but the database also supports creating functions using open source languages, such as Perl and Python. This support allows you to take advantage of those languages' features as well as related modules within functions you create. For example, with Python, you can use the pandas library for data analysis. The documentation at /[[https://www.postgresql.org/docs/current/static/server-programming.html]]/ provides a comprehensive review of the available languages, but here I'll show you a very simple function using Python.
+
+To enable PL/Python, you must add the extension using the code in [[file:ch15.xhtml#ch15list14][Listing 15-14]]. If you get an error, such as could not access file "$libdir/plpython2", that means PL/Python wasn't included when you installed PostgreSQL. Refer back to the troubleshooting links for each operating system in [[file:intro.xhtml#lev6][“Installing PostgreSQL”]] on page xxviii.
+
+CREATE EXTENSION plpythonu;
+
+/Listing 15-14: Enabling the PL/Python procedural language/
+
+*NOTE*
+
+/The extension plpythonu currently installs Python version 2./x. /If you want to use Python 3./x, /install the extension plpython3u instead. However, available versions might vary based on PostgreSQL distribution./
+
+After enabling the extension, create a function following the same syntax you just learned in [[file:ch15.xhtml#ch15list9][Listing 15-9]] and [[file:ch15.xhtml#ch15list13][Listing 15-13]], but use Python for the body of the function. [[file:ch15.xhtml#ch15list15][Listing 15-15]] shows how to use PL/Python to create a function called trim_county() that removes the word “County” from the end of a string. We'll use this function to clean up names of counties in the census data.
+
+  CREATE OR REPLACE FUNCTION trim_county(input_string text)
+➊ RETURNS text AS $$
+    ➋ import re
+    ➌ cleaned = re.sub(r' County', '', input_string)
+      return cleaned
+➍ $$ LANGUAGE plpythonu;
+
+/Listing 15-15: Using PL/Python to create the trim_county() function/
+
+The structure should look familiar with some exceptions. Unlike the example in [[file:ch15.xhtml#ch15list13][Listing 15-13]], we don't follow the $$ ➊ with a BEGIN ... END; block. That is a PL/pgSQL--specific requirement that we don't need in PL/Python. Instead, we get straight to the Python code by starting with a statement to import the Python regular expressions module, re ➋. Even if you don't know much about Python, you can probably deduce that the next two lines of code ➌ set a variable called cleaned to the results of a Python regular expression function called sub(). That function looks for a space followed by the word /County/ in the input_string passed into the function and substitutes an empty string, which is denoted by two apostrophes. Then the function returns the content of the variable cleaned. To end, we specify LANGUAGE plpythonu ➍ to note we're writing the function with PL/Python.
+
+Run the code to create the function, and then execute the SELECT statement in [[file:ch15.xhtml#ch15list16][Listing 15-16]] to see it in action.
+
+SELECT geo_name,
+       trim_county(geo_name)
+FROM us_counties_2010
+ORDER BY state_fips, county_fips
+LIMIT 5;
+
+/Listing 15-16: Testing the trim_county() function/
+
+We use the geo_name column in the us_counties_2010 table as input to trim_county(). That should return these results:
+
+geo_name          trim_county
+--------------    -----------
+Autauga County    Autauga
+Baldwin County    Baldwin
+Barbour County    Barbour
+Bibb County       Bibb
+Blount County     Blount
+
+As you can see, the trim_county() function evaluated each value in the geo_name column and removed a space and the word /County/ when present. Although this is a trivial example, it shows how easy it is to use Python---or one of the other supported procedural languages---inside a function.
+
+Next, you'll learn how to use triggers to automate your database.
+
+** Automating Database Actions with Triggers
+
+
+A database /trigger/ executes a function whenever a specified event, such as an INSERT, UPDATE, or DELETE, occurs on a table or a view. You can set a trigger to fire before, after, or instead of the event, and you can also set it to fire once for each row affected by the event or just once per operation. For example, let's say you delete 20 rows from a table. You could set the trigger to fire once for each of the 20 rows deleted or just one time.
+
+We'll work through two examples. The first example keeps a log of changes made to grades at a school. The second automatically classifies temperatures each time we collect a reading.
+
+ /Logging Grade Updates to a Table/
+
+
+Let's say we want to automatically track changes made to a student grades table in our school's database. Every time a row is updated, we want to record the old and new grade plus the time the change occurred (search for “David Lightman and grades” and you'll see why this might be worth tracking). To handle this task automatically, we'll need three items:
+
+- A grades_history table to record the changes to grades in a grades table
+- A trigger to run a function every time a change occurs in the grades table, which we'll name grades_update
+- The function the trigger will execute; we'll call this function record_if_grade_changed()
+
+** Creating Tables to Track Grades and Updates
+
+
+Let's start by making the tables we need. [[file:ch15.xhtml#ch15list17][Listing 15-17]] includes the code to first create and fill grades and then create grades_history:
+
+➊ CREATE TABLE grades (
+      student_id bigint,
+      course_id bigint,
+      course varchar(30) NOT NULL,
+      grade varchar(5) NOT NULL,
+  PRIMARY KEY (student_id, course_id)
+  );
+
+➋ INSERT INTO grades
+  VALUES
+      (1, 1, 'Biology 2', 'F'),
+      (1, 2, 'English 11B', 'D'),
+      (1, 3, 'World History 11B', 'C'),
+      (1, 4, 'Trig 2', 'B');
+
+➌ CREATE TABLE grades_history (
+      student_id bigint NOT NULL,
+      course_id bigint NOT NULL,
+      change_time timestamp with time zone NOT NULL,
+      course varchar(30) NOT NULL,
+      old_grade varchar(5) NOT NULL,
+      new_grade varchar(5) NOT NULL,
+  PRIMARY KEY (student_id, course_id, change_time)
+  );
+
+/Listing 15-17: Creating the grades and grades_history tables/
+
+These commands are straightforward. We use CREATE to make a grades table ➊ and add four rows using INSERT ➋, where each row represents a student's grade in a class. Then we use CREATE TABLE to make the grades_history table ➌ to hold the data we log each time an existing grade is altered. The grades_history table has columns for the new grade, old grade, and the time of the change. Run the code to create the tables and fill the grades table. We insert no data into grades_history here because the trigger process will handle that task.
+
+** Creating the Function and Trigger
+
+
+Next, let's write the record_if_grade_changed() function the trigger will execute. We must write the function before naming it in the trigger. Let's go through the code in [[file:ch15.xhtml#ch15list18][Listing 15-18]]:
+
+CREATE OR REPLACE FUNCTION record_if_grade_changed()
+➊ RETURNS trigger AS
+$$
+BEGIN
+  ➋ IF NEW.grade <> OLD.grade THEN
+    INSERT INTO grades_history (
+        student_id,
+        course_id,
+        change_time,
+        course,
+        old_grade,
+        new_grade)
+    VALUES
+        (OLD.student_id,
+         OLD.course_id,
+         now(),
+         OLD.course,
+       ➌ OLD.grade,
+       ➍ NEW.grade);
+    END IF;
+  ➎ RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+/Listing 15-18: Creating the record_if_grade_changed() function/
+
+The record_if_grade_changed() function follows the pattern of earlier examples in the chapter but with exceptions specific to working with triggers. First, we specify RETURNS trigger ➊ instead of a data type or void. Because record_if_grade_changed() is a PL/pgSQL function, we place the procedure inside the BEGIN ... END; block. We start the procedure using an IF ... THEN statement ➋, which is one of the control structures PL/pgSQL provides. We use it here to run the INSERT statement only if the updated grade is different from the old grade, which we check using the <> operator.
+
+When a change occurs to the grades table, the trigger (which we'll create next) will execute. For each row that is changed, the trigger will pass two collections of data into record_if_grade_changed(). The first is the row values /before/ they were changed, noted with the prefix OLD. The second is the row values /after/ they were changed, noted with the prefix NEW. The function can access the original row values and the updated row values, which it will use for a comparison. If the IF ... THEN statement evaluates as true, which means that the old and new grade values are different, we use INSERT to add a row to grades_history that contains both OLD.grade ➌ and NEW.grade ➍.
+
+A trigger must have a RETURN statement ➎, although the PostgreSQL documentation at /[[https://www.postgresql.org/docs/current/static/plpgsql-trigger.html]]/ details the scenarios in which a trigger return value actually matters (sometimes it is ignored). The documentation also explains that you can use statements to return a NULL or raise an exception in case of error.
+
+Run the code in [[file:ch15.xhtml#ch15list18][Listing 15-18]] to create the function. Next, add the grades_update trigger to the grades table using [[file:ch15.xhtml#ch15list19][Listing 15-19]]:
+
+➊ CREATE TRIGGER grades_update
+➋  AFTER UPDATE
+    ON grades
+➌  FOR EACH ROW
+➍  EXECUTE PROCEDURE record_if_grade_changed();
+
+/Listing 15-19: Creating the grades_update trigger/
+
+In PostgreSQL, the syntax for creating a trigger follows the ANSI SQL standard (although the contents of the trigger function do not). The code begins with a CREATE TRIGGER ➊ statement, followed by clauses that control when the trigger runs and how it behaves. We use AFTER UPDATE ➋ to specify that we want the trigger to fire after the update occurs on the grades row. We could also use the keywords BEFORE or INSTEAD OF depending on the situation.
+
+We write FOR EACH ROW ➌ to tell the trigger to execute the procedure once for each row updated in the table. For example, if someone ran an update that affected three rows, the procedure would run three times. The alternate (and default) is FOR EACH STATEMENT, which runs the procedure once. If we didn't care about capturing changes to each row and simply wanted to record that grades were changed at a certain time, we could use that option. Finally, we use EXECUTE PROCEDURE ➍ to name record_if_grade_changed() as the function the trigger should run.
+
+Create the trigger by running the code in [[file:ch15.xhtml#ch15list19][Listing 15-19]] in pgAdmin. The database should respond with the message CREATE TRIGGER.
+
+** Testing the Trigger
+
+
+Now that we've created the trigger and the function it should run, let's make sure they work. First, when you run SELECT * FROM grades_history;, you'll see that the table is empty because we haven't made any changes to the grades table yet and there's nothing to track. Next, when you run SELECT * FROM grades; you should see the grade data, as shown here:
+
+student_id    course_id    course               grade
+----------    ---------    -----------------    -----
+         1            1    Biology 2            F
+         1            2    English 11B          D
+         1            3    World History 11B    C
+         1            4    Trig 2               B
+
+That Biology 2 grade doesn't look very good. Let's update it using the code in [[file:ch15.xhtml#ch15list20][Listing 15-20]]:
+
+UPDATE grades
+SET grade = 'C'
+WHERE student_id = 1 AND course_id = 1;
+
+/Listing 15-20: Testing the grades_update trigger/
+
+When you run the UPDATE, pgAdmin doesn't display anything to let you know that the trigger executed in the background. It just reports UPDATE 1, meaning the row with grade F was updated. But our trigger did run, which we can confirm by examining columns in grades_history using this SELECT query:
+
+SELECT student_id,
+       change_time,
+       course,
+       old_grade,
+       new_grade
+FROM grades_history;
+
+When you run this query, you should see that the grades_history table, which contains all changes to grades, now has one row:
+
+[[../images/prog_page_286.jpg]]
+
+This row displays the old Biology 2 grade of F, the new value C, and change_time, showing the time of the change made (your result should reflect your date and time). Note that the addition of this row to grades_history happened in the background without the knowledge of the person making the update. But the UPDATE event on the table caused the trigger to fire, which executed the record_if_grade_changed() function.
+
+If you've used a content management system, such as WordPress or Drupal, this sort of revision tracking might be familiar. It provides a helpful record of changes made to content for reference and auditing purposes, and, unfortunately, can lead to occasional finger-pointing. Regardless, the ability to trigger actions on a database automatically gives you more control over your data.
+
+ /Automatically Classifying Temperatures/
+
+
+In [[file:ch12.xhtml#ch12][Chapter 12]], we used the SQL CASE statement to reclassify temperature readings into descriptive categories. The CASE statement (with a slightly different syntax) is also part of the PL/pgSQL procedural language, and we can use its capability to assign values to variables to automatically store those category names in a table each time we add a temperature reading. If we're routinely collecting temperature readings, using this technique to automate the classification spares us from having to handle the task manually.
+
+We'll follow the same steps we used for logging the grade changes: we first create a function to classify the temperatures, and then create a trigger to run the function each time the table is updated. Use [[file:ch15.xhtml#ch15list21][Listing 15-21]] to create a temperature_test table for the exercise:
+
+CREATE TABLE temperature_test (
+    station_name varchar(50),
+    observation_date date,
+    max_temp integer,
+    min_temp integer,
+    max_temp_group varchar(40),
+PRIMARY KEY (station_name, observation_date)
+);
+
+/Listing 15-21: Creating a temperature_test table/
+
+In [[file:ch15.xhtml#ch15list21][Listing 15-21]], the temperature_test table contains columns to hold the name of the station and date of the temperature observation. Let's imagine that we have some process to insert a row once a day that provides the maximum and minimum temperature for that location, and we need to fill the max_temp_group column with a descriptive classification of the day's high reading to provide text to a weather forecast we're distributing.
+
+To do this, we first make a function called classify_max_temp(), as shown in [[file:ch15.xhtml#ch15list22][Listing 15-22]]:
+
+CREATE OR REPLACE FUNCTION classify_max_temp()
+    RETURNS trigger AS
+$$
+BEGIN
+  ➊ CASE
+       WHEN NEW.max_temp >= 90 THEN
+           NEW.max_temp_group := 'Hot';➋
+       WHEN NEW.max_temp BETWEEN 70 AND 89 THEN
+           NEW.max_temp_group := 'Warm';
+       WHEN NEW.max_temp BETWEEN 50 AND 69 THEN
+           NEW.max_temp_group := 'Pleasant';
+       WHEN NEW.max_temp BETWEEN 33 AND 49 THEN
+           NEW.max_temp_group :=  'Cold';
+       WHEN NEW.max_temp BETWEEN 20 AND 32 THEN
+           NEW.max_temp_group :=  'Freezing';
+       ELSE NEW.max_temp_group :=  'Inhumane';
+    END CASE;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+/Listing 15-22: Creating the classify_max_temp() function/
+
+By now, these functions should look familiar. What is new here is the PL/pgSQL version of the CASE syntax ➊, which differs slightly from the SQL syntax in that the PL/pgSQL syntax includes a semicolon after each WHEN ... THEN clause ➋. Also new is the /assignment operator/ (:=), which we use to assign the descriptive name to the NEW.max_temp_group column based on the outcome of the CASE function. For example, the statement NEW.max_temp_group := 'Cold' assigns the string 'Cold' to NEW.max_temp_group when the temperature value is between 33 and 49 degrees Fahrenheit, and when the function returns the NEW row to be inserted in the table, it will include the string value Cold. Run the code to create the function.
+
+Next, using the code in [[file:ch15.xhtml#ch15list23][Listing 15-23]], create a trigger to execute the function each time a row is added to temperature_test:
+
+CREATE TRIGGER temperature_insert
+  ➊ BEFORE INSERT
+    ON temperature_test
+  ➋ FOR EACH ROW
+  ➌ EXECUTE PROCEDURE classify_max_temp();
+
+/Listing 15-23: Creating the temperature_insert trigger/
+
+In this example, we classify max_temp and create a value for max_temp_group prior to inserting the row into the table. Doing so is more efficient than performing a separate update after the row is inserted. To specify that behavior, we set the temperature_insert trigger to fire BEFORE INSERT ➊.
+
+We also want the trigger to fire FOR EACH ROW inserted ➋ because we want each max_temp recorded in the table to get a descriptive classification. The final EXECUTE PROCEDURE statement names the classify_max_temp() function ➌ we just created. Run the CREATE TRIGGER statement in pgAdmin, and then test the setup using [[file:ch15.xhtml#ch15list24][Listing 15-24]]:
+
+INSERT INTO temperature_test (station_name, observation_date, max_temp, min_temp)
+VALUES
+    ('North Station', '1/19/2019', 10, -3),
+    ('North Station', '3/20/2019', 28, 19),
+    ('North Station', '5/2/2019', 65, 42),
+    ('North Station', '8/9/2019', 93, 74);
+
+SELECT * FROM temperature_test;
+
+/Listing 15-24: Inserting rows to test the temperature_insert trigger/
+
+Here we insert four rows into temperature_test, and we expect the temperature_insert trigger to fire for each row---and it does! The SELECT statement in the listing should display these results:
+
+[[../images/prog_page_288.jpg]]
+
+Due to the trigger and function we created, each max_temp inserted automatically receives the appropriate classification in the max_temp_group column.
+
+This temperature example and the earlier grade-change auditing example are rudimentary, but they give you a glimpse of how useful triggers and functions can be in simplifying data maintenance.
+
+** Wrapping Up
+
+
+Although the techniques you learned in this chapter begin to merge with those of a database administrator, you can apply the concepts to reduce the amount of time you spend repeating certain tasks. I hope these approaches will help you free up more time to find interesting stories in your data.
+
+This chapter concludes our discussion of analysis techniques and the SQL language. The next two chapters offer workflow tips to help you increase your command of PostgreSQL. They include how to connect to a database and run queries from your computer's command line, and how to maintain your database.
+
+
+*TRY IT YOURSELF*
+
+Review the concepts in the chapter with these exercises:
+
+1. Create a view that displays the number of New York City taxi trips per hour. Use the taxi data in [[file:ch11.xhtml#ch11][Chapter 11]] and the query in [[file:ch11.xhtml#ch11list8][Listing 11-8]] on [[file:ch11.xhtml#page_182][page 182]].
+
+2. In [[file:ch10.xhtml#ch10][Chapter 10]], you learned how to calculate rates per thousand. Turn that formula into a rates_per_thousand() function that takes three arguments to calculate the result: observed_number, base_number, and decimal_places.
+
+3. In [[file:ch09.xhtml#ch09][Chapter 9]], you worked with the meat_poultry_egg_inspect table that listed food processing facilities. Write a trigger that automatically adds an inspection date each time you insert a new facility into the table. Use the inspection_date column added in [[file:ch09.xhtml#ch09list19][Listing 9-19]] on [[file:ch09.xhtml#page_146][page 146]], and set the date to be six months from the current date. You should be able to describe the steps needed to implement a trigger and how the steps relate to each other.
+
+
+temperature\_test, and we expect the temperature\_insert trigger to fire for each row---and it does! The SELECT statement in the listing should display these results:
+
+[[../images/prog_page_288.jpg]]
+
+Due to the trigger and function we created, each max\_temp inserted automatically receives the appropriate classification in the max\_temp\_group column.
+
+This temperature example and the earlier grade-change auditing example are rudimentary, but they give you a glimpse of how useful triggers and functions can be in simplifying data maintenance.
+
+**** Wrapping Up
+    :PROPERTIES:
+    :CUSTOM_ID: lev285
+    :CLASS: h3
+    :END:
+
+Although the techniques you learned in this chapter begin to merge with those of a database administrator, you can apply the concepts to reduce the amount of time you spend repeating certain tasks. I hope these approaches will help you free up more time to find interesting stories in your data.
+
+This chapter concludes our discussion of analysis techniques and the SQL language. The next two chapters offer workflow tips to help you increase your command of PostgreSQL. They include how to connect to a database and run queries from your computer's command line, and how to maintain your database.
+
+<<ch15sb1>>
+*TRY IT YOURSELF*
+
+Review the concepts in the chapter with these exercises:
+
+1. Create a view that displays the number of New York City taxi trips per hour. Use the taxi data in [[file:ch11.xhtml#ch11][Chapter 11]] and the query in [[file:ch11.xhtml#ch11list8][Listing 11-8]] on [[file:ch11.xhtml#page_182][page 182]].
+
+2. In [[file:ch10.xhtml#ch10][Chapter 10]], you learned how to calculate rates per thousand. Turn that formula into a rates\_per\_thousand() function that takes three arguments to calculate the result: observed\_number, base\_number, and decimal\_places.
+
+3. In [[file:ch09.xhtml#ch09][Chapter 9]], you worked with the meat\_poultry\_egg\_inspect table that listed food processing facilities. Write a trigger that automatically adds an inspection date each time you insert a new facility into the table. Use the inspection\_date column added in [[file:ch09.xhtml#ch09list19][Listing 9-19]] on [[file:ch09.xhtml#page_146][page 146]], and set the date to be six months from the current date. You should be able to describe the steps needed to implement a trigger and how the steps relate to each other.
+
+
